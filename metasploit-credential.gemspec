@@ -7,11 +7,11 @@ require 'metasploit-credential/version'
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
   s.version     = MetasploitCredential::VERSION
-  s.authors     = ['TODO: Your name']
-  s.email       = ['TODO: Your email']
-  s.homepage    = 'TODO'
-  s.summary     = 'TODO: Summary of MetasploitCredential.'
-  s.description = 'TODO: Description of MetasploitCredential.'
+  s.authors     = ['Luke Imhoff']
+  s.email       = ['luke_imhoff@rapid7.com']
+  s.homepage    = 'https://github.com/rapid7/metasploit-credential'
+  s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
+  s.description = 'The Metasploit::Credential namespace and its ActiveRecord::Base subclasses'
 
   s.files = Dir['{app,config,db,lib}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.rdoc']
 
