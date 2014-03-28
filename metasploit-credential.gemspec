@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
   s.description = 'The Metasploit::Credential namespace and its ActiveRecord::Base subclasses'
 
-  s.files = Dir['{app,config,db,lib}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.rdoc']
+  s.files = Dir['{app,config,db,lib}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.md']
 
   s.add_dependency 'rails', '~> 3.2.17'
 
