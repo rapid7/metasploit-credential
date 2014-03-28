@@ -1,12 +1,12 @@
 $:.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
-require 'metasploit-credential/version'
+require 'metasploit/credential/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
-  s.version     = MetasploitCredential::VERSION
+  s.version     = Metasploit::Credential::VERSION
   s.authors     = ['Luke Imhoff']
   s.email       = ['luke_imhoff@rapid7.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
