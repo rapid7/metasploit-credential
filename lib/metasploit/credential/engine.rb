@@ -13,6 +13,7 @@ else
         config.generators do |g|
           g.assets false
           g.helper false
+          g.test_framework :rspec, fixture: false
         end
 
         isolate_namespace(Metasploit::Credential)
