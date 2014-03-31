@@ -22,6 +22,18 @@ RDoc::Task.new(:rdoc) do |rdoc|
 end
 
 APP_RAKEFILE = File.expand_path('../spec/dummy/Rakefile', __FILE__)
-load 'rails/tasks/engine.rake'
+
+begin
+ load 'rails/tasks/engine.rake'
+rescue LoadError
+  puts "railties not in bundle, so can't load engine tasks."
+  print_without = true
+end
 
 Bundler::GemHelper.install_tasks
+
+if print_without
+  puts "Bundle currently installed '--without #{Bundler.settings.without.join(' ')}'."
+  puts "To clear the without option do `bundle install --without ''` (the --without flag with an empty string) or " \
+       "`rm -rf .bundle` to remove the .bundle/config manually and then `bundle install`"
+end
