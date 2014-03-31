@@ -9,6 +9,9 @@ spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/
 
+# gem build
+*.gem
+
 # YARD
 .yardoc
 doc
