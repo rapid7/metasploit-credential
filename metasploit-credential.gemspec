@@ -16,5 +16,10 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
+  # documentation
+  s.add_development_dependency 'yard'
+  # markdown formatting for yard
+  s.add_development_dependency 'redcarpet'
+
   s.add_development_dependency 'pg'
 end

@@ -32,6 +32,19 @@ end
 
 Bundler::GemHelper.install_tasks
 
+#
+# load rake files like a normal rails app
+# @see http://viget.com/extend/rails-engine-testing-with-rspec-capybara-and-factorygirl
+#
+
+pathname = Pathname.new(__FILE__)
+root = pathname.parent
+rakefile_glob = root.join('lib', 'tasks', '**', '*.rake').to_path
+
+Dir.glob(rakefile_glob) do |rakefile|
+  load rakefile
+end
+
 begin
   require 'rspec/core'
 rescue LoadError
