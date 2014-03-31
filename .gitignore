@@ -1,8 +1,17 @@
 .bundle/
 .idea/
+Gemfile.lock
 log/*.log
 pkg/
+spec/dummy/.sass-cache
+spec/dummy/config/database.yml
 spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/
-spec/dummy/.sass-cache
+
+# gem build
+*.gem
+
+# YARD
+.yardoc
+doc
