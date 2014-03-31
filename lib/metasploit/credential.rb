@@ -3,9 +3,9 @@ if defined? Rails
   require 'metasploit/credential/engine'
 end
 
-# Shared namespace for metasploit gems; used in [metasploit-credential](https://github.com/rapid7/metasploit-credential),
-# [metasploit-framework](https://github.com/rapid7/metasploit-framework), and
-# [metasploit-model](https://github.com/rapid7/metasploit-model)
+# Shared namespace for metasploit gems; used in {https://github.com/rapid7/metasploit-credential metasploit-credential},
+# {https://github.com/rapid7/metasploit-framework metasploit-framework}, and
+# {https://github.com/rapid7/metasploit-model metasploit-model}
 module Metasploit
   # The namespace for this gem.
   module Credential
