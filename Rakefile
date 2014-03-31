@@ -32,6 +32,21 @@ end
 
 Bundler::GemHelper.install_tasks
 
+begin
+  require 'rspec/core'
+rescue LoadError
+  puts "rspec not in bundle, so can't set up spec tasks.  " \
+       "To run specs ensure to install the development and test groups."
+  print_without = true
+else
+  require 'rspec/core/rake_task'
+
+  # @see http://viget.com/extend/rails-engine-testing-with-rspec-capybara-and-factorygirl
+  RSpec::Core::RakeTask.new(:spec)
+
+  task :default => :spec
+end
+
 if print_without
   puts "Bundle currently installed '--without #{Bundler.settings.without.join(' ')}'."
   puts "To clear the without option do `bundle install --without ''` (the --without flag with an empty string) or " \
