@@ -15,3 +15,7 @@ spec/dummy/tmp/
 # YARD
 .yardoc
 doc
+
+# rvm files should not be checked in as multiple rubies are supported in the CI builds
+.ruby-gemset
+.ruby-version
