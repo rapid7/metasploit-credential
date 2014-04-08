@@ -1,5 +1,5 @@
 # Base `Class` for all private credentials.   A private credential is any credential that should not be publicly
-# disclosed, such as a password, password hash, or key file.
+# disclosed, such as a {Metasploit::Credential::Password password}, password hash, or key file.
 #
 # Uses Single Table Inheritance to store subclass name in {#type} per Rails convention.
 class Metasploit::Credential::Private < ActiveRecord::Base
