@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Metasploit::Credential::Public do
   context 'database' do
     context 'columns' do
-      it_should_behave_like 'database column timestamps'
+      it_should_behave_like 'timestamp database columns'
 
       it { should have_db_column(:username).of_type(:string).with_options(null: false) }
     end

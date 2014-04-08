@@ -1,0 +1,4 @@
+en:
+  errors:
+    messages:
+      nil: "can't be nil, but it can be blank"
