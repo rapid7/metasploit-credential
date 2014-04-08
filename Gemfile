@@ -7,6 +7,8 @@ gemspec
 
 
 group :development, :test do
+  # Hash password for Metasploit::Credential::PasswordHash factories
+  gem 'bcrypt'
   # supplies factories for producing model instance for specs
   # Version 4.1.0 or newer is needed to support generate calls without the 'FactoryGirl.' in factory definitions syntax.
   gem 'factory_girl', '>= 4.1.0'
