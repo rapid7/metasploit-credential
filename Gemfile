@@ -19,6 +19,8 @@ group :development, :test do
   # add matchers from shoulda, such as validates_presence_of, which are useful for testing validations, and have_db_*
   # for testing database columns and indicies.
   gem 'shoulda-matchers'
+  # code coverage of tests
+  gem 'simplecov', :require => false
   # restrict for compatibility with rest of metasploit ecosystem until it upgrades to Rails 4
   # @todo MSP-9647
   gem 'rails', '>= 3.2', '< 4.0.0'

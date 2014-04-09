@@ -12,6 +12,9 @@ spec/dummy/tmp/
 # gem build
 *.gem
 
+# simplecov
+coverage
+
 # YARD
 .yardoc
 doc

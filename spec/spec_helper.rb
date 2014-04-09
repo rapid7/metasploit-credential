@@ -1,6 +1,15 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
 
+# explicitly setup bundle before requiring environment so simplecov is available prior to loading environment
+require 'rubygems'
+require 'bundler'
+Bundler.setup(:default, :test)
+
+# Require simplecov before loading ..dummy/config/environment.rb because it will cause metasploit-credential/lib to
+# be loaded, which would result in Coverage not recording hits for any of the files.
+require 'simplecov'
+
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
