@@ -23,4 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redcarpet'
 
   s.add_development_dependency 'pg'
+
+  # Metasploit::Credential::NTLMHash helper methods
+  s.add_runtime_dependency 'rubyntlm'
 end

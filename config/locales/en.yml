@@ -1,4 +1,11 @@
 en:
+  activerecord:
+    errors:
+      models:
+        metasploit/credential/ntlm_hash:
+          attributes:
+            data:
+              format: "is not in the NTLMHash data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>, where each hex digest is 32 lowercase hexadecimal characters."
   errors:
     messages:
       nil: "can't be nil, but it can be blank"
