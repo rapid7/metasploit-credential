@@ -8,7 +8,7 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   #
 
   # @!attribute data
-  #   The private data for this credential.  The semantic meaning of this data varies based on subclass
+  #   The private data for this credential.  The semantic meaning of this data varies based on subclass.
   #
   #   @return [String]
 

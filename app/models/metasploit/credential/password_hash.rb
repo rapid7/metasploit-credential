@@ -5,7 +5,16 @@ class Metasploit::Credential::PasswordHash < Metasploit::Credential::Private
   #
 
   # @!attribute data
+  #   @note Unlike {Metasploit::Credential::Private#data}, {#data} cannot be blank because blank hashes have no meaning.
+  #
   #   The cryptographic hash of {Metasploit::Credential::Password#data}.
   #
   #   @return [String]
+
+  #
+  # Validations
+  #
+
+  validates :data,
+            presence: true
 end
