@@ -26,4 +26,6 @@ Gem::Specification.new do |s|
 
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
+  # Metasploit::Credential::SSHKey validation and helper methods
+  s.add_runtime_dependency 'net-ssh'
 end
