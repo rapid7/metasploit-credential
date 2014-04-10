@@ -5,7 +5,6 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
-
 group :development, :test do
   # Hash password for Metasploit::Credential::PasswordHash factories
   gem 'bcrypt'
