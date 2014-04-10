@@ -8,6 +8,10 @@ describe Metasploit::Credential::Realm do
 
       it_should_behave_like 'timestamp database columns'
     end
+
+    context 'indices' do
+      it { should have_db_index([:key, :value]).unique(true) }
+    end
   end
 
   context 'factories' do
@@ -60,6 +64,95 @@ describe Metasploit::Credential::Realm do
       it { should ensure_inclusion_of(:key).in_array(described_class::Key::ALL) }
       it { should validate_presence_of :key }
     end
-    it { should validate_presence_of :value }
+
+    context 'on #value' do
+      it { should validate_presence_of :value }
+
+      # key cannot be NULL so `validate_uniqueness_of(:value).scoped_to(:key)` does not work because it tries a NULL
+      # key
+      context 'validates uniqueness of #value scoped to #key' do
+        subject(:value_errors) do
+          new_realm.errors[:value]
+        end
+
+        #
+        # lets
+        #
+
+        let(:error) do
+          I18n.translate!('activerecord.errors.messages.taken')
+        end
+
+        let(:new_realm) do
+          FactoryGirl.build(
+              :metasploit_credential_realm,
+              key: key,
+              value: value
+          )
+        end
+
+        #
+        # let!s
+        #
+
+        let!(:existent_realm) do
+          FactoryGirl.create(
+              :metasploit_credential_realm
+          )
+        end
+
+        #
+        # Callback
+        #
+
+        before(:each) do
+          new_realm.valid?
+        end
+
+        context 'with same #key' do
+          let(:key) do
+            existent_realm.key
+          end
+
+          context 'with same #value' do
+            let(:value) do
+              existent_realm.value
+            end
+
+            it { should include(error) }
+          end
+
+          context 'without same #value' do
+            let(:value) do
+              FactoryGirl.generate :metasploit_credential_realm_value
+            end
+
+            it { should_not include(error) }
+          end
+        end
+
+        context 'without same #key' do
+          let(:key) do
+            FactoryGirl.generate :metasploit_credential_realm_key
+          end
+
+          context 'with same #value' do
+            let(:value) do
+              existent_realm.value
+            end
+
+            it { should_not include(error) }
+          end
+
+          context 'without same #value' do
+            let(:value) do
+              FactoryGirl.generate :metasploit_credential_realm_value
+            end
+
+            it { should_not include(error) }
+          end
+        end
+      end
+    end
   end
 end

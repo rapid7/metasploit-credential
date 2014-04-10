@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140410132401) do
+ActiveRecord::Schema.define(:version => 20140410161611) do
 
   create_table "metasploit_credential_privates", :force => true do |t|
     t.string   "type",       :null => false
@@ -36,5 +36,7 @@ ActiveRecord::Schema.define(:version => 20140410132401) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "metasploit_credential_realms", ["key", "value"], :name => "index_metasploit_credential_realms_on_key_and_value", :unique => true
 
 end

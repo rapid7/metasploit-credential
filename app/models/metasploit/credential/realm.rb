@@ -39,5 +39,8 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
             },
             presence: true
   validates :value,
-            presence: true
+            presence: true,
+            uniqueness: {
+                scope: :key
+            }
 end
