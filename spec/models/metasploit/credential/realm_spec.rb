@@ -21,6 +21,16 @@ describe Metasploit::Credential::Realm do
       its(:key) { should == described_class::Key::ACTIVE_DIRECTORY_DOMAIN }
     end
 
+    context 'metasplit_credential_oracle_system_identifier' do
+      subject(:metasploit_credential_oracle_system_identifier) do
+        FactoryGirl.build(:metasploit_credential_oracle_system_identifier)
+      end
+
+      it { should be_valid }
+
+      its(:key) { should == described_class::Key::ORACLE_SYSTEM_IDENTIFIER }
+    end
+
     context 'metasploit_credential_postgresql_database' do
       subject(:metasploit_credential_postgresql_database) do
         FactoryGirl.build(:metasploit_credential_postgresql_database)

@@ -10,6 +10,14 @@ describe Metasploit::Credential::Realm::Key do
       it { should == 'Active Directory Domain' }
     end
 
+    context 'ORACLE_SYSTEM_IDENTIFIER' do
+      subject(:oracle_system_identifier) do
+        described_class::ORACLE_SYSTEM_IDENTIFIER
+      end
+
+      it { should == 'Oracle System Identifier' }
+    end
+
     context 'POSTGRESQL DATABASE' do
       subject(:postgresql_database) do
         described_class::POSTGRESQL_DATABASE
