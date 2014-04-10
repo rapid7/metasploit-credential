@@ -34,9 +34,7 @@ FactoryGirl.define do
     "postgressql_database#{n}"
   end
 
-  sequence :metasploit_credential_realm_key do |n|
-    "metasploit_credential_realm_key#{n}"
-  end
+  sequence :metasploit_credential_realm_key, klass::Key::ALL.cycle
 
   sequence :metasploit_credential_realm_value do |n|
     "metasploit_credential_realm_value#{n}"

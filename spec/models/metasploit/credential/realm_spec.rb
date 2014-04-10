@@ -56,7 +56,10 @@ describe Metasploit::Credential::Realm do
   end
 
   context 'validations' do
-    it { should validate_presence_of :key }
+    context 'on #key' do
+      it { should ensure_inclusion_of(:key).in_array(described_class::Key::ALL) }
+      it { should validate_presence_of :key }
+    end
     it { should validate_presence_of :value }
   end
 end

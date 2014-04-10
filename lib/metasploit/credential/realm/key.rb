@@ -20,4 +20,11 @@ module Metasploit::Credential::Realm::Key
   # A PostgreSQL database name.  Unlike, MySQL, PostgreSQL requires the user to authenticate to a specific
   # database and does not allow authenticating to just a server (which would be an `Mdm::Service`).
   POSTGRESQL_DATABASE = 'PostgreSQL Database'
+
+  # All key constants
+  ALL = [
+      ACTIVE_DIRECTORY_DOMAIN,
+      ORACLE_SYSTEM_IDENTIFIER,
+      POSTGRESQL_DATABASE
+  ]
 end

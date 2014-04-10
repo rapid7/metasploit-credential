@@ -1,5 +1,5 @@
 # The realm in which a {Metasploit::Credential::Public} can be used to authenticate or from which a
-# {Metasploit::Credential::Private} was looted.  Common realms are ActiveDirectory Domains or PostgreSQL databases.
+# {Metasploit::Credential::Private} was looted.
 class Metasploit::Credential::Realm < ActiveRecord::Base
   extend ActiveSupport::Autoload
 
@@ -15,7 +15,7 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #
   #   The name of the key for the realm.
   #
-  #   @return [String]
+  #   @return [String] An element of {Metasploit::Credential::Realm::Key::ALL}
 
   # @!attribute value
   #   The value of the {#key} for the realm.
@@ -34,6 +34,9 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #
 
   validates :key,
+            inclusion: {
+                in: Metasploit::Credential::Realm::Key::ALL
+            },
             presence: true
   validates :value,
             presence: true
