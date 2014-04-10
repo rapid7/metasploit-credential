@@ -9,6 +9,11 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   # Attributes
   #
 
+  # @!attribute created_at
+  #   When this realm was created.
+  #
+  #   @return [DateTime]
+
   # @!attribute key
   #   @note If a key is used more than once, it should be added to the {Metasploit::Credential::Realm::Key} constants
   #     and that constant should be used in place of the bare string.
@@ -16,6 +21,11 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #   The name of the key for the realm.
   #
   #   @return [String] An element of {Metasploit::Credential::Realm::Key::ALL}
+
+  # @!attribute updated_at
+  #   The last time this realm was updated.
+  #
+  #   @return [DateTime]
 
   # @!attribute value
   #   The value of the {#key} for the realm.

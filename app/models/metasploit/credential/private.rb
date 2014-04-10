@@ -7,6 +7,11 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   # Attributes
   #
 
+  # @!attribute created_at
+  #   When this private credential was created.
+  #
+  #   @return [DateTime]
+
   # @!attribute data
   #   The private data for this credential.  The semantic meaning of this data varies based on subclass.
   #
@@ -23,6 +28,11 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   #   The name of the `Class`.  Used to instantiate the correct subclass when retrieving records from the database.
   #
   #   @return [String]
+
+  # @!attribute updated_at
+  #   The last time this private credential was updated.
+  #
+  #   @return [DateTime]
 
   #
   # Mass Assignment Security
