@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140410205410) do
+ActiveRecord::Schema.define(:version => 20140411142102) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(:version => 20140410205410) do
 
   create_table "hosts", :force => true do |t|
     t.datetime "created_at"
-    t.string   "address",                                               :null => false
+    t.string   "address",               :limit => nil,                  :null => false
     t.string   "mac"
     t.string   "comm"
     t.string   "name"
@@ -183,6 +183,15 @@ ActiveRecord::Schema.define(:version => 20140410205410) do
   end
 
   add_index "metasploit_credential_origin_manuals", ["user_id"], :name => "index_metasploit_credential_origin_manuals_on_user_id"
+
+  create_table "metasploit_credential_origin_sessions", :force => true do |t|
+    t.text     "post_reference_name", :null => false
+    t.integer  "session_id",          :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "metasploit_credential_origin_sessions", ["session_id", "post_reference_name"], :name => "unique_metasploit_credential_origin_sessions", :unique => true
 
   create_table "metasploit_credential_privates", :force => true do |t|
     t.string   "type",       :null => false
@@ -609,7 +618,7 @@ ActiveRecord::Schema.define(:version => 20140410205410) do
 
   create_table "wmap_requests", :force => true do |t|
     t.string   "host"
-    t.string   "address"
+    t.string   "address",    :limit => nil
     t.integer  "port"
     t.integer  "ssl"
     t.string   "meth",       :limit => 32
@@ -626,7 +635,7 @@ ActiveRecord::Schema.define(:version => 20140410205410) do
 
   create_table "wmap_targets", :force => true do |t|
     t.string   "host"
-    t.string   "address"
+    t.string   "address",    :limit => nil
     t.integer  "port"
     t.integer  "ssl"
     t.integer  "selected"

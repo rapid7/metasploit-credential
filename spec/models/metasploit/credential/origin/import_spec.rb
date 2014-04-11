@@ -24,10 +24,7 @@ describe Metasploit::Credential::Origin::Import do
   end
 
   context 'factories' do
-    before(:each) do
-      # TODO remove Rex usage from Mdm as it is not a declared dependency
-      Mdm::Workspace.any_instance.stub(:valid_ip_or_range?).and_return(true)
-    end
+    include_context 'Mdm::Workspace'
 
     subject(:metasploit_credential_origin_import) do
       FactoryGirl.build(:metasploit_credential_origin_import)
