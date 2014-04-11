@@ -6,7 +6,8 @@ describe Metasploit::Credential::SSHKey do
   #
 
   let(:key_size) do
-    2048
+    # key size tuned for speed.  DO NOT use for production, it is below current recommended key size of 2048
+    512
   end
 
   context 'factories' do
@@ -413,14 +414,6 @@ describe Metasploit::Credential::SSHKey do
             it { should be_private }
           end
         end
-      end
-
-      #
-      # lets
-      #
-
-      let(:key_size) do
-        2048
       end
 
       it_should_behave_like 'key type', 'DSA'

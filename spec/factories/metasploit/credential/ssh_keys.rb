@@ -3,7 +3,8 @@ FactoryGirl.define do
           class: Metasploit::Credential::SSHKey do
     ignore do
       key_type { generate :metasploit_credential_ssh_key_key_type }
-      key_size { 2048 }
+      # key size tuned for speed.  DO NOT use for production, it is below current recommended key size of 2048
+      key_size { 512 }
     end
 
     data {
