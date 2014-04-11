@@ -1,5 +1,8 @@
 # Origin of `Metasploit::Credential::Core`s that were gathered by a {#post_reference_name post module} used on a
-# {#session}.
+# {#session}.  Contrast with a {Metasploit::Credential::Origin::Service}, which is for
+# {Metasploit::Credential::Origin::Service#module_full_name auxiliary or exploit modules} that gather credentials
+# directly from a {Metasploit::Credential::Origin::Service#service service} without the need for a separate post module
+# or even a session.
 class Metasploit::Credential::Origin::Session < ActiveRecord::Base
   #
   # Associations

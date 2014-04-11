@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140411142102) do
+ActiveRecord::Schema.define(:version => 20140411205325) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -183,6 +183,15 @@ ActiveRecord::Schema.define(:version => 20140411142102) do
   end
 
   add_index "metasploit_credential_origin_manuals", ["user_id"], :name => "index_metasploit_credential_origin_manuals_on_user_id"
+
+  create_table "metasploit_credential_origin_services", :force => true do |t|
+    t.integer  "service_id",       :null => false
+    t.text     "module_full_name", :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "metasploit_credential_origin_services", ["service_id", "module_full_name"], :name => "unique_metasploit_credential_origin_services", :unique => true
 
   create_table "metasploit_credential_origin_sessions", :force => true do |t|
     t.text     "post_reference_name", :null => false
