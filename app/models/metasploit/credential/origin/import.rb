@@ -1,6 +1,18 @@
 # An origin for credentials that were imported by a {#task} from a {#filename file}.
 class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #
+  # Associations
+  #
+
+  # @!attribute task
+  #   The task that did the import.
+  #
+  #   @return [Mdm::Task]
+  #   @todo Add `inverse_of: :import_credential_origins` when metasploit-concern is available to patch `Mdm::Task`.
+  belongs_to :task,
+             class_name: 'Mdm::Task'
+
+  #
   # Attribute
   #
 
@@ -20,17 +32,6 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #
   #   @return [DateTime]
 
-  #
-  # Associations
-  #
-
-  # @!attribute task
-  #   The task that did the import.
-  #
-  #   @return [Mdm::Task]
-  #   @todo Add `inverse_of: :import_credential_origins` when metasploit-concern is available to patch `Mdm::Task`.
-  belongs_to :task,
-             class_name: 'Mdm::Task'
 
   #
   # Mass Assignment Security
