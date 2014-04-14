@@ -26,6 +26,7 @@ module Metasploit
   module Credential
     extend ActiveSupport::Autoload
 
+    autoload :EntityRelationshipDiagram
     autoload :Origin
 
   end

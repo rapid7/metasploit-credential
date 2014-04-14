@@ -1,1 +1,3 @@
+--asset docs/images:images
 --markup markdown
+--template-path yard/templates
