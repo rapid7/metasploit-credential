@@ -1,0 +1,8 @@
+<h2>Entity-Relationship Diagram</h2>
+
+<figure>
+  <img src="<%= url_for_file("images/#{object.title.underscore}.erd.png") %>" alt="<%= object.title %> Entity-Relationship Diagram">
+  <figcaption>
+    The cluster found by tracing <code>belongs_to</code> associations from <code>ActiveRecord::Base</code> descendants under the <code><%= object.title %></code> namespace.
+  </figcaption>
+</figure>
