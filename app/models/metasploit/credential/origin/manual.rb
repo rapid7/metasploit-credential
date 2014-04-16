@@ -1,8 +1,17 @@
-# Origin of credentials that are manually entered by a {#user}.
+# Origin of {#cores core credentials} that are manually entered by a {#user}.
 class Metasploit::Credential::Origin::Manual < ActiveRecord::Base
   #
   # Associations
   #
+
+  # @!attribute cores
+  #   {Metasploit::Credential::Core Core credentials} that were entered by the {#user}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           as: :origin,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy
 
   # @!attribute user
   #   The user that manually enters the credentials.

@@ -6,6 +6,21 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   autoload :Key
 
   #
+  # Associations
+  #
+
+  # @!attribute cores
+  #   The {Metasploit::Credential::Core core credentials} that combine this realm with
+  #   {Metasploit::Credential::Private private credentials} and/or {Metasploit::Credential::Public public credentials}
+  #   gathered from the realm or used to authenticated to the realm.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy,
+           inverse_of: :realm
+
+  #
   # Attributes
   #
 

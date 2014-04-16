@@ -8,8 +8,18 @@ class Metasploit::Credential::Origin::Session < ActiveRecord::Base
   # Associations
   #
 
+  # @!attribute cores
+  #   {Metasploit::Credential::Core Core credentials} imported from {#session} using
+  #   {#post_reference_name the post module}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           as: :origin,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy
+
   # @!attribute session
-  #   The session on which {#post_reference_name the post module} was run to gather the `Metasploit::Credential::Core`s.
+  #   The session on which {#post_reference_name the post module} was run to gather the {#cores core credentials}.
   #
   #   @return [Mdm::Session]
   #   @todo Add `inverse_of: :credential_origins` when metasploit-concern is availabe to add association to `Mdm::Session`.

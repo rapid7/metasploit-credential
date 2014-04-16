@@ -1,6 +1,20 @@
 # A publicly disclosed credential, i.e. a {#username}.
 class Metasploit::Credential::Public < ActiveRecord::Base
   #
+  # Associations
+  #
+
+  # @!attribute cores
+  #   The {Metasploit::Credential::Core core credentials} that combine this public credential with its derived
+  #   {Metasploit::Credential::Private private credential} and/or {Metasploit::Credential::Realm realm}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy,
+           inverse_of: :public
+
+  #
   # Attributes
   #
 

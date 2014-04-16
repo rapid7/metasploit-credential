@@ -4,6 +4,20 @@
 # Uses Single Table Inheritance to store subclass name in {#type} per Rails convention.
 class Metasploit::Credential::Private < ActiveRecord::Base
   #
+  # Associations
+  #
+
+  # @!attribute cores
+  #   The {Metasploit::Credential::Core core credentials} that combine this private credential with its
+  #   {Metasploit::Credential::Public public credential} and/or {Metasploit::Credential::Realm realm}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy,
+           inverse_of: :private
+
+  #
   # Attributes
   #
 

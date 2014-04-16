@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140411205325) do
+ActiveRecord::Schema.define(:version => 20140414192550) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -166,6 +166,23 @@ ActiveRecord::Schema.define(:version => 20140411205325) do
     t.binary   "actions"
     t.binary   "prefs"
   end
+
+  create_table "metasploit_credential_cores", :force => true do |t|
+    t.integer  "origin_id",    :null => false
+    t.string   "origin_type",  :null => false
+    t.integer  "private_id"
+    t.integer  "public_id"
+    t.integer  "realm_id"
+    t.integer  "workspace_id", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "metasploit_credential_cores", ["origin_type", "origin_id"], :name => "index_metasploit_credential_cores_on_origin_type_and_origin_id"
+  add_index "metasploit_credential_cores", ["private_id"], :name => "index_metasploit_credential_cores_on_private_id"
+  add_index "metasploit_credential_cores", ["public_id"], :name => "index_metasploit_credential_cores_on_public_id"
+  add_index "metasploit_credential_cores", ["realm_id"], :name => "index_metasploit_credential_cores_on_realm_id"
+  add_index "metasploit_credential_cores", ["workspace_id"], :name => "index_metasploit_credential_cores_on_workspace_id"
 
   create_table "metasploit_credential_origin_imports", :force => true do |t|
     t.text     "filename",   :null => false

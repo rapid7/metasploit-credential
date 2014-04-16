@@ -17,8 +17,18 @@ class Metasploit::Credential::Origin::Service < ActiveRecord::Base
   # Associations
   #
 
+  # @!attribute cores
+  #   {Metasploit::Credential::Core Core credentials} imported from {#service} using
+  #   {#module_full_name the auxiliary or exploit module}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           as: :origin,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy
+
   # @!attribute service
-  #   The service from which the `Metasploit::Credential::Core`s were gathered.
+  #   The service from which the {#cores core credentials} were gathered.
   #
   #   @return [Mdm::Service]
   #   @todo Add `inverse_of :credential_origins` when metasploit-concern is available to patch `Mdm::Service`

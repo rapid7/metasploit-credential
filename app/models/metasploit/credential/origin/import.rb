@@ -1,8 +1,17 @@
-# An origin for credentials that were imported by a {#task} from a {#filename file}.
+# An origin for {#cores core credentials} that were imported by a {#task} from a {#filename file}.
 class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #
   # Associations
   #
+
+  # @!attribute cores
+  #   {Metasploit::Credential::Core Core credentials} imported from {#filename}.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
+  has_many :cores,
+           as: :origin,
+           class_name: 'Metasploit::Credential::Core',
+           dependent: :destroy
 
   # @!attribute task
   #   The task that did the import.
@@ -22,7 +31,7 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #   @return [DateTime]
 
   # @!attribute filename
-  #   The `File.basename` of the file from which the `Metasploit::Credential::Core`s were imported.  Because only a
+  #   The `File.basename` of the file from which the {#cores core credentials} were imported.  Because only a
   #   basename is available, a {#filename} may be used more than once for the same {#task}.
   #
   #   @return [String]
