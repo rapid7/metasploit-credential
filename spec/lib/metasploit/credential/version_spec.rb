@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Version do
-  branch = `git rev-parse --abbrev-ref HEAD`
-
   context 'CONSTANTS' do
     context 'MAJOR' do
       subject(:major) do
@@ -30,26 +28,41 @@ describe Metasploit::Credential::Version do
       it { should be_a Integer }
     end
 
-    context 'PREPRELEASE' do
-      subject(:prerelease) do
-        described_class::PRERELEASE
-      end
+    pull_request = ENV['TRAVIS_PULL_REQUEST']
 
-      if branch == 'master'
-        it 'does not have a PRERELEASE' do
-          expect(defined? described_class::PRERELEASE).to be_nil
+    # a pull request cannot check PRERELEASE because it will be tested in the target branch, but the source itself
+    # is from the source branch and so has the source branch PRERELEASE.
+    #
+    # PRERELEASE can only be set appropriately for a merge by merging to the target branch and then updating PRERELEASE
+    # on the target branch before committing and/or pushing to github and travis-ci.
+    if pull_request.nil? || pull_request == 'false'
+      context 'PREPRELEASE' do
+        subject(:prerelease) do
+          described_class::PRERELEASE
         end
-      else
-        feature_regex = /(feature|staging)\/(?<prerelease>.*)/
-        match = branch.match(feature_regex)
 
-        if match
-          it 'matches the branch relative name' do
-            expect(prerelease).to eq(match[:prerelease])
+        branch = ENV['TRAVIS_BRANCH']
+
+        if branch.blank?
+          branch = `git rev-parse --abbrev-ref HEAD`.strip
+        end
+
+        if branch == 'master'
+          it 'does not have a PRERELEASE' do
+            expect(defined? described_class::PRERELEASE).to be_nil
           end
         else
-          it 'has a abbreviated reference that can be parsed for prerelease' do
-            fail "Do not know how to parse #{branch.inspect} for PRERELEASE"
+          feature_regex = /(feature|staging)\/(?<prerelease>.*)/
+          match = branch.match(feature_regex)
+
+          if match
+            it 'matches the branch relative name' do
+              expect(prerelease).to eq(match[:prerelease])
+            end
+          else
+            it 'has a abbreviated reference that can be parsed for prerelease' do
+              fail "Do not know how to parse #{branch.inspect} for PRERELEASE"
+            end
           end
         end
       end
