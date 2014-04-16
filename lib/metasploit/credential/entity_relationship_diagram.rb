@@ -71,17 +71,22 @@ module Metasploit::Credential::EntityRelationshipDiagram
       reflections = klass.reflect_on_all_associations(:belongs_to)
 
       reflections.each do |reflection|
-        target_klass = reflection.klass
+        if reflection.options[:polymorphic]
+          target_klasses = polymorphic_classes(reflection)
+        else
+          target_klasses = [reflection.klass]
+        end
 
-        unless visited_class_set.include? target_klass
-          class_queue << target_klass
+        target_klasses.each do |target_klass|
+          unless visited_class_set.include? target_klass
+            class_queue << target_klass
+          end
         end
       end
     end
 
     visited_class_set
   end
-
 
   # Creates Graphviz diagram.
   #
@@ -143,5 +148,24 @@ module Metasploit::Credential::EntityRelationshipDiagram
     end
 
     maximal_clusters
+  end
+
+  # Calculates the target classes for a polymorphic `belongs_to`.
+  #
+  # @return [Array<ActiveRecord::Base>]
+  def self.polymorphic_classes(belongs_to_reflection)
+    name = belongs_to_reflection.name
+
+    ActiveRecord::Base.descendants.each_with_object([]) { |descendant, target_classes|
+      has_many_reflections = descendant.reflect_on_all_associations(:has_many)
+
+      has_many_reflections.each do |has_many_reflection|
+        as = has_many_reflection.options[:as]
+
+        if as == name
+          target_classes << descendant
+        end
+      end
+    }
   end
 end
