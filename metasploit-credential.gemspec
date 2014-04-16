@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
 
   # Various Metasploit::Credential records have associations to Mdm records
   s.add_runtime_dependency 'metasploit_data_models', '~> 0.17.0'
-  # Metasploit::Credential::NTLMHash helper methods
-  s.add_runtime_dependency 'rubyntlm'
   # Metasploit::Credential::SSHKey validation and helper methods
   s.add_runtime_dependency 'net-ssh'
+  # Metasploit::Credential::NTLMHash helper methods
+  s.add_runtime_dependency 'rubyntlm'
 end
