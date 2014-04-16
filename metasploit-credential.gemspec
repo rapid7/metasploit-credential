@@ -16,12 +16,6 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
-  # documentation
-  # 0.8.7.4 has a bug where setters are not documented when @!attribute is used
-  s.add_development_dependency 'yard', '< 0.8.7.4'
-  # markdown formatting for yard
-  s.add_development_dependency 'redcarpet'
-
   s.add_development_dependency 'pg'
 
   # Various Metasploit::Credential records have associations to Mdm records
