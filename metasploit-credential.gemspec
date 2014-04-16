@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pg'
 
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '~> 0.16.9'
+  s.add_runtime_dependency 'metasploit_data_models', '~> 0.17.0'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Metasploit::Credential::SSHKey validation and helper methods
