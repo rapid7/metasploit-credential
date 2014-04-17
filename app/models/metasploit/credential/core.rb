@@ -55,9 +55,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #   credentials.
   #
   #   @return [Mdm::Workspace]
-  #   @todo Add `inverse_of :core_credentials` when metasploit-concern is available to patch `Mdm::Workspace`
   belongs_to :workspace,
-             class_name: 'Mdm::Workspace'
+             class_name: 'Mdm::Workspace',
+             inverse_of: :core_credentials
 
   #
   # Attributes

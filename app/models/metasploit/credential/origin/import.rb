@@ -17,9 +17,9 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #   The task that did the import.
   #
   #   @return [Mdm::Task]
-  #   @todo Add `inverse_of: :import_credential_origins` when metasploit-concern is available to patch `Mdm::Task`.
   belongs_to :task,
-             class_name: 'Mdm::Task'
+             class_name: 'Mdm::Task',
+             inverse_of: :import_credential_origins
 
   #
   # Attribute

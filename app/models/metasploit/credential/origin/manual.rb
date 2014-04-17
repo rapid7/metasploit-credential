@@ -17,9 +17,9 @@ class Metasploit::Credential::Origin::Manual < ActiveRecord::Base
   #   The user that manually enters the credentials.
   #
   #   @return [Mdm::User]
-  #   @todo Add `inverse_of: :manual_credential_origins` when metasploit-concern is available to patch `Mdm::User`
   belongs_to :user,
-             class_name: 'Mdm::User'
+             class_name: 'Mdm::User',
+             inverse_of: :credential_origins
 
   #
   # Attribute

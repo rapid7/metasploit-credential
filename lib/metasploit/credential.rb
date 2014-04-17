@@ -7,6 +7,7 @@
 #
 #
 
+require 'metasploit/concern'
 require 'metasploit_data_models'
 
 #

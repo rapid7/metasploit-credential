@@ -17,6 +17,8 @@ else
           g.test_framework :rspec, fixture: false
         end
 
+        config.paths.add 'app/concerns', autoload: true
+
         initializer 'metasploit_credential.prepend_factory_path', after: 'factory_girl.set_factory_paths' do
           if defined? FactoryGirl
             relative_definition_file_path = config.generators.options[:factory_girl][:dir]

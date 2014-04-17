@@ -31,9 +31,9 @@ class Metasploit::Credential::Origin::Service < ActiveRecord::Base
   #   The service from which the {#cores core credentials} were gathered.
   #
   #   @return [Mdm::Service]
-  #   @todo Add `inverse_of :credential_origins` when metasploit-concern is available to patch `Mdm::Service`
   belongs_to :service,
-             class_name: 'Mdm::Service'
+             class_name: 'Mdm::Service',
+             inverse_of: :credential_origins
 
   #
   # Attributes
