@@ -8,6 +8,7 @@ describe Metasploit::Credential::Core do
   end
 
   context 'associations' do
+    it { should have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
     it { should belong_to(:origin) }
     it { should belong_to(:private).class_name('Metasploit::Credential::Private') }
     it { should belong_to(:public).class_name('Metasploit::Credential::Public') }
@@ -44,7 +45,6 @@ describe Metasploit::Credential::Core do
   end
 
   context 'factories' do
-
     context 'metasploit_credential_core' do
       subject(:metasploit_credential_core) do
         FactoryGirl.build(:metasploit_credential_core)
@@ -89,6 +89,14 @@ describe Metasploit::Credential::Core do
           end
 
           it { should be_valid }
+
+          context '#origin' do
+            subject(:origin) do
+              metasploit_credential_core.origin
+            end
+
+            it { should be_a Metasploit::Credential::Origin::Manual }
+          end
 
           context '#workspace' do
             subject(:workspace) do

@@ -8,6 +8,15 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Associations
   #
 
+  # @!attribute logins
+  #   The {Metasploit::Credential::Login logins} using this core credential to log into a service.
+  #
+  #   @return [ActiveRecord::Relation<Metasploit::Credential::Login>]
+  has_many :logins,
+           class_name: 'Metasploit::Credential::Login',
+           dependent: :destroy,
+           inverse_of: :core
+
   # @!attribute origin
   #   The origin of this core credential.
   #

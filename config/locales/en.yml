@@ -11,6 +11,13 @@ en:
               origin_session_host_workspace: "does not match origin's session's host's workspace.  This could cause a cross-workspace credential disclosure."
               origin_task_workspace: "does not match origin's task's workspace.  This could cause a cross-workspace credential disclosure."
               origin_user_workspaces: "does not have a workspace that origin's user can access.  This could cause a cross-workspace credential disclosure."
+        metasploit/credential/login:
+          attributes:
+            base:
+              inconsistent_workspaces: "has inconsistent workspaces between the core credential and the service's host.  This could cause a cross-workspace credential disclosure."
+            last_attempted_at:
+              tried: "can't be nil if status is tried."
+              untried: "can't be set if status is untried."
         metasploit/credential/ntlm_hash:
           attributes:
             data:

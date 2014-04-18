@@ -1,7 +1,10 @@
-# Canonical {Metasploit::Credential::Realm#key  Metasploit::Credential::Realm#keys}.  If a key is used more than once,
-# then it should be added as a constant on this `Module` and that constant should be used in place of a bare `String`
-# as it ensure consistent key spelling and capitalization and allows for easier locating usage and refactoring in the
-# future.
+# Canonical {Metasploit::Credential::Realm#key  Metasploit::Credential::Realm#keys}.
+#
+# {Metasploit::Credential::Realm#key} is restricted to values in {ALL}, so new valid values need to be added to this
+# module:
+#
+# 1. Add a String constant where the constant name is in SCREAMING_SNAKE_CASE and the String in Title Case.
+# 2. Add the new constant to {ALL}.
 module Metasploit::Credential::Realm::Key
   #
   # CONSTANTS
@@ -21,7 +24,7 @@ module Metasploit::Credential::Realm::Key
   # database and does not allow authenticating to just a server (which would be an `Mdm::Service`).
   POSTGRESQL_DATABASE = 'PostgreSQL Database'
 
-  # All key constants
+  # All values that are valid for {Metasploit::Credential::Realm#key}.
   ALL = [
       ACTIVE_DIRECTORY_DOMAIN,
       ORACLE_SYSTEM_IDENTIFIER,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140414192550) do
+ActiveRecord::Schema.define(:version => 20140417140933) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(:version => 20140414192550) do
 
   create_table "hosts", :force => true do |t|
     t.datetime "created_at"
-    t.string   "address",               :limit => nil,                  :null => false
+    t.string   "address",                                               :null => false
     t.string   "mac"
     t.string   "comm"
     t.string   "name"
@@ -183,6 +183,19 @@ ActiveRecord::Schema.define(:version => 20140414192550) do
   add_index "metasploit_credential_cores", ["public_id"], :name => "index_metasploit_credential_cores_on_public_id"
   add_index "metasploit_credential_cores", ["realm_id"], :name => "index_metasploit_credential_cores_on_realm_id"
   add_index "metasploit_credential_cores", ["workspace_id"], :name => "index_metasploit_credential_cores_on_workspace_id"
+
+  create_table "metasploit_credential_logins", :force => true do |t|
+    t.integer  "core_id",           :null => false
+    t.integer  "service_id",        :null => false
+    t.string   "access_level"
+    t.string   "status",            :null => false
+    t.datetime "last_attempted_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "metasploit_credential_logins", ["core_id", "service_id"], :name => "index_metasploit_credential_logins_on_core_id_and_service_id", :unique => true
+  add_index "metasploit_credential_logins", ["service_id", "core_id"], :name => "index_metasploit_credential_logins_on_service_id_and_core_id", :unique => true
 
   create_table "metasploit_credential_origin_imports", :force => true do |t|
     t.text     "filename",   :null => false
@@ -644,7 +657,7 @@ ActiveRecord::Schema.define(:version => 20140414192550) do
 
   create_table "wmap_requests", :force => true do |t|
     t.string   "host"
-    t.string   "address",    :limit => nil
+    t.string   "address"
     t.integer  "port"
     t.integer  "ssl"
     t.string   "meth",       :limit => 32
@@ -661,7 +674,7 @@ ActiveRecord::Schema.define(:version => 20140414192550) do
 
   create_table "wmap_targets", :force => true do |t|
     t.string   "host"
-    t.string   "address",    :limit => nil
+    t.string   "address"
     t.integer  "port"
     t.integer  "ssl"
     t.integer  "selected"
