@@ -14,7 +14,11 @@ FactoryGirl.define do
 
     association :core, factory: :metasploit_credential_core
 
-    last_attempted_at { DateTime.now.utc }
+    last_attempted_at {
+      unless status == Metasploit::Credential::Login::Status::UNTRIED
+        DateTime.now.utc
+      end
+    }
     service {
       FactoryGirl.build(
           :mdm_service,

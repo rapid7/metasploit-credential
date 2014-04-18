@@ -90,6 +90,63 @@ describe Metasploit::Credential::Login do
       end
 
       it { should be_valid }
+
+      context '#status' do
+        subject(:metasploit_credential_login) do
+          FactoryGirl.build(
+              :metasploit_credential_login,
+              status: status
+          )
+        end
+
+        context 'with Metasploit::Credential::Login::Status::DENIED_ACCESS' do
+          let(:status) do
+            described_class::Status::DENIED_ACCESS
+          end
+
+          it { should be_valid }
+        end
+
+        context 'with Metasploit::Credential::Login::Status::DISABLED' do
+          let(:status) do
+            described_class::Status::DISABLED
+          end
+
+          it { should be_valid }
+        end
+
+        context 'with Metasploit::Credential::Login::Status::LOCKED_OUT' do
+          let(:status) do
+            described_class::Status::LOCKED_OUT
+          end
+
+          it { should be_valid }
+        end
+
+        context 'with Metasploit::Credential::Login::Status::SUCCESSFUL' do
+          let(:status) do
+            described_class::Status::SUCCESSFUL
+          end
+
+          it { should be_valid }
+        end
+
+        context 'with Metasploit::Credential::Login::Status::UNABLE_TO_CONNECT' do
+          let(:status) do
+            described_class::Status::UNABLE_TO_CONNECT
+          end
+
+          it { should be_valid }
+        end
+
+        context 'with Metasploit::Credential::Login::Status::UNTRIED' do
+          let(:status) do
+            described_class::Status::UNTRIED
+          end
+
+          it { should be_valid }
+        end
+      end
     end
   end
 
