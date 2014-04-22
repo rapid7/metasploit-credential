@@ -21,8 +21,8 @@ coverage
 
 # YARD
 .yardoc
-doc
-docs/images
+doc/
+!doc/graffles
 
 # rvm files should not be checked in as multiple rubies are supported in the CI builds
 .ruby-gemset

@@ -70,19 +70,19 @@ end
 
 def generate_entity_relationship_diagram
   asset_path_without_extension = File.join('images', "#{object.title.underscore}.erd")
-  docs_pathname_without_extension = Metasploit::Credential::Engine.root.join('docs', asset_path_without_extension)
-  docs_pathname_without_extension.parent.mkpath
+  doc_pathname_without_extension = Metasploit::Credential::Engine.root.join('doc', asset_path_without_extension)
+  doc_pathname_without_extension.parent.mkpath
 
   Metasploit::Credential::EntityRelationshipDiagram.create(
       domain: domain,
-      filename: docs_pathname_without_extension.to_path,
+      filename: doc_pathname_without_extension.to_path,
       filetype: :png,
       title: "#{object.title} Entity-Relation Diagram"
   )
 
   extension = '.png'
-  docs_path = "#{docs_pathname_without_extension}#{extension}"
-  content = File.read docs_path
+  doc_path = "#{doc_pathname_without_extension}#{extension}"
+  content = File.read doc_path
   asset_path = "#{asset_path_without_extension}#{extension}"
   asset(asset_path, content)
 end
