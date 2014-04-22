@@ -9,6 +9,8 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   # @!attribute data
   #   A private SSH key file's content including the `-----BEGIN <type> PRIVATE KEY-----` header and
   #   `-----END <type> PRIVATE KEY-----` footer with everything in between.
+  #
+  #   @return [String]
 
   #
   #
