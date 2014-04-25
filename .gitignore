@@ -1,21 +1,38 @@
-.bundle/
-.idea/
-Gemfile.lock
-log/*.log
-pkg/
-spec/dummy/.sass-cache
-spec/dummy/config/database.yml
-spec/dummy/db/*.sqlite3
-spec/dummy/log/*.log
-spec/dummy/tmp/
+# Bundler 
+/.bundle/
 
-# gem build
+# OS X thumbnails
+.DS_Store
+
+# Rubymine
+/.idea
+
+# @see http://yehudakatz.com/2010/12/16/clarifying-the-roles-of-the-gemspec-and-gemfile/
+/Gemfile.lock
+
+/log/*.log
+
+# built gems
+/pkg/
 *.gem
 
+# simplecov
+/coverage
+
 # YARD
-.yardoc
-doc
+/.yardoc
+/doc/
+!/doc/graffles
 
 # rvm files should not be checked in as multiple rubies are supported in the CI builds
 .ruby-gemset
 .ruby-version
+
+# dummy application temporary files
+/spec/dummy/.sass-cache
+/spec/dummy/config/database.yml
+/spec/dummy/db/*.sqlite3
+/spec/dummy/log/*.log
+/spec/dummy/tmp/
+
+

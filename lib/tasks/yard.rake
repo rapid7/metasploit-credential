@@ -12,6 +12,9 @@ if defined? YARD
       }
     end
 
+    # need environment so that yard templates can load ActiveRecord::Base subclasses for Entity-Relationship Diagrams
+    task :doc => :environment
+
     desc "Shows stats for YARD Documentation including listing undocumented modules, classes, constants, and methods"
     task :stats => :environment do
       stats = YARD::CLI::Stats.new

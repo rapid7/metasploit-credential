@@ -10,16 +10,21 @@ Gem::Specification.new do |s|
   s.authors     = ['Luke Imhoff']
   s.email       = ['luke_imhoff@rapid7.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
+  s.license     = 'BSD-3-clause'
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
   s.description = 'The Metasploit::Credential namespace and its ActiveRecord::Base subclasses'
 
-  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.md']
+  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
-  # documentation
-  s.add_development_dependency 'yard'
-  # markdown formatting for yard
-  s.add_development_dependency 'redcarpet'
-
   s.add_development_dependency 'pg'
+
+  # patching inverse association in Mdm models.
+  s.add_runtime_dependency 'metasploit-concern', '~> 0.0.2'
+  # Various Metasploit::Credential records have associations to Mdm records
+  s.add_runtime_dependency 'metasploit_data_models', '~> 0.17.0'
+  # Metasploit::Credential::SSHKey validation and helper methods
+  s.add_runtime_dependency 'net-ssh'
+  # Metasploit::Credential::NTLMHash helper methods
+  s.add_runtime_dependency 'rubyntlm'
 end
