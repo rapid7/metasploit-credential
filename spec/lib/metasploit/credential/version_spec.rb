@@ -52,8 +52,8 @@ describe Metasploit::Credential::Version do
             expect(defined? described_class::PRERELEASE).to be_nil
           end
         else
-          feature_regex = /(feature|staging)\/(?<prerelease>.*)/
-          match = branch.match(feature_regex)
+          branch_regex = /\A(bug|feature|staging)\/(?<prerelease>.*)\z/
+          match = branch.match(branch_regex)
 
           if match
             it 'matches the branch relative name' do
