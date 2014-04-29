@@ -5,6 +5,11 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+# This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
+# instead of this gem.
+# Metasploit::Credential::SSHKey validation and helper methods
+gem 'net-ssh'
+
 group :development do
   # markdown formatting for yard
   gem 'kramdown', platforms: :jruby
