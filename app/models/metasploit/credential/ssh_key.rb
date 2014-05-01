@@ -76,7 +76,16 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
       filename = "#{self.class}#data"
       passphrase = nil
 
-      Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
+      # TODO Update MSF net-ssh to support this parameter.
+      # Handle ask_passphrase parameter added in net-ssh 2.3.0 for specs
+      # and also support MSF's older, patched version:
+      pre_23_netssh = Gem::Version.new(Net::SSH::Version::CURRENT) < Gem::Version.new('2.3.0')
+
+      if pre_23_netssh
+        Net::SSH::KeyFactory.load_data_private_key(data, passphrase, filename)
+      else
+        Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
+      end
     end
   end
 
