@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Private do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'database' do
     context 'columns' do
       it_should_behave_like 'single table inheritance database columns'
