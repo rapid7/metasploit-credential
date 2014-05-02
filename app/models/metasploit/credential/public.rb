@@ -47,5 +47,5 @@ class Metasploit::Credential::Public < ActiveRecord::Base
             presence: true,
             uniqueness: true
 
-  ActiveSupport.run_load_hooks(:metasploit_credential_public, self)
+  Metasploit::Concern.run(self)
 end

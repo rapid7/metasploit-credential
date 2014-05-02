@@ -10,4 +10,6 @@ class Metasploit::Credential::Password < Metasploit::Credential::Private
   #   A user enterable, plain-text password.
   #
   #   @return [String]
+
+  Metasploit::Concern.run(self)
 end

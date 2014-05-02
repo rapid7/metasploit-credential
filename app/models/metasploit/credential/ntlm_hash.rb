@@ -115,4 +115,8 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
       errors.add(:data, :format)
     end
   end
+
+  public
+
+  Metasploit::Concern.run(self)
 end

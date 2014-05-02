@@ -68,4 +68,6 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
             uniqueness: {
                 scope: :key
             }
+
+  Metasploit::Concern.run(self)
 end

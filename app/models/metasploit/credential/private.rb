@@ -63,4 +63,6 @@ class Metasploit::Credential::Private < ActiveRecord::Base
             uniqueness: {
                 scope: :type
             }
+
+  Metasploit::Concern.run(self)
 end

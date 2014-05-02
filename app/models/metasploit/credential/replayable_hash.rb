@@ -9,4 +9,6 @@ class Metasploit::Credential::ReplayableHash < Metasploit::Credential::PasswordH
   #   to a service.
   #
   #   @return [String]
+
+  Metasploit::Concern.run(self)
 end

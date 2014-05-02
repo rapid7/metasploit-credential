@@ -41,4 +41,6 @@ class Metasploit::Credential::Origin::Manual < ActiveRecord::Base
 
   validates :user,
             presence: true
+
+  Metasploit::Concern.run(self)
 end
