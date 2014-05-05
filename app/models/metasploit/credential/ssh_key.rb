@@ -121,4 +121,6 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
       errors.add(:data, :encrypted)
     end
   end
+
+  Metasploit::Concern.run(self)
 end

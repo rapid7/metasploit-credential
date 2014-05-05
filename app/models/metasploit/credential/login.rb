@@ -148,4 +148,8 @@ class Metasploit::Credential::Login < ActiveRecord::Base
       errors.add(:base, :inconsistent_workspaces)
     end
   end
+
+  public
+
+  Metasploit::Concern.run(self)
 end

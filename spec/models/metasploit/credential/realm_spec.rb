@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Realm do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'database' do
     context 'columns' do
       it { should have_db_column(:key).of_type(:string).with_options(null: false) }

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::PasswordHash do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   it { should be_a Metasploit::Credential::Private }
 
   context 'factories' do

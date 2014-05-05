@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Login do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'associations' do
     it { should belong_to(:core).class_name('Metasploit::Credential::Core') }
     it { should belong_to(:service).class_name('Mdm::Service')}

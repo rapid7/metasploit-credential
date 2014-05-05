@@ -64,4 +64,6 @@ class Metasploit::Credential::Origin::Service < ActiveRecord::Base
             }
   validates :service,
             presence: true
+
+  Metasploit::Concern.run(self)
 end
