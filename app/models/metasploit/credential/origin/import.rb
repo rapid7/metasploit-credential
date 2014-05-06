@@ -56,4 +56,6 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
             presence: true
   validates :task,
             presence: true
+
+  Metasploit::Concern.run(self)
 end

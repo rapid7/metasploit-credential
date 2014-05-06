@@ -159,4 +159,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
       errors.add(:base, :minimum_presence)
     end
   end
+
+  public
+
+  Metasploit::Concern.run(self)
 end

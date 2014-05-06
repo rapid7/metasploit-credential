@@ -7,6 +7,8 @@ describe Metasploit::Credential::Core do
     described_class.new
   end
 
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'associations' do
     it { should have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
     it { should belong_to(:origin) }

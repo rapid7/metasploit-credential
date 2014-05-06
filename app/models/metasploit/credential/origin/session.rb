@@ -53,4 +53,6 @@ class Metasploit::Credential::Origin::Session < ActiveRecord::Base
             }
   validates :session,
             presence: true
+
+  Metasploit::Concern.run(self)
 end

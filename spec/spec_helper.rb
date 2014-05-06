@@ -14,9 +14,21 @@ require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 
+#
 # Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[Metasploit::Credential::Engine.root.join("spec/support/**/*.rb")].each { |f| require f }
+# in spec/support/ and its subdirectories from this gem and metasploit-concern
+#
+
+rooteds = [
+    Metasploit::Concern,
+    Metasploit::Credential::Engine
+]
+
+rooteds.each do |rooted|
+  Dir[rooted.root.join('spec', 'support', '**', '*.rb')].each do |f|
+    require f
+  end
+end
 
 RSpec.configure do |config|
   # ## Mock Framework
