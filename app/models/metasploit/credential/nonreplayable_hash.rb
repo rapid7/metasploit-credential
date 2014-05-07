@@ -10,4 +10,6 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
   #   Password hash that cannot be replayable for authenticating to other services.
   #
   #   @return [String]
+
+  Metasploit::Concern.run(self)
 end

@@ -47,21 +47,25 @@ describe Metasploit::Credential::Version do
           branch = `git rev-parse --abbrev-ref HEAD`.strip
         end
 
-        if branch == 'master'
-          it 'does not have a PRERELEASE' do
-            expect(defined? described_class::PRERELEASE).to be_nil
-          end
-        else
-          branch_regex = /\A(bug|feature|staging)\/(?<prerelease>.*)\z/
-          match = branch.match(branch_regex)
-
-          if match
-            it 'matches the branch relative name' do
-              expect(prerelease).to eq(match[:prerelease])
+        # can't check PRERELEASE in  detached HEAD state (when you do `git checkout SHA`) because then the commit isn't
+        # isn't associated with a branch anymore.
+        unless branch == 'HEAD'
+          if branch == 'master'
+            it 'does not have a PRERELEASE' do
+              expect(defined? described_class::PRERELEASE).to be_nil
             end
           else
-            it 'has a abbreviated reference that can be parsed for prerelease' do
-              fail "Do not know how to parse #{branch.inspect} for PRERELEASE"
+            branch_regex = /\A(bug|feature|staging)\/(?<prerelease>.*)\z/
+            match = branch.match(branch_regex)
+
+            if match
+              it 'matches the branch relative name' do
+                expect(prerelease).to eq(match[:prerelease])
+              end
+            else
+              it 'has a abbreviated reference that can be parsed for prerelease' do
+                fail "Do not know how to parse #{branch.inspect} for PRERELEASE"
+              end
             end
           end
         end

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Origin::Session do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'associations' do
     it { should have_many(:cores).class_name('Metasploit::Credential::Core').dependent(:destroy) }
     it { should belong_to(:session).class_name('Mdm::Session') }

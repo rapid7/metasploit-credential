@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Public do
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'database' do
     context 'columns' do
       it_should_behave_like 'timestamp database columns'

@@ -7,6 +7,8 @@ describe Metasploit::Credential::Origin::Service do
     FactoryGirl.build(:metasploit_credential_origin_service)
   end
 
+  it_should_behave_like 'Metasploit::Concern.run'
+
   context 'associations' do
     it { should have_many(:cores).class_name('Metasploit::Credential::Core').dependent(:destroy) }
     it { should belong_to(:service).class_name('Mdm::Service') }
