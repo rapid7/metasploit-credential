@@ -7,6 +7,11 @@ class Metasploit::Credential::Importer::CSV::Base
   # Attributes
   #
 
+  # @!attribute csv_object
+  #   The {CSV} instance created from {#data}
+  #   @return [CSV]
+  attr_reader :csv_object
+
   # @!attribute data
   #   An {IO} that holds the CSV data. {File} in normal usage, {StringIO} in testing
   #   @return [IO]
@@ -17,27 +22,43 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   validate :header_format_and_csv_wellformedness
 
+  #
+  # Instance Methods
+  #
+
+  def csv_object
+    @csv_object ||= CSV.new(data, headers:true)
+  end
+
+  # (overridden in subclasses)
+  # Parse the {#csv_object} and create new data model objects
+  # @return[void]
+  def import!
+    raise NotImplementedError, "this method must be defined in the subclas"
+  end
+
   private
 
-  # Invalid if CSV is malformed or headers are not in compliance.
+  # Invalid if CSV is malformed, headers are not in compliance, or CSV contains no data
   #
   # @return [void]
   # TODO: add new i18n stuff for the error strings below
   def header_format_and_csv_wellformedness
     begin
-      file = CSV.new(data)
-      if file.present?
-        first_row = file.first
+      if csv_object.present?
+        first_row = csv_object.first
         if first_row.present?
-          header_symbols = first_row.map do |row|
-            if row.present? then row.to_sym else :blank end
+          if first_row.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
+            return true
+          else
+            errors.add(:data, :incorrect_csv_headers)
           end
-          return header_symbols == self.class.const_get(:VALID_CSV_HEADERS)
         end
-        errors.add(:file_path, :incorrect_public_private_csv_headers)
+      else
+        errors.add(:data, :empty_csv)
       end
     rescue
-      errors.add(:file_path, :malformed_csv)
+      errors.add(:data, :malformed_csv)
     end
   end
 
