@@ -28,7 +28,7 @@ module Metasploit
     extend ActiveSupport::Autoload
 
     autoload :EntityRelationshipDiagram
+    autoload :Importer
     autoload :Origin
-
   end
 end

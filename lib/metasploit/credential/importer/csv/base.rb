@@ -1,5 +1,16 @@
+# Provides common behavior that is used in CSV-based imports for credentials.
+require 'csv'
 class Metasploit::Credential::Importer::CSV::Base
   include Metasploit::Credential::Importer::Base
+
+  #
+  # Attributes
+  #
+
+  # @!attribute data
+  #   An {IO} that holds the CSV data. {File} in normal usage, {StringIO} in testing
+  #   @return [IO]
+  attr_accessor :data
 
   #
   # Method Validations
@@ -12,9 +23,9 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   # @return [void]
   # TODO: add new i18n stuff for the error strings below
-  def header_format_and_csv_well_formedness
+  def header_format_and_csv_wellformedness
     begin
-      file = Core.open(file_path, encoding: "ISO8859-1:UTF-8")
+      file = CSV.new(data)
       if file.present?
         first_row = file.first
         if first_row.present?

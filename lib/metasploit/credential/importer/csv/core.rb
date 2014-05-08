@@ -4,7 +4,7 @@
 # Successful import will also create a {Metasploit::Credential::Origin::Import}
 #
 
-class Metasploit::Credential::Importer::Core < Metasploit::Credential::Importer::CSV::Base
+class Metasploit::Credential::Importer::CSV::Core < Metasploit::Credential::Importer::CSV::Base
 
   #
   # CONSTANTS
