@@ -4,6 +4,20 @@ module Metasploit
       module Base
         extend ActiveSupport::Concern
 
+        #
+        # Constants
+        #
+
+        # Whitelist of the {Metasploit::Credential::Private} subclass names allowed
+        # in importers.  Used to designate the names of classes that can be exported
+        # and are therefore allowed in imports.
+        ALLOWED_PRIVATE_TYPE_NAMES = [
+                                      Metasploit::Credential::NonreplayableHash,
+                                      Metasploit::Credential::NTLMHash,
+                                      Metasploit::Credential::Password,
+                                      Metasploit::Credential::SSHKey].map(&:name)
+
+
         included do
           include ActiveModel::Validations
         end

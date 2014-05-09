@@ -17,6 +17,12 @@ class Metasploit::Credential::Importer::CSV::Base
   #   @return [IO]
   attr_accessor :data
 
+  # @!attribute private_credential_type
+  #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
+  #   {Metasploit::Credential::Private} objects created during the import.
+  #   @return[String]
+  attr_accessor :private_credential_type
+
   #
   # Method Validations
   #
@@ -27,7 +33,7 @@ class Metasploit::Credential::Importer::CSV::Base
   #
 
   def csv_object
-    @csv_object ||= CSV.new(data, headers:true)
+    @csv_object ||= CSV.new(data, headers:true, return_headers: true)
   end
 
   # (overridden in subclasses)
@@ -43,21 +49,25 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   # @return [void]
   # TODO: add new i18n stuff for the error strings below
+  # TODO: only rescue the malformed CSV exception here
   def header_format_and_csv_wellformedness
     begin
       if csv_object.present?
-        first_row = csv_object.first
-        if first_row.present?
-          if first_row.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
+        if csv_object.header_row?
+          csv_headers = csv_object.first.fields
+          if csv_headers.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
+            csv_object.rewind
             return true
           else
             errors.add(:data, :incorrect_csv_headers)
           end
+        else
+          fail "CSV has already been accessed past index 0"
         end
       else
         errors.add(:data, :empty_csv)
       end
-    rescue
+    rescue ::CSV::MalformedCSVError
       errors.add(:data, :malformed_csv)
     end
   end
