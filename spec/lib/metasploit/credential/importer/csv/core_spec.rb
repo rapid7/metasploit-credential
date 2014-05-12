@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Importer::CSV::Core do
+  include_context 'Mdm::Workspace'
 
   subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer_well_formed_compliant)}
 
@@ -91,14 +92,31 @@ describe Metasploit::Credential::Importer::CSV::Core do
 
     context "realm" do
       context "when it is already in the DB" do
+        # Contains 2 unique Realms
+        let(:stored_realm_row){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first }
 
+        before(:each) do
+          Metasploit::Credential::Realm.create(key: stored_realm_row['realm_key'],
+                                               value: stored_realm_row['realm_value'])
+        end
+
+        it 'should create only Realms that do not exist in the DB' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Realm, :count).from(1).to(2)
+        end
       end
 
       context "when it is not in the DB" do
+        it 'should create only Realms that do not exist in the DB' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Realm, :count).from(0).to(2)
+        end
+      end
+    end
 
+    context "core" do
+      it 'should create a Core object for each row in the DB' do
+        expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Core, :count).from(0).to(3)
       end
     end
   end
-
 
 end

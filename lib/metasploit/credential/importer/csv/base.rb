@@ -17,6 +17,12 @@ class Metasploit::Credential::Importer::CSV::Base
   #   @return [IO]
   attr_accessor :data
 
+  # @!attribute origin_import
+  #   An {Metasploit::Credential::Origin::Import} that represents the discrete
+  #   importation of this set of credential objects
+  #   @return [Metasploit::Credential::Origin::Import]
+  attr_accessor :origin_import
+
   # @!attribute private_credential_type
   #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
   #   {Metasploit::Credential::Private} objects created during the import.
@@ -36,8 +42,8 @@ class Metasploit::Credential::Importer::CSV::Base
     @csv_object ||= CSV.new(data, headers:true, return_headers: true)
   end
 
-  # (overridden in subclasses)
-  # Parse the {#csv_object} and create new data model objects
+  # Parse the {#csv_object} and create new data model objects (overridden in subclasses)
+  #
   # @return[void]
   def import!
     raise NotImplementedError, "this method must be defined in the subclas"
