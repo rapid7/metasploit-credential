@@ -63,7 +63,7 @@ class Metasploit::Credential::Importer::CSV::Base
           csv_headers = csv_object.first.fields
           if csv_headers.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
             csv_object.rewind
-            return true
+            true
           else
             errors.add(:data, :incorrect_csv_headers)
           end

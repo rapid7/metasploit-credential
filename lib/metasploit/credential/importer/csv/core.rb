@@ -13,11 +13,6 @@ class Metasploit::Credential::Importer::CSV::Core < Metasploit::Credential::Impo
   VALID_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value]
 
   #
-  # Attributes
-  #
-
-
-  #
   # Instance Methods
   #
 
