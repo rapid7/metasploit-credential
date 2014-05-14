@@ -14,6 +14,8 @@ class Metasploit::Credential::Importer::Zip
   # {Metasploit::Credential::Importer::CSV::Manifest}
   MANIFEST_FILE_NAME = "manifest.csv"
 
+  ZIP_DIRECTORY_PREFIX = "ssh_key_archive"
+
   #
   # Attributes
   #

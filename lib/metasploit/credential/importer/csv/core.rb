@@ -16,9 +16,10 @@ class Metasploit::Credential::Importer::CSV::Core < Metasploit::Credential::Impo
   # Instance Methods
   #
 
-  # Perform the import from the data in {#csv_object}, allowing the import to have different private types per row,
-  # and attempting to reduce database lookups by storing found or created {Metasploit::Credential::Realm} objects
-  # in a lookup Hash that gets updated with every new Realm found, and then consulted in analysis of subsequent rows.
+  # Performs a pretty naive import from the data in {#csv_object}, allowing the import to have different private types
+  # per row, and attempting to reduce database lookups by storing found or created {Metasploit::Credential::Realm}
+  # objects in a lookup Hash that gets updated with every new Realm found, and then consulted in analysis of subsequent
+  # rows.
   #
   # @return [void]
   def import!
