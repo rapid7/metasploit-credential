@@ -12,11 +12,6 @@ class Metasploit::Credential::Importer::CSV::Base
   #   @return [CSV]
   attr_reader :csv_object
 
-  # @!attribute data
-  #   An {IO} that holds the CSV data. {File} in normal usage, {StringIO} in testing
-  #   @return [IO]
-  attr_accessor :data
-
   # @!attribute origin_import
   #   An {Metasploit::Credential::Origin::Import} that represents the discrete
   #   importation of this set of credential objects

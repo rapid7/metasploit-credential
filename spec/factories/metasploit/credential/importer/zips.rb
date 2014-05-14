@@ -7,7 +7,7 @@ FactoryGirl.define do
   # Create a zip with keys and manifest
   #
   sequence :metasploit_credential_importer_zip_file do |n|
-    path = "#{Rails.root}/tmp/#{Metasploit::Credential::Importer::Zip::ZIP_DIRECTORY_PREFIX}-#{Time.now.to_i}-#{n}"
+    path = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}-#{Time.now.to_i}-#{n}"
     FileUtils.mkdir_p(path)
 
     # Create keys
@@ -30,7 +30,7 @@ FactoryGirl.define do
     end
 
     # write out manifest CSV into the zip directory
-    CSV.open("#{path}/#{Metasploit::Credential::Importer::CSV::Manifest::MANIFEST_FILE_NAME}", 'wb') do |csv|
+    CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
       csv << Metasploit::Credential::Importer::CSV::Manifest::VALID_CSV_HEADERS
       csv_hash.keys.each do |key|
         csv << [key, key]
@@ -45,6 +45,8 @@ FactoryGirl.define do
         zipfile.add(entry, path + '/' + entry)
       end
     end
+
+    File.open(zip_location, 'rb')
   end
 end
 

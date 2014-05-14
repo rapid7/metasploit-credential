@@ -1,4 +1,3 @@
-require 'zip'
 
 # Allows importation of a zip file of a specially structured directory containing a file called
 # +manifest.csv+ (conforming to {Metasploit::Credential::Importer::CSV::Manifest}) and a collection
@@ -14,7 +13,8 @@ class Metasploit::Credential::Importer::Zip
   # {Metasploit::Credential::Importer::CSV::Manifest}
   MANIFEST_FILE_NAME = "manifest.csv"
 
-  ZIP_DIRECTORY_PREFIX = "ssh_key_archive"
+  # An argument to {Dir::mktmpdir}
+  TEMP_UNZIP_PATH_PREFIX = "metasploit-imports"
 
   #
   # Attributes
@@ -60,7 +60,7 @@ class Metasploit::Credential::Importer::Zip
   # @return [void]
   def zip_file_is_archive
     begin
-      Zip.open zip_file.path
+      Zip::File.open zip_file.path
       true
     rescue Zip::Error
       errors.add(:zip_file, :malformed_archive)
@@ -71,7 +71,7 @@ class Metasploit::Credential::Importer::Zip
   #
   # @return [void]
   def zip_contains_manifest
-    Zip.open zip_file.path do |archive|
+    Zip::File.open zip_file.path do |archive|
       manifest_file = archive.glob(MANIFEST_FILE_NAME).first
       if manifest_file.present?
         true

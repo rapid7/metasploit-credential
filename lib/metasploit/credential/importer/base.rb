@@ -20,6 +20,11 @@ module Metasploit
 
         included do
           include ActiveModel::Validations
+
+          # @!attribute data
+          #   An {IO} that holds the CSV data. {File} in normal usage, {StringIO} in testing
+          #   @return [IO]
+          attr_accessor :data
         end
 
           #
