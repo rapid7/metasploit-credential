@@ -6,7 +6,7 @@ describe Metasploit::Credential::Importer::Multi do
 
 
   after(:all) do
-    tmp_path = Dir.glob("#{Dir.tmpdir}/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}*").first
+    tmp_path = Dir.glob(TEMP_PATH_GLOB).first
     FileUtils.rm_rf(tmp_path)
   end
 
