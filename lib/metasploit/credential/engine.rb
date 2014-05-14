@@ -18,6 +18,7 @@ else
         end
 
         config.paths.add 'app/concerns', autoload: true
+        config.paths.add 'lib', autoload: true
 
         initializer 'metasploit_credential.prepend_factory_path', after: 'factory_girl.set_factory_paths' do
           if defined? FactoryGirl
