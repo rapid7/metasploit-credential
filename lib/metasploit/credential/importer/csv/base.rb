@@ -12,17 +12,14 @@ class Metasploit::Credential::Importer::CSV::Base
   #   @return [CSV]
   attr_reader :csv_object
 
-  # @!attribute origin_import
-  #   An {Metasploit::Credential::Origin::Import} that represents the discrete
-  #   importation of this set of credential objects
-  #   @return [Metasploit::Credential::Origin::Import]
-  attr_accessor :origin_import
+
 
   # @!attribute private_credential_type
   #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
   #   {Metasploit::Credential::Private} objects created during the import.
   #   @return[String]
   attr_accessor :private_credential_type
+
 
   #
   # Method Validations
@@ -32,6 +29,25 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   # Instance Methods
   #
+
+
+  # Creates a {Metasploit::Credential::Core} object from the data in a CSV row
+  # @param [Hash] args
+  # @option args [Metasploit::Credential::Public] :public the public cred to associate
+  # @option args [Metasploit::Credential::Private] :private the private cred to associate
+  # @option args [Metasploit::Credential::Realm] :realm the realm to associate
+  #
+  # @return [Boolean]
+  def create_core(args={})
+    core           = Metasploit::Credential::Core.new
+    core.workspace = workspace
+    core.origin    = origin
+    core.private   = args.fetch(:private)
+    core.public    = args.fetch(:public)
+    core.realm     = args.fetch(:realm) if args[:realm].present?
+
+    core.save!
+  end
 
   def csv_object
     @csv_object ||= CSV.new(data, headers:true, return_headers: true)

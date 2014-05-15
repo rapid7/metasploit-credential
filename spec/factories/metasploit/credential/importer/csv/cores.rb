@@ -2,13 +2,14 @@ FactoryGirl.define do
   factory :metasploit_credential_core_importer_well_formed_compliant,
           class: Metasploit::Credential::Importer::CSV::Core do
 
-    origin_import {FactoryGirl.build :metasploit_credential_origin_import }
+    origin {FactoryGirl.build :metasploit_credential_origin_import }
     data { generate(:well_formed_csv_io_compliant_header)}
   end
 
   factory :metasploit_credential_core_importer_well_formed_non_compliant,
           class: Metasploit::Credential::Importer::CSV::Core do
 
+    origin {FactoryGirl.build :metasploit_credential_origin_import }
     data { generate(:well_formed_csv_io_non_compliant_header)}
   end
 

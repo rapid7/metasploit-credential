@@ -39,14 +39,7 @@ class Metasploit::Credential::Importer::CSV::Core < Metasploit::Credential::Impo
       public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
       private_object_for_row = private_class.where(data: row['private_data']).first_or_create
 
-      # Create the final Core object with the new/old objects gathered above
-      core = Metasploit::Credential::Core.new
-      core.workspace = origin_import.task.workspace
-      core.private   = private_object_for_row
-      core.public    = public_object_for_row
-      core.realm     = realm_object_for_row
-      core.origin    = origin_import
-      core.save!
+      create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
     end
   end
 

@@ -10,14 +10,11 @@ class Metasploit::Credential::Importer::CSV::Manifest < Metasploit::Credential::
     csv_object.each do |row|
       next if row.header_row?
 
-      ssh_key_data = keydata_from_file(row['ssh_key_file_name'])
+      ssh_key_data = key_data_from_file(row['ssh_key_file_name'])
       public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
-      private_object_for_row = Metasploit::Credential::SSHKey.where(data: ssh_key_data)
+      private_object_for_row = Metasploit::Credential::SSHKey.where(data: ssh_key_data).first_or_create
 
-      new_core         = Metasploit::Credential::Core.new
-      new_core.public  = public_object_for_row
-      new_core.private = private_object_for_row
-      new_core.save!
+      create_core(public: public_object_for_row, private: private_object_for_row)
     end
   end
 

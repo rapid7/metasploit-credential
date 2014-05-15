@@ -20,6 +20,12 @@ class Metasploit::Credential::Importer::Zip
   # Attributes
   #
 
+  # @!attribute manifest_importer
+  #   The importer for the zip's manifest file
+  #
+  #   @return [Metasploit::Credential::Importer::CSV::Manifest]
+  attr_accessor :manifest_importer
+
   # @!attribute zip_file
   #   The zip file
   #
@@ -30,7 +36,7 @@ class Metasploit::Credential::Importer::Zip
   # Validations
   #
 
-  validate :zip_file_is_well_formed, :zip_contains_manifest
+  validate :zip_file_is_well_formed
 
   #
   # Instance Methods
@@ -43,41 +49,36 @@ class Metasploit::Credential::Importer::Zip
   #
   # @return [void]
   def import!
-    # do the unzip
-    #
-    csv_data = nil
-    Zip.open(zip_file.path) do |archive|
-      # csv_data = archive.glob(MANIFEST_FILE_NAME).first
-      # fins the file above and extract it, setting csv_data to the resultant {File} object
-      # extract all the files in the zip to a tmp directory (platform-specific!)
-    end
-    Metasploit::Credential::Importer::CSV::Manifest.new(data: csv_data).import!
+    ::Zip::File.open(zip_file.path)
+    csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
+    csv_data = File.open(csv_path)
+    Metasploit::Credential::Importer::CSV::Manifest.new(data: csv_data, origin: origin).import!
+  end
+
+  def extracted_zip_path
+    full_path     = Pathname.new zip_file
+    path_fragment = full_path.dirname.to_s
+    zip_dir_name  = full_path.basename(".*").to_s
+    path_fragment + '/' + zip_dir_name
   end
 
 
-  # Validates that the zip file can be opened by the rubyzip gem
+  # Validates that the zip file contains a file called +manifest.csv+ and that it
+  # can be handled with the {::Zip::File::open} method.
   #
   # @return [void]
-  def zip_file_is_archive
+  def zip_file_is_well_formed
     begin
-      Zip::File.open zip_file.path
-      true
-    rescue Zip::Error
-      errors.add(:zip_file, :malformed_archive)
-    end
-  end
-
-  # Validates that the zip file contains a file called +manifest.csv+
-  #
-  # @return [void]
-  def zip_contains_manifest
-    Zip::File.open zip_file.path do |archive|
-      manifest_file = archive.glob(MANIFEST_FILE_NAME).first
-      if manifest_file.present?
-        true
-      else
-        errors.add(:zip_file, :missing_manifest)
+      Zip::File.open zip_file.path do |archive|
+        manifest_file = archive.glob(MANIFEST_FILE_NAME).first
+        if manifest_file.present?
+          true
+        else
+          errors.add(:zip_file, :missing_manifest)
+        end
       end
+    rescue ::Zip::Error
+      errors.add(:zip_file, :malformed_archive)
     end
   end
 

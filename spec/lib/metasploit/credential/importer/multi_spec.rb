@@ -4,10 +4,10 @@ describe Metasploit::Credential::Importer::Multi do
   TEMP_PATH_GLOB   = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}*"
   UNSUPPORTED_FILE = "bad.txt"
 
-
   after(:all) do
-    tmp_path = Dir.glob(TEMP_PATH_GLOB).first
-    FileUtils.rm_rf(tmp_path)
+    Dir.glob(TEMP_PATH_GLOB).each do |file_type|
+      FileUtils.rm_rf(file_type)
+    end
   end
 
   describe "validation" do
