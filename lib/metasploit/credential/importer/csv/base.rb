@@ -49,6 +49,9 @@ class Metasploit::Credential::Importer::CSV::Base
     core.save!
   end
 
+  # An instance of {CSV} from whence cometh the sweet sweet credential data
+  #
+  # @return [CSV]
   def csv_object
     @csv_object ||= CSV.new(data, headers:true, return_headers: true)
   end
@@ -57,7 +60,7 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   # @return[void]
   def import!
-    raise NotImplementedError, "this method must be defined in the subclas"
+    raise NotImplementedError, "this method must be defined in the subclass"
   end
 
   private
@@ -66,7 +69,6 @@ class Metasploit::Credential::Importer::CSV::Base
   #
   # @return [void]
   # TODO: add new i18n stuff for the error strings below
-  # TODO: only rescue the malformed CSV exception here
   def header_format_and_csv_wellformedness
     begin
       if csv_object.present?
