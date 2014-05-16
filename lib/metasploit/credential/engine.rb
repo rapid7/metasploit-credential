@@ -29,12 +29,12 @@ else
             FactoryGirl.definition_file_paths.unshift definition_file_path
           end
         end
-
-        def self.table_name_prefix
-          'metasploit_credential_'
-        end
-
       end
+
+      def self.table_name_prefix
+        'metasploit_credential_'
+      end
+
     end
   end
 end
