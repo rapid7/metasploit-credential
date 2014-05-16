@@ -30,7 +30,6 @@ else
           end
         end
 
-        isolate_namespace(Metasploit::Credential)
       end
     end
   end
