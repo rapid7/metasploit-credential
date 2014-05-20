@@ -28,6 +28,7 @@ module Metasploit
     extend ActiveSupport::Autoload
 
     autoload :EntityRelationshipDiagram
+    autoload :Importer
     autoload :Origin
 
     def self.table_name_prefix
@@ -36,3 +37,4 @@ module Metasploit
 
   end
 end
+

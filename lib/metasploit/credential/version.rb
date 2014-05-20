@@ -7,9 +7,9 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 1
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 2
+      PATCH = 4
       # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
-      PRERELEASE = 'metasploit-credential'
+      PRERELEASE = 'electro-release'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.

@@ -242,7 +242,13 @@ describe Metasploit::Credential::SSHKey do
             end
 
             let(:data) do
-              unencrypted_key.to_pem(cipher, password)
+              begin
+                unencrypted_key.to_pem(cipher, password)
+              # TODO This error is occasionally thrown, unsure of cause:
+              rescue OpenSSL::PKey::RSAError, OpenSSL::PKey::DSAError => e
+                puts "#{key_type} key error encountered (cipher: #{cipher.name}, password: #{password.inspect}): #{e.backtrace}"
+                raise e
+              end
             end
 
             let(:password) do
