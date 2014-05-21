@@ -1,5 +1,8 @@
 en:
   activerecord:
+    models:
+      metasploit/credential/ntlm_hash: "NTLM hash"
+      metasploit/credential/ssh_key: "SSH key"
     errors:
       models:
         metasploit/credential/core:
