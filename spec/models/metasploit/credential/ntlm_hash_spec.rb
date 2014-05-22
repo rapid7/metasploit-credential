@@ -346,4 +346,10 @@ describe Metasploit::Credential::NTLMHash do
       nt_lan_manager_hex_digest_from_password_data
     end
   end
+
+  context 'human name' do
+    it 'properly determines the model\'s human name' do
+      expect(Metasploit::Credential::NTLMHash.model_name.human).to eq('NTLM hash')
+    end
+  end
 end
