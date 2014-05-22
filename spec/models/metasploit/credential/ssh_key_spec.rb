@@ -436,4 +436,10 @@ describe Metasploit::Credential::SSHKey do
       it { should_not be_private }
     end
   end
+
+  context 'human name' do
+    it 'properly determines the model\'s human name' do
+      expect(Metasploit::Credential::SSHKey.model_name.human).to eq('SSH key')
+    end
+  end
 end
