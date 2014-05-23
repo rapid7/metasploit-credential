@@ -15,6 +15,9 @@ module Metasploit::Credential::Realm::Key
   # @see https://en.wikipedia.org/wiki/Active_Directory
   ACTIVE_DIRECTORY_DOMAIN = 'Active Directory Domain'
 
+  # A DB2 database name. Like PostgreSQL, DB2 requires a database to authenticate to.
+  DB2_DATABASE = 'DB2 Database'
+
   # A System Identifier for an Oracle Database.
   #
   # @see http://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT89037
@@ -27,6 +30,7 @@ module Metasploit::Credential::Realm::Key
   # All values that are valid for {Metasploit::Credential::Realm#key}.
   ALL = [
       ACTIVE_DIRECTORY_DOMAIN,
+      DB2_DATABASE,
       ORACLE_SYSTEM_IDENTIFIER,
       POSTGRESQL_DATABASE
   ]
