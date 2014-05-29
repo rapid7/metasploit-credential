@@ -109,11 +109,21 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
 
   # Finds Cores that have successfully logged into a given host
+  #
+  # @method login_host_id
+  # @scope Metasploit::Credential::Core
+  # @param host_id [Integer] the host to look for
+  # @return [ActiveRecord::Relation]] scoped to that host
   scope :login_host_id, lambda { |host_id|
     joins(logins: { service: :host }).where(Mdm::Host.arel_table[:id].eq(host_id))
   }
 
   # Adds a JOIN for origins of a specific type
+  #
+  # @method origins
+  # @scope Metasploit::Credential::Core
+  # @param origin_class [ActiveRecord::Base] the Origin class to look up
+  # @return [ActiveRecord::Relation] scoped to that origin
   scope :origins, lambda { |origin_class|
     core_table   = Metasploit::Credential::Core.arel_table
     origin_table = origin_class.arel_table
@@ -123,7 +133,31 @@ class Metasploit::Credential::Core < ActiveRecord::Base
       .joins(origin_joins.join_sources)
   }
 
+  # Finds Cores that have an origin_type of Service and are attached to the given host
+  #
+  # @method origin_service_host_id
+  # @scope Metasploit::Credential::Core
+  # @param host_id [Integer] the host to look up
+  # @return [ActiveRecord::Relation] scoped to that host
+  scope :origin_service_host_id, lambda { |host_id|
+    services_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
+  }
+
+  # Finds Cores that have an origin_type of Session that were collected from the given host
+  #
+  # @method origin_session_host_id
+  # @scope Metasploit::Credential::Core
+  # @param host_id [Integer] the host to look up
+  # @return [ActiveRecord::Relation] scoped to that host
+  scope :origin_session_host_id, lambda { |host_id|
+    sessions_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
+  }
+
   # Adds a JOIN for the Service and Host that a Core with an Origin type of Service would have
+  #
+  # @method services_hosts
+  # @scope Metasploit::Credential::Core
+  # @return [ActiveRecord::Relation] with a JOIN on origin: services: hosts
   scope :services_hosts, lambda {
     core_table    = Metasploit::Credential::Core.arel_table
     service_table = Mdm::Service.arel_table
@@ -137,6 +171,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   }
 
   # Adds a JOIN for the Session and Host that a Core with an Origin type of Session would have
+  #
+  # @method sessions_hosts
+  # @scope Metasploit::Credential::Core
+  # @return [ActiveRecord::Relation] with a JOIN on origin: sessions: hosts
   scope :sessions_hosts, lambda {
     core_table    = Metasploit::Credential::Core.arel_table
     session_table = Mdm::Session.arel_table
@@ -149,17 +187,12 @@ class Metasploit::Credential::Core < ActiveRecord::Base
     )
   }
 
-  # Finds Cores that have an origin_type of Service and are attached to the given host
-  scope :origin_service_host_id, lambda { |host_id|
-    services_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
-  }
-
-  # Finds Cores that have an origin_type of Session that were collected from the given host
-  scope :origin_session_host_id, lambda { |host_id|
-    sessions_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
-  }
-
   # Finds Cores that are attached to a given workspace
+  #
+  # @method workspace_id
+  # @scope Metasploit::Credential::Core
+  # @param workspace_id [Integer] the workspace to look in
+  # @return [ActiveRecord::Relation] scoped to the workspace
   scope :workspace_id, lambda { |id| where(workspace_id: id) }
 
   #
