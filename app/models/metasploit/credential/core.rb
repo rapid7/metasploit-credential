@@ -110,17 +110,17 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   # Finds Cores that have successfully logged into a given host
   #
-  # @method login_host_id
+  # @method login_host_id(host_id)
   # @scope Metasploit::Credential::Core
   # @param host_id [Integer] the host to look for
-  # @return [ActiveRecord::Relation]] scoped to that host
+  # @return [ActiveRecord::Relation] scoped to that host
   scope :login_host_id, lambda { |host_id|
     joins(logins: { service: :host }).where(Mdm::Host.arel_table[:id].eq(host_id))
   }
 
-  # Adds a JOIN for origins of a specific type
+  # JOINs in origins of a specific type
   #
-  # @method origins
+  # @method origins(origin_class)
   # @scope Metasploit::Credential::Core
   # @param origin_class [ActiveRecord::Base] the Origin class to look up
   # @return [ActiveRecord::Relation] scoped to that origin
@@ -135,7 +135,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   # Finds Cores that have an origin_type of Service and are attached to the given host
   #
-  # @method origin_service_host_id
+  # @method origin_service_host_id(host_id)
   # @scope Metasploit::Credential::Core
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] scoped to that host
@@ -145,7 +145,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   # Finds Cores that have an origin_type of Session that were collected from the given host
   #
-  # @method origin_session_host_id
+  # @method origin_session_host_id(host_id)
   # @scope Metasploit::Credential::Core
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] scoped to that host
@@ -189,9 +189,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   # Finds Cores that are attached to a given workspace
   #
-  # @method workspace_id
+  # @method workspace_id(id)
   # @scope Metasploit::Credential::Core
-  # @param workspace_id [Integer] the workspace to look in
+  # @param id [Integer] the workspace to look in
   # @return [ActiveRecord::Relation] scoped to the workspace
   scope :workspace_id, lambda { |id| where(workspace_id: id) }
 
