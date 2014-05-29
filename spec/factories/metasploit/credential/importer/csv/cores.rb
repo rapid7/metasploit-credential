@@ -36,7 +36,7 @@ foo,{"""}
   end
 
   # We have a header row but nothing else
-  sequence :empty_csv do |n|
+  sequence :empty_core_csv do |n|
     csv_string =<<-eos
 username,private_type,private_data,realm_key,realm_value
     eos
