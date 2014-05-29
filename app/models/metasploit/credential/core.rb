@@ -105,6 +105,15 @@ class Metasploit::Credential::Core < ActiveRecord::Base
             presence: true
 
   #
+  # Scopes
+  #
+
+  scope :workspace_id, lambda { |id| where(workspace_id: id) }
+
+  scope :host_id, lambda { |id| join(logins: { service: :host }).where(Mdm::Host.arel_table[:id].eq(id)) }
+
+
+  #
   # Instance Methods
   #
 
