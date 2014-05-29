@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Metasploit::Credential::Importer::CSV::Core do
   include_context 'Mdm::Workspace'
 
-  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer_well_formed_compliant)}
+  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer)}
 
   # CSV objects are IOs
   after(:each) do
@@ -15,26 +15,68 @@ describe Metasploit::Credential::Importer::CSV::Core do
     describe "validations" do
       describe "with well-formed CSV data" do
         describe "with a compliant header" do
-          subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer_well_formed_compliant)}
-
           it { should be_valid }
         end
 
         describe "with a non-compliant header" do
-          subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer_well_formed_non_compliant)}
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.incorrect_csv_headers')
+          end
+
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
+          end
 
           it { should_not be_valid }
-          it 'should show the proper error message'
+
+          it 'should report the error being incorrect headers' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
         end
 
         describe "with a malformed CSV" do
-          it 'should not be valid'
-          it 'should show the proper error message'
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.malformed_csv')
+          end
+
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:malformed_csv)
+          end
+
+          it { should be_invalid }
+
+          it 'should report the error being malformed CSV' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
         end
 
         describe "with an empty CSV" do
-          it 'should not be valid'
-          it 'should show the proper error message'
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.empty_csv')
+          end
+
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:empty_csv)
+          end
+
+          it { should be_invalid }
+
+          it 'should show the proper error message' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
+        end
+
+        describe "when accesssing without rewind" do
+          before(:each) do
+            core_csv_importer.csv_object.gets
+          end
+
+          it 'should raise a runtime error when attempting to validate' do
+            expect{ core_csv_importer.valid? }.to raise_error(RuntimeError)
+          end
         end
       end
     end
