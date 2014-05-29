@@ -121,7 +121,6 @@ describe Metasploit::Credential::Core do
 
     context '.origin_session_host_id' do
       let(:query) { described_class.origin_session_host_id(host_id) }
-      let(:workspace) { FactoryGirl.create(:mdm_workspace) }
 
       subject(:metasploit_credential_core) do
         FactoryGirl.create(:metasploit_credential_core_session)
