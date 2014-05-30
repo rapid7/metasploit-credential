@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Importer::Multi do
+  # Using POSIX filepath here b/c we don't care about RSpec on Windows
   TEMP_PATH_GLOB   = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}*"
   UNSUPPORTED_FILE = "bad.txt"
 

@@ -68,23 +68,23 @@ class Metasploit::Credential::Importer::CSV::Base
   # Invalid if CSV is malformed, headers are not in compliance, or CSV contains no data
   #
   # @return [void]
-  # TODO: add new i18n stuff for the error strings below
   def header_format_and_csv_wellformedness
     begin
-      if csv_object.present?
-        if csv_object.header_row?
-          csv_headers = csv_object.first.fields
-          if csv_headers.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
+      if csv_object.header_row?
+        csv_headers = csv_object.first.fields
+        if csv_headers.map(&:to_sym) == self.class.const_get(:VALID_CSV_HEADERS)
+          next_row = csv_object.gets
+          if next_row.present?
             csv_object.rewind
             true
           else
-            errors.add(:data, :incorrect_csv_headers)
+            errors.add(:data, :empty_csv)
           end
         else
-          fail "CSV has already been accessed past index 0"
+          errors.add(:data, :incorrect_csv_headers)
         end
       else
-        errors.add(:data, :empty_csv)
+        fail "CSV has already been accessed past index 0"
       end
     rescue ::CSV::MalformedCSVError
       errors.add(:data, :malformed_csv)
