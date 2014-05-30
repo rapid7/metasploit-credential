@@ -130,7 +130,7 @@ module Metasploit
         status             = opts.fetch(:status)
 
         service_object = create_credential_service(opts)
-        login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_create
+        login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
 
         login_object.access_level      = access_level if access_level
         login_object.last_attempted_at = last_attempted_at if last_attempted_at
@@ -189,9 +189,7 @@ module Metasploit
         task_id  = opts.fetch(:task_id)
         filename = opts.fetch(:filename)
 
-        origin_object = Metasploit::Credential::Origin::Import.where(filename: filename, task_id: task_id).first_or_create
-        origin_object.save!
-        origin_object
+        Metasploit::Credential::Origin::Import.where(filename: filename, task_id: task_id).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.
@@ -204,9 +202,7 @@ module Metasploit
         return nil unless active_db?
         user_id = opts.fetch(:user_id)
 
-        origin_object = Metasploit::Credential::Origin::Manual.where(user_id: user_id).first_or_create
-        origin_object.save!
-        origin_object
+        Metasploit::Credential::Origin::Manual.where(user_id: user_id).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Service} objects.
@@ -227,9 +223,7 @@ module Metasploit
 
         service_object = create_credential_service(opts)
 
-        origin_object = Metasploit::Credential::Origin::Service.where(service_id: service_object.id, module_full_name: module_fullname).first_or_create
-        origin_object.save!
-        origin_object
+        Metasploit::Credential::Origin::Service.where(service_id: service_object.id, module_full_name: module_fullname).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Session} objects.
@@ -244,9 +238,7 @@ module Metasploit
         session_id           = opts.fetch(:session_id)
         post_reference_name  = opts.fetch(:post_reference_name)
 
-        origin_object = Metasploit::Credential::Origin::Session.where(session_id: session_id, post_reference_name: post_reference_name).first_or_create
-        origin_object.save!
-        origin_object
+        Metasploit::Credential::Origin::Session.where(session_id: session_id, post_reference_name: post_reference_name).first_or_create
       end
 
       # This method is responsible for the creation of {Metasploit::Credential::Private} objects.
@@ -278,7 +270,6 @@ module Metasploit
           else
             raise ArgumentError, "Invalid Private type: #{private_type}"
         end
-        private_object.save!
         private_object
       end
 
@@ -292,9 +283,7 @@ module Metasploit
         return nil unless active_db?
         username = opts.fetch(:username)
 
-        public_object = Metasploit::Credential::Public.where(username: username).first_or_create
-        public_object.save!
-        public_object
+        Metasploit::Credential::Public.where(username: username).first_or_create
       end
 
       # This method is responsible for creating the {Metasploit::Credential::Realm} objects
@@ -310,9 +299,7 @@ module Metasploit
         realm_key   = opts.fetch(:realm_key)
         realm_value = opts.fetch(:realm_value)
 
-        realm_object = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
-        realm_object.save!
-        realm_object
+        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
       end
 
 
@@ -338,10 +325,9 @@ module Metasploit
 
         # Find or create the host object we need
         host_object    = Mdm::Host.where(address: address, workspace_id: workspace_id).first_or_create
-        host_object.save!
 
         # Next we find or create the Service object we need
-        service_object = Mdm::Service.where(host_id: host_object.id, port: port, proto: protocol).first_or_create
+        service_object = Mdm::Service.where(host_id: host_object.id, port: port, proto: protocol).first_or_initialize
         service_object.name = service_name
         service_object.save!
         service_object
