@@ -1,0 +1,47 @@
+en:
+  activemodel:
+    models:
+      metasploit/credential/importer/csv/base: 'CSV'
+      metasploit/credential/importer/zip: 'Zip importer'
+    errors:
+      models:
+        metasploit/credential/importer/csv/base:
+          attributes:
+            data:
+              incorrect_csv_headers: "your CSV has incorrect headers for this import type"
+              empty_csv: "the supplied CSV file appears to contain no data"
+              malformed_csv: "the supplied file is malformed and can't be parsed as CSV"
+  activerecord:
+    models:
+      metasploit/credential/ntlm_hash: "NTLM hash"
+      metasploit/credential/ssh_key: "SSH key"
+    errors:
+      models:
+        metasploit/credential/core:
+          attributes:
+            base:
+              minimum_presence: "can't have private, public, and realm blank: at least one must be present."
+            workspace:
+              origin_service_host_workspace: "does not match origin's service's host's workspace.  This could cause a cross-workspace credential disclosure."
+              origin_session_host_workspace: "does not match origin's session's host's workspace.  This could cause a cross-workspace credential disclosure."
+              origin_task_workspace: "does not match origin's task's workspace.  This could cause a cross-workspace credential disclosure."
+              origin_user_workspaces: "does not have a workspace that origin's user can access.  This could cause a cross-workspace credential disclosure."
+        metasploit/credential/login:
+          attributes:
+            base:
+              inconsistent_workspaces: "has inconsistent workspaces between the core credential and the service's host.  This could cause a cross-workspace credential disclosure."
+            last_attempted_at:
+              tried: "can't be nil if status is tried."
+              untried: "can't be set if status is untried."
+        metasploit/credential/ntlm_hash:
+          attributes:
+            data:
+              format: "is not in the NTLMHash data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>, where each hex digest is 32 lowercase hexadecimal characters."
+        metasploit/credential/ssh_key:
+          attributes:
+            data:
+              encrypted: "is encrypted, but Metasploit::Credential::SSHKey only supports unencrypred private keys."
+              not_private: "is not a private key."
+  errors:
+    messages:
+      nil: "can't be nil, but it can be blank"
