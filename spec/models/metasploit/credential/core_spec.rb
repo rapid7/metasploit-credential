@@ -46,6 +46,105 @@ describe Metasploit::Credential::Core do
     end
   end
 
+  context 'scopes' do
+
+    context '.workspace_id' do
+      let(:query) { described_class.workspace_id(workspace_id) }
+
+      subject(:metasploit_credential_core) do
+        FactoryGirl.create(:metasploit_credential_core)
+      end
+
+      context 'when given a valid workspace id' do
+        let(:workspace_id) { metasploit_credential_core.workspace_id }
+
+        it 'returns the correct Core' do
+          expect(query).to eq [metasploit_credential_core]
+        end
+      end
+
+      context 'when given an invalid workspace id' do
+        let(:workspace_id) { -1 }
+
+        it 'returns an empty collection' do
+          expect(query).to be_empty
+        end
+      end
+    end
+
+    context '.login_host_id' do
+      let(:query) { described_class.login_host_id(host_id) }
+      let(:login) { FactoryGirl.create(:metasploit_credential_login) }
+      subject(:metasploit_credential_core) { login.core }
+
+      context 'when given a valid host id' do
+        let(:host_id) { metasploit_credential_core.logins.first.service.host.id }
+
+        it 'returns the correct Core' do
+          expect(query).to eq [metasploit_credential_core]
+        end
+      end
+
+      context 'when given an invalid host id' do
+        let(:host_id) { -1 }
+
+        it 'returns an empty collection' do
+          expect(query).to be_empty
+        end
+      end
+    end
+
+    context '.origin_service_host_id' do
+      let(:query) { described_class.origin_service_host_id(host_id) }
+      let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+
+      subject(:metasploit_credential_core) do
+        FactoryGirl.create(:metasploit_credential_core_service)
+      end
+
+      context 'when given a valid host id' do
+        let(:host_id) { metasploit_credential_core.origin.service.host.id }
+
+        it 'returns the correct Core' do
+          expect(query).to eq [metasploit_credential_core]
+        end
+      end
+
+      context 'when given an invalid host id' do
+        let(:host_id) { -1 }
+
+        it 'returns an empty collection' do
+          expect(query).to be_empty
+        end
+      end
+    end
+
+    context '.origin_session_host_id' do
+      let(:query) { described_class.origin_session_host_id(host_id) }
+
+      subject(:metasploit_credential_core) do
+        FactoryGirl.create(:metasploit_credential_core_session)
+      end
+
+      context 'when given a valid host id' do
+        let(:host_id) { metasploit_credential_core.origin.session.host.id }
+
+        it 'returns the correct Core' do
+          expect(query).to eq [metasploit_credential_core]
+        end
+      end
+
+      context 'when given an invalid host id' do
+        let(:host_id) { -1 }
+
+        it 'returns an empty collection' do
+          expect(query).to be_empty
+        end
+      end
+    end
+
+  end
+
   context 'factories' do
     context 'metasploit_credential_core' do
       subject(:metasploit_credential_core) do
