@@ -5,9 +5,9 @@ module Metasploit
       # The major version number.
       MAJOR = 0
       # The minor version number, scoped to the {MAJOR} version number.
-      MINOR = 1
+      MINOR = 2
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 2
+      PATCH = 0
       # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
       PRERELEASE = 'use-metasploit-concern-in-pro'
 
