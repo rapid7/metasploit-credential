@@ -14,7 +14,8 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #   @return [Metasploit::Credential::Core]
   belongs_to :core,
              class_name: 'Metasploit::Credential::Core',
-             inverse_of: :logins
+             inverse_of: :logins,
+             counter_cache: true
 
   # @!attribute service
   #   The service that either accepted the {#core core credential} as valid, invalid, or on which the

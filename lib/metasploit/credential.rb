@@ -28,7 +28,13 @@ module Metasploit
     extend ActiveSupport::Autoload
 
     autoload :EntityRelationshipDiagram
+    autoload :Importer
     autoload :Origin
+
+    def self.table_name_prefix
+      'metasploit_credential_'
+    end
 
   end
 end
+

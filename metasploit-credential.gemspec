@@ -7,8 +7,8 @@ require 'metasploit/credential/version'
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
   s.version     = Metasploit::Credential::VERSION
-  s.authors     = ['Luke Imhoff']
-  s.email       = ['luke_imhoff@rapid7.com']
+  s.authors     = ['Luke Imhoff', 'Trevor Rosen']
+  s.email       = ['luke_imhoff@rapid7.com', 'trevor_rosen@rapid7.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
   s.license     = 'BSD-3-clause'
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
@@ -26,4 +26,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'metasploit_data_models', '~> 0.17.0'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
+  # Required for supporting the en masse importation of SSH keys
+  s.add_development_dependency 'rubyzip'
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140417140933) do
+ActiveRecord::Schema.define(:version => 20140520140817) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(:version => 20140417140933) do
 
   create_table "hosts", :force => true do |t|
     t.datetime "created_at"
-    t.string   "address",                                               :null => false
+    t.string   "address",               :limit => nil,                  :null => false
     t.string   "mac"
     t.string   "comm"
     t.string   "name"
@@ -168,14 +168,15 @@ ActiveRecord::Schema.define(:version => 20140417140933) do
   end
 
   create_table "metasploit_credential_cores", :force => true do |t|
-    t.integer  "origin_id",    :null => false
-    t.string   "origin_type",  :null => false
+    t.integer  "origin_id",                   :null => false
+    t.string   "origin_type",                 :null => false
     t.integer  "private_id"
     t.integer  "public_id"
     t.integer  "realm_id"
-    t.integer  "workspace_id", :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.integer  "workspace_id",                :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+    t.integer  "logins_count", :default => 0
   end
 
   add_index "metasploit_credential_cores", ["origin_type", "origin_id"], :name => "index_metasploit_credential_cores_on_origin_type_and_origin_id"
@@ -657,7 +658,7 @@ ActiveRecord::Schema.define(:version => 20140417140933) do
 
   create_table "wmap_requests", :force => true do |t|
     t.string   "host"
-    t.string   "address"
+    t.string   "address",    :limit => nil
     t.integer  "port"
     t.integer  "ssl"
     t.string   "meth",       :limit => 32
@@ -674,7 +675,7 @@ ActiveRecord::Schema.define(:version => 20140417140933) do
 
   create_table "wmap_targets", :force => true do |t|
     t.string   "host"
-    t.string   "address"
+    t.string   "address",    :limit => nil
     t.integer  "port"
     t.integer  "ssl"
     t.integer  "selected"

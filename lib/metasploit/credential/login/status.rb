@@ -26,12 +26,15 @@ module Metasploit::Credential::Login::Status
   # CONSTANTS
   #
 
-  # When {Metasploit::Credential::Login#service} returns that access is defined to {Metasploit::Credential::Login#core}.
+  # When {Metasploit::Credential::Login#service} returns that access is denied to {Metasploit::Credential::Login#core}.
   DENIED_ACCESS = 'Denied Access'
 
   # When {Metasploit::Credential::Login#service} reports that {Metasploit::Credential::Login#core} are correct, but
   # the account is disabled.
   DISABLED = 'Disabled'
+
+  # When {Metasploit::Credential::Login#service} reports that {Metasploit::Credential::Login#core} are not correct.
+  INCORRECT = 'Incorrect'
 
   # When {Metasploit::Credential::Login#service} reports that account tied to {Metasploit::Credential::Login#core}
   # has had too many incorrect credentials attempted for authorization, so it is locked out to prevent bruteforce
@@ -52,6 +55,7 @@ module Metasploit::Credential::Login::Status
   ALL = [
     DENIED_ACCESS,
     DISABLED,
+    INCORRECT,
     LOCKED_OUT,
     SUCCESSFUL,
     UNABLE_TO_CONNECT,
