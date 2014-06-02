@@ -11,6 +11,11 @@ FactoryGirl.define do
       value { generate :metasploit_credential_active_directory_domain_value }
     end
 
+    factory :metasploit_credential_db2_database do
+      key { klass::Key::DB2_DATABASE }
+      value { generate :metasploit_credential_db2_database_value }
+    end
+
     factory :metasploit_credential_oracle_system_identifier do
       key { klass::Key::ORACLE_SYSTEM_IDENTIFIER }
       value { generate :metasploit_credential_oracle_system_identifier_value }
@@ -24,6 +29,10 @@ FactoryGirl.define do
 
   sequence :metasploit_credential_active_directory_domain_value do |n|
     "DOMAIN#{n}"
+  end
+
+  sequence :metasploit_credential_db2_database_value do |n|
+    "db2_database#{n}"
   end
 
   sequence :metasploit_credential_oracle_system_identifier_value do |n|

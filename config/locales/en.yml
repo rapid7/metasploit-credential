@@ -1,4 +1,16 @@
 en:
+  activemodel:
+    models:
+      metasploit/credential/importer/csv/base: 'CSV'
+      metasploit/credential/importer/zip: 'Zip importer'
+    errors:
+      models:
+        metasploit/credential/importer/csv/base:
+          attributes:
+            data:
+              incorrect_csv_headers: "your CSV has incorrect headers for this import type"
+              empty_csv: "the supplied CSV file appears to contain no data"
+              malformed_csv: "the supplied file is malformed and can't be parsed as CSV"
   activerecord:
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
