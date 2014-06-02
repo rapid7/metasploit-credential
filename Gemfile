@@ -5,6 +5,8 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+# TODO remove when metasploit-concern 0.1.0 is released to rubygems.
+gem 'metasploit-concern', github: 'rapid7/metasploit-concern', tag: 'v0.1.0-use-metasploit-concern-in-pro'
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
@@ -40,6 +42,8 @@ group :development, :test do
   # restrict for compatibility with rest of metasploit ecosystem until it upgrades to Rails 4
   # @todo MSP-9647
   gem 'rails', '>= 3.2', '< 4.0.0'
+  # TODO make compatible with rspec 3.0.0
+  gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
   gem 'rspec-rails'
 end
