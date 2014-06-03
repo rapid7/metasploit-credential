@@ -191,7 +191,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   # @method originating_host_id
   # @scope Metasploit::Credential::Core
-  # @return [ActiveRecord::Relation] with a JOIN on origin: sessions: hosts
+  # @param host_id [Integer] the host to look up
+  # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
     origin_session_host_id(host_id) | origin_service_host_id(host_id)
   }
