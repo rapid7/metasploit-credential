@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520140817) do
+ActiveRecord::Schema.define(:version => 20140603163708) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -238,6 +238,7 @@ ActiveRecord::Schema.define(:version => 20140520140817) do
     t.text     "data",       :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "jtr_format"
   end
 
   add_index "metasploit_credential_privates", ["type", "data"], :name => "index_metasploit_credential_privates_on_type_and_data", :unique => true
