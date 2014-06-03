@@ -187,6 +187,15 @@ class Metasploit::Credential::Core < ActiveRecord::Base
     )
   }
 
+  # Finds all Cores that have been collected in some way from a Host
+  #
+  # @method originating_host_id
+  # @scope Metasploit::Credential::Core
+  # @return [ActiveRecord::Relation] with a JOIN on origin: sessions: hosts
+  scope :originating_host_id, lambda { |host_id|
+    origin_session_host_id(host_id) | origin_service_host_id(host_id)
+  }
+
   # Finds Cores that are attached to a given workspace
   #
   # @method workspace_id(id)
