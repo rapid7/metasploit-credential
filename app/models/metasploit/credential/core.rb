@@ -194,7 +194,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
-    origin_session_host_id(host_id) | origin_service_host_id(host_id)
+    # I'm sorry. I just didn't know what else to do.
+    where('id IN (?) OR id IN (?)', origin_session_host_id(host_id), origin_service_host_id(host_id))
+    # If you can make this work joev <3 you forever
+    # origin_session_host_id(host_id).merge(origin_service_host_id(host_id))
   }
 
   # Finds Cores that are attached to a given workspace

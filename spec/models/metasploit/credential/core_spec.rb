@@ -162,6 +162,10 @@ describe Metasploit::Credential::Core do
       context 'when given a valid host id' do
         let(:host_id) { metasploit_credential_core_session.origin.session.host.id }
 
+        it 'returns an ActiveRecord::Relation' do
+          expect(query).to be_an ActiveRecord::Relation
+        end
+
         it 'returns the correct Cores' do
           expect(query).to match_array [metasploit_credential_core_session, metasploit_credential_core_service]
         end
