@@ -10,6 +10,7 @@ module Metasploit
       # This method is responsible for creation {Metasploit::Credential::Core} objects
       # and all sub-objects that it is dependent upon.
       #
+      # @option opts [String] :jtr_format The format for John the ripper to use to try and crack this
       # @option opts [Symbol] :origin_type The Origin type we are trying to create
       # @option opts [String] :address The address of the {Mdm::Host} to link this Origin to
       # @option opts [Fixnum] :port The port number of the {Mdm::Service} to link this Origin to
@@ -244,6 +245,7 @@ module Metasploit
       # This method is responsible for the creation of {Metasploit::Credential::Private} objects.
       # It will create the correct subclass based on the type.
       #
+      # @option opts [String] :jtr_format The format for John the ripper to use to try and crack this
       # @option opts [String] :private_data The actual data for the private (e.g. password, hash, key etc)
       # @option opts [Symbol] :private_type The type of {Metasploit::Credential::Private} to create
       # @raise [ArgumentError] if a valid type is not supplied
@@ -265,11 +267,16 @@ module Metasploit
             private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
           when :ntlm_hash
             private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
+            private_object.jtr_format = 'nt,lm'
           when :nonreplayable_hash
             private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
+            if opts[:jtr_format]
+              private_object.jtr_format = opts[:jtr_format]
+            end
           else
             raise ArgumentError, "Invalid Private type: #{private_type}"
         end
+        private_object.save!
         private_object
       end
 
