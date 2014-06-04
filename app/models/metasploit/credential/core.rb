@@ -195,7 +195,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
     # I'm sorry. I just didn't know what else to do.
-    where('id IN (?) OR id IN (?)', origin_session_host_id(host_id), origin_service_host_id(host_id))
+    where('metasploit_credential_cores.id IN (?) OR metasploit_credential_cores.id IN (?)', origin_session_host_id(host_id), origin_service_host_id(host_id))
     # If you can make this work joev <3 you forever
     # origin_session_host_id(host_id).merge(origin_service_host_id(host_id))
   }
