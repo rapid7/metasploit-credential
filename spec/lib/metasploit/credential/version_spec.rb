@@ -47,20 +47,34 @@ describe Metasploit::Credential::Version do
           branch = `git rev-parse --abbrev-ref HEAD`.strip
         end
 
-        # can't check PRERELEASE in  detached HEAD state (when you do `git checkout SHA`) because then the commit isn't
-        # isn't associated with a branch anymore.
-        unless branch == 'HEAD'
-          if branch == 'master'
-            it 'does not have a PRERELEASE' do
-              expect(defined? described_class::PRERELEASE).to be_nil
+        if branch == 'master'
+          it 'does not have a PRERELEASE' do
+            expect(defined? described_class::PRERELEASE).to be_nil
+          end
+        else
+          branch_regex = /\A(?<type>bug|chore|feature|staging)(\/(?<story>[^\/]+))?\/(?<prerelease>[^\/]+)\z/
+          match = branch.match(branch_regex)
+
+          if match
+            it 'matches the branch relative name' do
+              expect(prerelease).to eq(match[:prerelease])
             end
           else
-            branch_regex = /\A(bug|feature|staging)\/(?<prerelease>.*)\z/
-            match = branch.match(branch_regex)
+            tag_regex = /\Av(?<major>\d+).(?<minor>\d+).(?<patch>\d+)(-(?<prerelease>.*))?\z/
+            # travis-ci sets TRAVIS_BRANCH to the tag name for tag builds
+            match = branch.match(tag_regex)
 
             if match
-              it 'matches the branch relative name' do
-                expect(prerelease).to eq(match[:prerelease])
+              tag_prerelease = match[:prerelease]
+
+              if tag_prerelease
+                it 'matches the tag prerelease' do
+                  expect(prerelease).to eq(tag_prerelease)
+                end
+              else
+                it 'does not have a PRERELEASE' do
+                  expect(defined? described_class::PRERELEASE).to be_nil
+                end
               end
             else
               it 'has a abbreviated reference that can be parsed for prerelease' do

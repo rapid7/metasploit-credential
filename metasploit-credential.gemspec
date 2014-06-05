@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'pg'
 
-  # Patching inverse association in Mdm models.
-  s.add_runtime_dependency 'metasploit-concern', '~> 0.0.4'
+  # patching inverse association in Mdm models.
+  s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
   # Various Metasploit::Credential records have associations to Mdm records
   s.add_runtime_dependency 'metasploit_data_models', '~> 0.17.0'
   # Metasploit::Credential::NTLMHash helper methods
