@@ -167,7 +167,6 @@ describe Metasploit::Credential::Core do
         end
 
         it 'returns the correct Cores' do
-          require 'pry'; binding.pry
           expect(query).to match_array [metasploit_credential_core_session, metasploit_credential_core_service]
         end
       end

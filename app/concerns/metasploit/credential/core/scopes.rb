@@ -23,17 +23,14 @@ module Metasploit::Credential::Core::Scopes
     # @method origins(origin_class)
     # @scope Metasploit::Credential::Core
     # @param origin_class [ActiveRecord::Base] the Origin class to look up
+    # @param table_alias [String] an alias for the JOINed table, defaults to the table name
     # @return [ActiveRecord::Relation] scoped to that origin
-    scope :origins, lambda { |origin_class, table_alias|
+    scope :origins, lambda { |origin_class, table_alias=nil|
+      table_alias  ||= origin_class.table_name
       core_table   = Metasploit::Credential::Core.arel_table
       origin_table = origin_class.arel_table.alias(table_alias)
       origin_joins = core_table.join(origin_table).on(origin_table[:id].eq(core_table[:origin_id]))
-
-      where(
-        core_table[:origin_type].eq('Metasploit::Credential::Origin::Service').or(
-          core_table[:origin_type].eq('Metasploit::Credential::Origin::Session')
-        )
-      ).joins(origin_joins.join_sources)
+      joins(origin_joins.join_sources)
     }
 
     # Finds Cores that have an origin_type of Service and are attached to the given host
