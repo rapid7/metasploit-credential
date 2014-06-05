@@ -110,7 +110,7 @@ describe Metasploit::Credential::SSHKey do
                     data_errors.any? { |error|
                       error.include? exception_class_name
                     }
-                ).to be_true
+                ).to be true
               end
 
               it 'includes error message' do
@@ -120,7 +120,7 @@ describe Metasploit::Credential::SSHKey do
                     data_errors.any? { |error|
                       error.include? exception_message
                     }
-                ).to be_true
+                ).to be true
               end
             end
 

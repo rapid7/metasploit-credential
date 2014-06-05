@@ -24,7 +24,15 @@ describe Metasploit::Credential::Realm do
 
       it { should be_valid }
 
-      its(:key) { should == described_class::Key::ACTIVE_DIRECTORY_DOMAIN }
+      context '#key' do
+        subject(:key) {
+          metasploit_credential_active_directory_domain.key
+        }
+
+        it 'is Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN' do
+          expect(key).to eq(described_class::Key::ACTIVE_DIRECTORY_DOMAIN)
+        end
+      end
     end
 
     context 'metasplit_credential_oracle_system_identifier' do
@@ -34,7 +42,15 @@ describe Metasploit::Credential::Realm do
 
       it { should be_valid }
 
-      its(:key) { should == described_class::Key::ORACLE_SYSTEM_IDENTIFIER }
+      context '#key' do
+        subject(:key) {
+          metasploit_credential_oracle_system_identifier.key
+        }
+
+        it 'is Metasploit::Credential::Realm::Key::ORACLE_SYSTEM_IDENTIFIER' do
+          expect(key).to eq(described_class::Key::ORACLE_SYSTEM_IDENTIFIER)
+        end
+      end
     end
 
     context 'metasploit_credential_postgresql_database' do
@@ -44,7 +60,15 @@ describe Metasploit::Credential::Realm do
 
       it { should be_valid }
 
-      its(:key) { should == described_class::Key::POSTGRESQL_DATABASE }
+      context '#key' do
+        subject(:key) {
+          metasploit_credential_postgresql_database.key
+        }
+
+        it 'is Metasploit::Credential::Realm::Key::POSTGRESQL_DATABASE' do
+          expect(key).to eq(described_class::Key::POSTGRESQL_DATABASE)
+        end
+      end
     end
 
     context 'metasploit_credential_realm' do
