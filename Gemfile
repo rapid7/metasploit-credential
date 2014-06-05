@@ -5,8 +5,6 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
-# TODO remove when metasploit-concern 0.1.0 is released to rubygems.
-gem 'metasploit-concern', github: 'rapid7/metasploit-concern', tag: 'v0.1.0-use-metasploit-concern-in-pro'
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
