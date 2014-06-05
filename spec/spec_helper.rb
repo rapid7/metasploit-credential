@@ -12,7 +12,6 @@ require 'simplecov'
 
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 
 #
 # Requires supporting ruby files with custom matchers and macros, etc,

@@ -40,6 +40,8 @@ group :development, :test do
   # restrict for compatibility with rest of metasploit ecosystem until it upgrades to Rails 4
   # @todo MSP-9647
   gem 'rails', '>= 3.2', '< 4.0.0'
+  # TODO make compatible with rspec 3.0.0
+  gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
   gem 'rspec-rails'
 end
