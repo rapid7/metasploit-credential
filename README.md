@@ -30,7 +30,7 @@ Or install it yourself as:
 
 ## `Net::SSH`
 
-`Metasploit::Credential::SSHKey` depends on `'net/ssh'`, but `metasploit-credential` does not declared the `net-ssh` gem
+`Metasploit::Credential::SSHKey` depends on `'net/ssh'`, but `metasploit-credential` does not declare the `net-ssh` gem
 as a runtime dependency because [`metasploit-framework`](https://github.com/rapid7/metasploit-framework) includes
 [its own version of `'net/ssh'`](https://github.com/rapid7/metasploit-framework/blob/master/lib/net/ssh.rb) which would
 conflict with the gem.
@@ -46,3 +46,22 @@ And then execute:
 Or install it yourself as:
 
     $ gem install net-ssh
+
+## `Zip`
+
+`Metasploit::Credential::Importer::Zip` depends on `'zip/zip'`, but `metasploit-credential` does not declare `rubyzip`
+gem as a runtime dependency because [`metasploit-framework`](https://github.com/rapid7/metasploit-framework) includes
+[its own version of `'zip/zip'`](https://github.com/rapid7/metasploit-framework/blob/master/lib/zip/zip.rb) which would
+conflict with the gem.  The version in metasploit-framework is closest to version 0.9.4 of the gem.
+
+If you're not using `metasploit-framework`, then you need add the `rubyzip` to your `Gemfile`:
+
+    gem 'rubyzip', '<= 0.9.4'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install rubyzip --version 0.9.4

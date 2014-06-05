@@ -1,3 +1,9 @@
+#
+# Gems
+#
+
+require 'zip/zip'
+
 FactoryGirl.define do
   factory :metasploit_credential_importer_zip,
           class: Metasploit::Credential::Importer::Zip do
@@ -47,7 +53,7 @@ FactoryGirl.define do
 
     # Write out zip file
     zip_location = "#{path}.zip"
-    ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
+    ::Zip::ZipFile.open(zip_location, ::Zip::ZipFile::CREATE) do |zipfile|
       Dir.entries(path).each do |entry|
         next if entry.first == '.'
         zipfile.add(entry, path + '/' + entry)
@@ -85,7 +91,7 @@ FactoryGirl.define do
 
     # Write out zip file
     zip_location = "#{path}.zip"
-    ::Zip::File.open(zip_location, Zip::File::CREATE) do |zipfile|
+    ::Zip::ZipFile.open(zip_location, Zip::ZipFile::CREATE) do |zipfile|
       Dir.entries(path).each do |entry|
         next if entry.first == '.'
         zipfile.add(entry, path + '/' + entry)
