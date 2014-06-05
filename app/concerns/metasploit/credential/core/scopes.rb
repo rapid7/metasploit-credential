@@ -24,13 +24,16 @@ module Metasploit::Credential::Core::Scopes
     # @scope Metasploit::Credential::Core
     # @param origin_class [ActiveRecord::Base] the Origin class to look up
     # @return [ActiveRecord::Relation] scoped to that origin
-    scope :origins, lambda { |origin_class|
+    scope :origins, lambda { |origin_class, table_alias|
       core_table   = Metasploit::Credential::Core.arel_table
-      origin_table = origin_class.arel_table
+      origin_table = origin_class.arel_table.alias(table_alias)
       origin_joins = core_table.join(origin_table).on(origin_table[:id].eq(core_table[:origin_id]))
 
-      where(core_table[:origin_type].eq(origin_class.to_s))
-        .joins(origin_joins.join_sources)
+      where(
+        core_table[:origin_type].eq('Metasploit::Credential::Origin::Service').or(
+          core_table[:origin_type].eq('Metasploit::Credential::Origin::Session')
+        )
+      ).joins(origin_joins.join_sources)
     }
 
     # Finds Cores that have an origin_type of Service and are attached to the given host
@@ -40,7 +43,8 @@ module Metasploit::Credential::Core::Scopes
     # @param host_id [Integer] the host to look up
     # @return [ActiveRecord::Relation] scoped to that host
     scope :origin_service_host_id, lambda { |host_id|
-      services_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
+      host_table = Mdm::Host.arel_table.alias('hosts_for_service')
+      services_hosts.where(host_table[:id].eq(host_id))
     }
 
     # Finds Cores that have an origin_type of Session that were collected from the given host
@@ -50,7 +54,8 @@ module Metasploit::Credential::Core::Scopes
     # @param host_id [Integer] the host to look up
     # @return [ActiveRecord::Relation] scoped to that host
     scope :origin_session_host_id, lambda { |host_id|
-      sessions_hosts.where(Mdm::Host.arel_table[:id].eq(host_id))
+      host_table = Mdm::Host.arel_table.alias('hosts_for_session')
+      sessions_hosts.where(host_table[:id].eq(host_id))
     }
 
     # Adds a JOIN for the Service and Host that a Core with an Origin type of Service would have
@@ -61,10 +66,10 @@ module Metasploit::Credential::Core::Scopes
     scope :services_hosts, lambda {
       core_table    = Metasploit::Credential::Core.arel_table
       service_table = Mdm::Service.arel_table
-      host_table    = Mdm::Host.arel_table
-      origin_table  = Metasploit::Credential::Origin::Service.arel_table
+      host_table    = Mdm::Host.arel_table.alias('hosts_for_service')
+      origin_table  = Metasploit::Credential::Origin::Service.arel_table.alias('origins_for_service')
 
-      origins(Metasploit::Credential::Origin::Service).joins(
+      origins(Metasploit::Credential::Origin::Service, 'origins_for_service').joins(
         core_table.join(service_table).on(service_table[:id].eq(origin_table[:service_id])).join_sources,
         core_table.join(host_table).on(host_table[:id].eq(service_table[:host_id])).join_sources
       )
@@ -78,10 +83,10 @@ module Metasploit::Credential::Core::Scopes
     scope :sessions_hosts, lambda {
       core_table    = Metasploit::Credential::Core.arel_table
       session_table = Mdm::Session.arel_table
-      host_table    = Mdm::Host.arel_table
-      origin_table  = Metasploit::Credential::Origin::Session.arel_table
+      host_table    = Mdm::Host.arel_table.alias('hosts_for_session')
+      origin_table  = Metasploit::Credential::Origin::Session.arel_table.alias('origins_for_session')
 
-      origins(Metasploit::Credential::Origin::Session).joins(
+      origins(Metasploit::Credential::Origin::Session, 'origins_for_session').joins(
         core_table.join(session_table).on(session_table[:id].eq(origin_table[:session_id])).join_sources,
         core_table.join(host_table).on(host_table[:id].eq(session_table[:host_id])).join_sources
       )
@@ -94,12 +99,11 @@ module Metasploit::Credential::Core::Scopes
     # @param host_id [Integer] the host to look up
     # @return [ActiveRecord::Relation] that contains related Cores
     scope :originating_host_id, lambda { |host_id|
-      # I'm sorry. I just didn't know what else to do.
-      core_table = Metasploit::Credential::Core.arel_table
-      where('metasploit_credential_cores.id IN (%s) OR metasploit_credential_cores.id IN (%s)' % [
-        origin_session_host_id(host_id).select(core_table[:id]).to_sql,
-        origin_service_host_id(host_id).select(core_table[:id]).to_sql
-      ])
+      host_table_for_session = Mdm::Host.arel_table.alias('hosts_for_session')
+      host_table_for_service = Mdm::Host.arel_table.alias('hosts_for_service')
+      sessions_hosts.merge(services_hosts).where(
+        host_table_for_service[:id].eq(host_id).or(host_table_for_session[:id].eq(host_id))
+      )
     }
 
     # Finds Cores that are attached to a given workspace
