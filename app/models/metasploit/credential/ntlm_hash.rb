@@ -22,6 +22,9 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   # Valid format for {#data} composed of `'<LAN Manager hex digest>:<NT LAN Manager hex digest>'`.
   DATA_REGEXP = /\A#{LAN_MANAGER_HEX_DIGEST_REGEXP}:#{NT_LAN_MANAGER_HEX_DIGEST_REGEXP}\z/
 
+  BLANK_LM_HASH = 'aad3b435b51404eeaad3b435b51404ee'
+  BLANK_NT_HASH = '31d6cfe0d16ae931b73c59d7e0c089c0'
+
   #
   # Attributes
   #
@@ -96,6 +99,14 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   #
   # Instance Methods
   #
+
+  def blank_password?
+    self.data.include? "#{BLANK_LM_HASH}:#{BLANK_NT_HASH}"
+  end
+
+  def lm_hash_present?
+    !self.data.start_with? BLANK_LM_HASH
+  end
 
   private
 

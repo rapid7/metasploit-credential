@@ -352,4 +352,52 @@ describe Metasploit::Credential::NTLMHash do
       expect(Metasploit::Credential::NTLMHash.model_name.human).to eq('NTLM hash')
     end
   end
+
+  context 'hash meta-methods' do
+    subject(:blank_password_hash) do
+      described_class.new(
+          data:  described_class.data_from_password_data('')
+      )
+    end
+
+    let(:non_blank_password) do
+      described_class.new(
+          data:  described_class.data_from_password_data('password')
+      )
+    end
+
+    let(:no_lm_hash) do
+      described_class.new(
+          data: 'aad3b435b51404eeaad3b435b51404ee:4dc0249ad90ab626362050195893c788'
+      )
+    end
+
+    context 'blank_password?' do
+
+      it 'returns true if the hash is for a blank password' do
+        expect(blank_password_hash.blank_password?).to be_true
+      end
+
+      it 'returns false if the hash is not for a blank password' do
+        expect(non_blank_password.blank_password?).to be_false
+      end
+
+      it 'returns false if the nt hash is not blank but the lm hash is' do
+        expect(no_lm_hash.blank_password?).to be_false
+      end
+    end
+
+    context 'lm_hash_present?' do
+
+      it 'returns false if the lm_hash is blank' do
+        expect(no_lm_hash.lm_hash_present?).to be_false
+      end
+
+      it 'returns true if the lm_hash is not blank' do
+        expect(non_blank_password.lm_hash_present?).to be_true
+      end
+    end
+  end
+
+
 end
