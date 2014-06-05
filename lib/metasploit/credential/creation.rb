@@ -165,6 +165,8 @@ module Metasploit
       def create_credential_origin(opts={})
         return nil unless active_db?
         case opts[:origin_type]
+          when :cracked_password
+            create_credential_origin_cracked_password(opts)
           when :import
             create_credential_origin_import(opts)
           when :manual
@@ -176,6 +178,20 @@ module Metasploit
           else
             raise ArgumentError, "Unknown Origin Type #{opts[:origin_type]}"
         end
+      end
+
+      # This method is responsible for creating {Metasploit::Credential::Origin::CrackedPassword} objects.
+      # These are the oorigins that show that a password Credential was obtained by cracking a hash Credential
+      # that previously existed in the database.
+      #
+      # @option opts [Fixnum] :originating_core_id The ID of the originating Credential core.
+      # @return [NilClass] if there is no connected database
+      # @return [Metasploit::Credential::Origin::CrackedPassword] The created {Metasploit::Credential::Origin::CrackedPassword} object
+      def create_credential_origin_cracked_password(opts={})
+        return nil unless active_db?
+        originating_core_id = opts.fetch(:originating_core_id)
+
+        Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: originating_core_id ).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Import} objects.
