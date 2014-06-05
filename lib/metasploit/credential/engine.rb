@@ -20,7 +20,11 @@ else
         config.paths.add 'app/concerns', autoload: true
         config.paths.add 'lib', autoload: true
 
-        initializer 'metasploit_credential.prepend_factory_path', after: 'factory_girl.set_factory_paths' do
+        initializer 'metasploit_credential.prepend_factory_path',
+                    # factory paths from the final Rails.application
+                    after: 'factory_girl.set_factory_paths',
+                    # before metasploit_data_models because it prepends
+                    before: 'metasploit_data_models.prepend_factory_path' do
           if defined? FactoryGirl
             relative_definition_file_path = config.generators.options[:factory_girl][:dir]
             definition_file_path = root.join(relative_definition_file_path)
