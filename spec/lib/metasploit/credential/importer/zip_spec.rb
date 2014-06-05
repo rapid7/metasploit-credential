@@ -2,16 +2,9 @@ require 'spec_helper'
 
 describe Metasploit::Credential::Importer::Zip do
   include_context 'Mdm::Workspace'
-
-  TEMP_PATH_GLOB   = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}*"
+  include_context 'metasploit_credential_importer_zip_file'
 
   subject(:zip_importer){ FactoryGirl.build :metasploit_credential_importer_zip }
-
-  after(:each) do
-    Dir.glob(TEMP_PATH_GLOB).each do |file_name|
-      FileUtils.rm_rf(file_name)
-    end
-  end
 
   describe "validations" do
     DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"

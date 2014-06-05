@@ -1,3 +1,9 @@
+#
+# Standard Library
+#
+
+require 'pathname'
+
 # {Metasploit::Credential::Importer::Multi} allows a single class to pass off a file to the correct importer as
 # long as the file meets certain basic requirements.  Each file type is identified, and if supported, another class
 # in the {Metasploit::Credential::Importer} namespace is instantiated with the {#data} attribute passed in there.
@@ -47,9 +53,9 @@ class Metasploit::Credential::Importer::Multi
   # @return [Boolean]
   def zip?
     begin
-      ::Zip::File.open data.path
+      ::Zip::ZipFile.open data.path
       true
-    rescue ::Zip::Error
+    rescue ::Zip::ZipError
       false
     end
   end

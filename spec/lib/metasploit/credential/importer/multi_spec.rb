@@ -1,15 +1,9 @@
 require 'spec_helper'
 
 describe Metasploit::Credential::Importer::Multi do
-  # Using POSIX filepath here b/c we don't care about RSpec on Windows
-  TEMP_PATH_GLOB   = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}*"
-  UNSUPPORTED_FILE = "bad.txt"
+  include_context 'metasploit_credential_importer_zip_file'
 
-  after(:all) do
-    Dir.glob(TEMP_PATH_GLOB).each do |file_type|
-      FileUtils.rm_rf(file_type)
-    end
-  end
+  UNSUPPORTED_FILE = 'bad.txt'
 
   describe "validation" do
     describe "when given a file that is not a zip or a CSV" do
