@@ -146,11 +146,11 @@ describe Metasploit::Credential::Core do
     context '.originating_host_id' do
       let(:query) { described_class.originating_host_id(host_id) }
 
-      let(:metasploit_credential_core_session) do
+      let!(:metasploit_credential_core_session) do
         FactoryGirl.create(:metasploit_credential_core_session)
       end
 
-      let(:metasploit_credential_core_service) do
+      let!(:metasploit_credential_core_service) do
         FactoryGirl.create(:metasploit_credential_core_service)
       end
 
@@ -766,7 +766,7 @@ describe Metasploit::Credential::Core do
           nil
         end
 
-                context 'with #public' do
+        context 'with #public' do
           let(:public) do
             FactoryGirl.build(:metasploit_credential_public)
           end
