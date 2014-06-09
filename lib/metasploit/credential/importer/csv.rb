@@ -4,5 +4,4 @@ module Metasploit::Credential::Importer::CSV
 
   autoload :Base
   autoload :Core
-  autoload :Manifest
 end

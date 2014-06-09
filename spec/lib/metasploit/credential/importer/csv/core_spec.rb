@@ -18,7 +18,7 @@ describe Metasploit::Credential::Importer::CSV::Core do
 
       describe "with a non-compliant header" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.incorrect_csv_headers')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/core.attributes.data.incorrect_csv_headers')
         end
 
         before(:each) do
@@ -35,7 +35,7 @@ describe Metasploit::Credential::Importer::CSV::Core do
 
       describe "with a malformed CSV" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.malformed_csv')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/core.attributes.data.malformed_csv')
         end
 
         before(:each) do
@@ -52,7 +52,7 @@ describe Metasploit::Credential::Importer::CSV::Core do
 
       describe "with an empty CSV" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/base.attributes.data.empty_csv')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/csv/core.attributes.data.empty_csv')
         end
 
         before(:each) do

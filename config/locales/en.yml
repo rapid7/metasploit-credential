@@ -5,7 +5,7 @@ en:
       metasploit/credential/importer/zip: 'Zip importer'
     errors:
       models:
-        metasploit/credential/importer/csv/base:
+        metasploit/credential/importer/csv/core:
           attributes:
             data:
               empty_csv: "the supplied CSV file appears to contain no data"
