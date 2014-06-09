@@ -18,11 +18,5 @@ class Metasploit::Credential::Importer::CSV::Manifest < Metasploit::Credential::
     end
   end
 
-  # The key data inside the file at +key_file_name+
-  #
-  # @return [String]
-  def key_data_from_file(key_file_name)
-    full_key_file_path = "#{File.dirname(data.path)}/#{key_file_name}"
-    File.open(full_key_file_path, 'r').read
-  end
+
 end

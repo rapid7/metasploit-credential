@@ -47,6 +47,14 @@ module Metasploit
         end
 
         #
+        # Class methods
+        #
+
+        def import_zip_or_csv
+          
+        end
+
+        #
         # Instance Methods
         #
 
@@ -56,7 +64,7 @@ module Metasploit
             public_send("#{attribute}=", value)
           end
         end
-
+        
       end
     end
   end
