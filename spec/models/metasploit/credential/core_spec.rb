@@ -143,6 +143,43 @@ describe Metasploit::Credential::Core do
       end
     end
 
+    context '.originating_host_id' do
+      let(:query) { described_class.originating_host_id(host_id) }
+
+      let!(:metasploit_credential_core_session) do
+        FactoryGirl.create(:metasploit_credential_core_session)
+      end
+
+      let!(:metasploit_credential_core_service) do
+        FactoryGirl.create(:metasploit_credential_core_service)
+      end
+
+      before do
+        metasploit_credential_core_session.origin.session.host = metasploit_credential_core_service.origin.service.host
+        metasploit_credential_core_session.origin.session.save
+      end
+
+      context 'when given a valid host id' do
+        let(:host_id) { metasploit_credential_core_session.origin.session.host.id }
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(query).to be_an ActiveRecord::Relation
+        end
+
+        it 'returns the correct Cores' do
+          expect(query).to match_array [metasploit_credential_core_session, metasploit_credential_core_service]
+        end
+      end
+
+      context 'when given an invalid host id' do
+        let(:host_id) { -1 }
+
+        it 'returns an empty collection' do
+          expect(query).to be_empty
+        end
+      end
+    end
+
   end
 
   context 'factories' do
@@ -729,7 +766,7 @@ describe Metasploit::Credential::Core do
           nil
         end
 
-                context 'with #public' do
+        context 'with #public' do
           let(:public) do
             FactoryGirl.build(:metasploit_credential_public)
           end
