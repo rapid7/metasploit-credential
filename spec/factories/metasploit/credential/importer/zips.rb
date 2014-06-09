@@ -46,7 +46,7 @@ FactoryGirl.define do
     # write out manifest CSV into the zip directory
     # 'key' used twice because we are using usernames for filenames
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
-      csv << Metasploit::Credential::Importer::CSV::Core::VALID_CSV_HEADERS
+      csv << Metasploit::Credential::Importer::Core::VALID_CSV_HEADERS
       csv_hash.keys.each do |key|
         csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
@@ -56,6 +56,8 @@ FactoryGirl.define do
     zip_location = "#{path}.zip"
     ::Zip::ZipFile.open(zip_location, ::Zip::ZipFile::CREATE) do |zipfile|
       Dir.entries(path).each do |entry|
+        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
+        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
         next if entry.first == '.'
         zipfile.add(entry, path + '/' + entry)
       end
@@ -87,7 +89,7 @@ FactoryGirl.define do
     # write out manifest CSV into the zip directory
     # 'key' used twice because we are using usernames for filenames
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
-      csv << Metasploit::Credential::Importer::CSV::Core::VALID_CSV_HEADERS
+      csv << Metasploit::Credential::Importer::Core::VALID_CSV_HEADERS
       csv_hash.keys.each do |key|
         csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
@@ -97,6 +99,8 @@ FactoryGirl.define do
     zip_location = "#{path}.zip"
     ::Zip::ZipFile.open(zip_location, ::Zip::ZipFile::CREATE) do |zipfile|
       Dir.entries(path).each do |entry|
+        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
+        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
         next if entry.first == '.'
         zipfile.add(entry, path + '/' + entry)
       end

@@ -5,7 +5,7 @@
 #
 
 require 'csv'
-class Metasploit::Credential::Importer::CSV::Core
+class Metasploit::Credential::Importer::Core
   include Metasploit::Credential::Importer::Base
 
   #

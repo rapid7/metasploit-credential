@@ -46,13 +46,6 @@ module Metasploit
           end
         end
 
-        #
-        # Class methods
-        #
-
-        def import_zip_or_csv
-          
-        end
 
         #
         # Instance Methods

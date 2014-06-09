@@ -36,7 +36,7 @@ class Metasploit::Credential::Importer::Multi
     if zip?
       @selected_importer = Metasploit::Credential::Importer::Zip.new(data: data)
     elsif csv?
-      @selected_importer =Metasploit::Credential::Importer::CSV::Core.new(data: data)
+      @selected_importer =Metasploit::Credential::Importer::Core.new(data: data)
     end
   end
 
