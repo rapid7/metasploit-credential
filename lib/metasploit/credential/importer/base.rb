@@ -46,6 +46,7 @@ module Metasploit
           end
         end
 
+
         #
         # Instance Methods
         #
@@ -56,7 +57,7 @@ module Metasploit
             public_send("#{attribute}=", value)
           end
         end
-
+        
       end
     end
   end
