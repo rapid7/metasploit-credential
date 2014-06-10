@@ -356,6 +356,67 @@ module Metasploit
         service_object
       end
 
+      # This method checks to see if a {Metasploit::Credential::Login} exists for a given
+      # set of details. If it does exists, we then appropriately set the status to one of our
+      # failure statues.
+      #
+      # @option opts [String] :address The address of the host we attempted
+      # @option opts [Fixnum] :port the port of the service we attempted
+      # @option opts [String] :protocol the transport protocol of the service we attempted
+      # @option opts [String] :public A string representation of the public we tried
+      # @option opts [String] :private A string representation of the private we tried
+      # @option opts [Symbol] :status The status symbol from the {Metasploit::Framework::LoginScanner::Result}
+      # @raise [KeyError] if any of the above options are missing
+      # @return [void] Do not worry about the return value from this method
+      def invalidate_login(opts = {})
+        return nil unless active_db?
+        address     = opts.fetch(:address)
+        port        = opts.fetch(:port)
+        protocol    = opts.fetch(:protocol)
+        public      = opts.fetch(:public)
+        private     = opts.fetch(:private)
+        realm_key   = opts.fetch(:realm_key)
+        realm_value = opts.fetch(:realm_value)
+        status      = opts.fetch(:status)
+
+
+        begin
+          pub_obj = Metasploit::Credential::Public.where(username: public).first.id
+        rescue NoMethodError
+          pub_obj = nil
+        end
+
+        begin
+          priv_obj = Metasploit::Credential::Private.where(data: private).first.id
+        rescue NoMethodError
+          priv_obj = nil
+        end
+
+        begin
+          realm_obj = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first.id
+        rescue NoMethodError
+          realm_obj = nil
+        end
+
+        core = Metasploit::Credential::Core.where(public_id: pub_obj, private_id: priv_obj, realm_id: realm_obj).first
+
+        # Do nothing else if we have no matching core. Otherwise look for a Login.
+        if core.present?
+          login = Metasploit::Credential::Login.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
+
+          if login.present?
+            case status
+              when :connection_error
+                login.status = Metasploit::Credential::Login::Status::UNABLE_TO_CONNECT
+              when :failed
+                login.status = Metasploit::Credential::Login::Status::INCORRECT
+            end
+            login.save!
+          end
+        end
+
+      end
+
     end
   end
 end
