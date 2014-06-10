@@ -49,7 +49,7 @@ class Metasploit::Credential::Importer::Zip
   #
   # @return [void]
   def import!
-    ::Zip::ZipFile.open(zip_file.path)
+    ::Zip::File.open(zip_file.path)
     csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
     csv_data = File.open(csv_path)
     Metasploit::Credential::Importer::CSV::Manifest.new(data: csv_data, origin: origin).import!
@@ -69,7 +69,7 @@ class Metasploit::Credential::Importer::Zip
   # @return [void]
   def zip_file_is_well_formed
     begin
-      Zip::ZipFile.open zip_file.path do |archive|
+      Zip::File.open zip_file.path do |archive|
         manifest_file = archive.find_entry(MANIFEST_FILE_NAME)
 
         if manifest_file
@@ -78,7 +78,7 @@ class Metasploit::Credential::Importer::Zip
           errors.add(:zip_file, :missing_manifest)
         end
       end
-    rescue ::Zip::ZipError
+    rescue ::Zip::Error
       errors.add(:zip_file, :malformed_archive)
     end
   end

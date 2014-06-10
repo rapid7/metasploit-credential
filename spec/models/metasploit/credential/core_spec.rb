@@ -156,7 +156,7 @@ describe Metasploit::Credential::Core do
 
       before do
         metasploit_credential_core_session.origin.session.host = metasploit_credential_core_service.origin.service.host
-        metasploit_credential_core_session.origin.session.save
+        metasploit_credential_core_session.origin.session.save!
       end
 
       context 'when given a valid host id' do
