@@ -1,7 +1,6 @@
 
-# Allows importation of a zip file of a specially structured directory containing a file called
-# +manifest.csv+ (conforming to {Metasploit::Credential::Importer::CSV::Manifest}) and a collection
-# of files which each contain one private key.
+# Implements importation of a zip file containing credentials.  Each well-formed zip should contain one CSV file and a
+# subdirectory holding a collection of files, each containing one SSH private key.
 class Metasploit::Credential::Importer::Zip
   include Metasploit::Credential::Importer::Base
 
@@ -9,8 +8,11 @@ class Metasploit::Credential::Importer::Zip
   # Constants
   #
 
+  # The name of the directory in the zip file's root directory that contains SSH keys
+  KEYS_SUBDIRECTORY_NAME = "keys"
+
   # The name of the file in the zip which is opened and passed as a {File} to an instance of
-  # {Metasploit::Credential::Importer::CSV::Manifest}
+  # {Metasploit::Credential::Importer::CSV::Core}
   MANIFEST_FILE_NAME = "manifest.csv"
 
   # An argument to {Dir::mktmpdir}
@@ -26,60 +28,58 @@ class Metasploit::Credential::Importer::Zip
   #   @return [Metasploit::Credential::Importer::CSV::Manifest]
   attr_accessor :manifest_importer
 
-  # @!attribute zip_file
-  #   The zip file
-  #
-  #   @return [File]
-  attr_accessor :zip_file
-
   #
   # Validations
   #
 
-  validate :zip_file_is_well_formed
+  validate :data_is_well_formed
 
   #
   # Instance Methods
   #
 
-  # Extract the zip file and pass the +manifest.csv+ contained therein to a
-  # {Metasploit::Credential::Importer::CSV::Manifest}, which is in charge of creating new {Metasploit::Credential::Core}
+  # Extract the zip file and pass the CSV file contained therein to a
+  # {Metasploit::Credential::Importer::CSV::Core}, which is in charge of creating new {Metasploit::Credential::Core}
   # objects, creating new {Metasploit::Credential::Public} objects or linking existing ones, and associating them with
   # extracted {Metasploit::Credential::SSHKey} objects read from the files indicated in the manifest.
   #
   # @return [void]
   def import!
-    ::Zip::File.open(zip_file.path)
+    ::Zip::File.open(data.path)
     csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
     csv_data = File.open(csv_path)
-    Metasploit::Credential::Importer::CSV::Manifest.new(data: csv_data, origin: origin).import!
+    Metasploit::Credential::Importer::Core.new(data: csv_data, origin: origin).import!
   end
 
   def extracted_zip_path
-    full_path     = Pathname.new zip_file
+    full_path     = Pathname.new data
     path_fragment = full_path.dirname.to_s
     zip_dir_name  = full_path.basename(".*").to_s
     path_fragment + '/' + zip_dir_name
   end
 
 
-  # Validates that the zip file contains a file called +manifest.csv+ and that it
+  # Validates that the zip file contains a CSV file and that it
   # can be handled with the {::Zip::File::open} method.
   #
   # @return [void]
-  def zip_file_is_well_formed
+  def data_is_well_formed
     begin
-      Zip::File.open zip_file.path do |archive|
+      Zip::File.open data.path do |archive|
         manifest_file = archive.find_entry(MANIFEST_FILE_NAME)
 
         if manifest_file
-          true
+          if archive.find_entry(KEYS_SUBDIRECTORY_NAME)
+            true
+          else
+            errors.add(:data, :missing_keys)
+          end
         else
-          errors.add(:zip_file, :missing_manifest)
+          errors.add(:data, :missing_manifest)
         end
       end
     rescue ::Zip::Error
-      errors.add(:zip_file, :malformed_archive)
+      errors.add(:data, :malformed_archive)
     end
   end
 

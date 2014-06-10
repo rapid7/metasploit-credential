@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :metasploit_credential_core_importer,
-          class: Metasploit::Credential::Importer::CSV::Core do
+          class: Metasploit::Credential::Importer::Core do
 
     origin {FactoryGirl.build :metasploit_credential_origin_import }
     data { generate(:well_formed_csv_compliant_header)}

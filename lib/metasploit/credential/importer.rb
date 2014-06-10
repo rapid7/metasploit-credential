@@ -2,7 +2,7 @@ module Metasploit::Credential::Importer
   extend ActiveSupport::Autoload
 
   autoload :Base
-  autoload :CSV
+  autoload :Core
   autoload :MsfPwdump
   autoload :Zip
   autoload :Multi
