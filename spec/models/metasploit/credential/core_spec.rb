@@ -146,33 +146,58 @@ describe Metasploit::Credential::Core do
     context '.originating_host_id' do
       let(:query) { described_class.originating_host_id(host_id) }
 
-      let(:metasploit_credential_core_session) do
-        FactoryGirl.create(:metasploit_credential_core_session)
+      # Create a couple Cores that are related to the host via session
+      let(:metasploit_credential_core_sessions) do
+        FactoryGirl.create_list(:metasploit_credential_core_session, 2)
       end
 
-      let(:metasploit_credential_core_service) do
+      # Create a couple Cores that are related to the host via service
+      let(:metasploit_credential_core_services) do
+        FactoryGirl.create_list(:metasploit_credential_core_service, 2)
+      end
+
+      # Create an unrelated Core
+      let(:unrelated_metasploit_credential_core) do
         FactoryGirl.create(:metasploit_credential_core_service)
       end
 
       before do
-        metasploit_credential_core_session.origin.session.host = metasploit_credential_core_service.origin.service.host
-        metasploit_credential_core_session.origin.session.save
+        # make sure they are all related to the same host
+        # ideally this would be done in the factory, but one look at the factories and i am punting.
+        init_host_id = metasploit_credential_core_services.first.origin.service.host.id
+
+        metasploit_credential_core_services.each do |core|
+          core.origin.service.host_id = init_host_id
+          core.origin.service.save
+        end
+
+        metasploit_credential_core_sessions.each do |core|
+          core.origin.session.host_id = init_host_id
+          core.origin.session.save
+        end
+
+        # Make sure the unrelated core is actually created
+        unrelated_metasploit_credential_core
       end
 
       context 'when given a valid host id' do
-        let(:host_id) { metasploit_credential_core_session.origin.session.host.id }
+        let(:host_id) { metasploit_credential_core_sessions.first.origin.session.host.id }
 
         it 'returns an ActiveRecord::Relation' do
           expect(query).to be_an ActiveRecord::Relation
         end
 
         it 'returns the correct Cores' do
-          expect(query).to match_array [metasploit_credential_core_session, metasploit_credential_core_service]
+          expect(query).to match_array metasploit_credential_core_sessions + metasploit_credential_core_services
         end
       end
 
       context 'when given an invalid host id' do
         let(:host_id) { -1 }
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(query).to be_an ActiveRecord::Relation
+        end
 
         it 'returns an empty collection' do
           expect(query).to be_empty

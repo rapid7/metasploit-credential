@@ -108,15 +108,6 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Scopes
   #
 
-  # Helper methods used for scopes
-  def self.hosts_for_session_table
-    Mdm::Host.arel_table.alias('hosts_for_session')
-  end
-
-  def self.hosts_for_service_table
-    Mdm::Host.arel_table.alias('hosts_for_service')
-  end
-
   # Finds Cores that have successfully logged into a given host
   #
   # @method login_host_id(host_id)
@@ -137,7 +128,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   scope :origins, lambda { |origin_class, table_alias=nil|
     core_table   = Metasploit::Credential::Core.arel_table
     origin_table = origin_class.arel_table.alias(table_alias || origin_class.table_name)
-    origin_joins = core_table.join(origin_table).on(origin_table[:id].eq(core_table[:origin_id]))
+    origin_joins = core_table.join(origin_table).on(origin_table[:id].eq(core_table[:origin_id])
+      .and(core_table[:origin_type].eq(origin_class.to_s)))
     joins(origin_joins.join_sources)
   }
 
@@ -148,8 +140,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] scoped to that host
   scope :origin_service_host_id, lambda { |host_id|
-    host_table = hosts_for_service_table
-    services_hosts.where(host_table[:id].eq(host_id))
+    core_table = Metasploit::Credential::Core.arel_table
+    host_table = Mdm::Host.arel_table
+    services_hosts.select(core_table[:id]).where(host_table[:id].eq(host_id))
   }
 
   # Finds Cores that have an origin_type of Session that were collected from the given host
@@ -159,8 +152,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] scoped to that host
   scope :origin_session_host_id, lambda { |host_id|
-    host_table = hosts_for_session_table
-    sessions_hosts.where(host_table[:id].eq(host_id))
+    core_table = Metasploit::Credential::Core.arel_table
+    host_table = Mdm::Host.arel_table
+    sessions_hosts.select(core_table[:id]).where(host_table[:id].eq(host_id))
   }
 
   # Adds a JOIN for the Service and Host that a Core with an Origin type of Service would have
@@ -171,7 +165,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   scope :services_hosts, lambda {
     core_table    = Metasploit::Credential::Core.arel_table
     service_table = Mdm::Service.arel_table
-    host_table    = hosts_for_service_table
+    host_table    = Mdm::Host.arel_table
     origin_table  = Metasploit::Credential::Origin::Service.arel_table.alias('origins_for_service')
 
     origins(Metasploit::Credential::Origin::Service, 'origins_for_service').joins(
@@ -188,7 +182,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   scope :sessions_hosts, lambda {
     core_table    = Metasploit::Credential::Core.arel_table
     session_table = Mdm::Session.arel_table
-    host_table    = hosts_for_session_table
+    host_table    = Mdm::Host.arel_table
     origin_table  = Metasploit::Credential::Origin::Session.arel_table.alias('origins_for_session')
 
     origins(Metasploit::Credential::Origin::Session, 'origins_for_session').joins(
@@ -204,9 +198,17 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
-    sessions_hosts.merge(services_hosts).where(
-      hosts_for_service_table[:id].eq(host_id).or(hosts_for_session_table[:id].eq(host_id))
-    )
+    core_table = Metasploit::Credential::Core.arel_table
+
+    # TODO: Fix this in Rails 4. In Rails 3 there is a known bug that prevents
+    #   .count from being called on the returned ActiveRecord::Relation.
+    #   https://github.com/rails/rails/issues/939
+    subquery = Arel::Nodes::Union.new(
+      origin_service_host_id(host_id).ast,
+      origin_session_host_id(host_id).ast
+    ).to_sql
+
+    where(core_table[:id].in(Arel::Nodes::SqlLiteral.new(subquery)))
   }
 
   # Finds Cores that are attached to a given workspace
