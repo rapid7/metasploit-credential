@@ -9,7 +9,7 @@
 
 require 'metasploit/concern'
 require 'metasploit_data_models'
-require 'zip/zip'
+require 'zip'
 
 #
 # Project

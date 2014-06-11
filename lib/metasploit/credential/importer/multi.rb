@@ -54,9 +54,9 @@ class Metasploit::Credential::Importer::Multi
   # @return [Boolean]
   def zip?
     begin
-      ::Zip::ZipFile.open data.path
+      ::Zip::File.open data.path
       true
-    rescue ::Zip::ZipError
+    rescue ::Zip::Error
       false
     end
   end
