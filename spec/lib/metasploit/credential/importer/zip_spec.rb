@@ -15,12 +15,12 @@ describe Metasploit::Credential::Importer::Zip do
 
     context "when the zip file is not actually an archive" do
       let(:error) do
-        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.data.malformed_archive')
+        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.malformed_archive')
       end
 
       before(:each) do
         File.open(DUMMY_ZIP_PATH, 'wb')
-        zip_importer.data = File.open(DUMMY_ZIP_PATH, 'r')
+        zip_importer.input = File.open(DUMMY_ZIP_PATH, 'r')
       end
 
       after(:each) do
@@ -31,41 +31,41 @@ describe Metasploit::Credential::Importer::Zip do
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:data].should include error
+        zip_importer.errors[:input].should include error
       end
     end
 
     context "when the zip file does not contain a manifest CSV" do
       let(:error) do
-        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.data.missing_manifest')
+        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.missing_manifest')
       end
 
       before(:each) do
-        zip_importer.data = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
+        zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
       end
 
       it { should_not be_valid }
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:data].should include error
+        zip_importer.errors[:input].should include error
       end
     end
 
     context "when the zip file does not contain keys" do
       let(:error) do
-        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.data.missing_keys')
+        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.missing_keys')
       end
 
       before(:each) do
-        zip_importer.data = FactoryGirl.generate :metasploit_credential_importer_zip_file_invalid_no_keys
+        zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_invalid_no_keys
       end
 
       it { should_not be_valid }
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:data].should include error
+        zip_importer.errors[:input].should include error
       end
     end
   end

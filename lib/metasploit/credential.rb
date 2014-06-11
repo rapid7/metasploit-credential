@@ -30,6 +30,7 @@ module Metasploit
 
     autoload :EntityRelationshipDiagram
     autoload :Importer
+    autoload :Exporter
     autoload :Origin
 
     def self.table_name_prefix

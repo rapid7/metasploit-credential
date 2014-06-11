@@ -7,7 +7,7 @@ require 'zip'
 FactoryGirl.define do
   factory :metasploit_credential_importer_zip,
           class: Metasploit::Credential::Importer::Zip do
-    data { generate :metasploit_credential_importer_zip_file }
+    input { generate :metasploit_credential_importer_zip_file }
     origin {FactoryGirl.build :metasploit_credential_origin_import }
   end
 

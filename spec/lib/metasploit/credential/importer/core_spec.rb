@@ -11,59 +11,59 @@ describe Metasploit::Credential::Importer::Core do
   end
 
   describe "validations" do
-    describe "with well-formed CSV data" do
+    describe "with well-formed CSV input" do
       describe "with a compliant header" do
         it { should be_valid }
       end
 
       describe "with a non-compliant header" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.incorrect_csv_headers')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
         end
 
         before(:each) do
-          core_csv_importer.data = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
+          core_csv_importer.input = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
         end
 
         it { should_not be_valid }
 
         it 'should report the error being incorrect headers' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:data].should include error
+          core_csv_importer.errors[:input].should include error
         end
       end
 
       describe "with a malformed CSV" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.malformed_csv')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.malformed_csv')
         end
 
         before(:each) do
-          core_csv_importer.data = FactoryGirl.generate(:malformed_csv)
+          core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
         end
 
         it { should be_invalid }
 
         it 'should report the error being malformed CSV' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:data].should include error
+          core_csv_importer.errors[:input].should include error
         end
       end
 
       describe "with an empty CSV" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.empty_csv')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.empty_csv')
         end
 
         before(:each) do
-          core_csv_importer.data = FactoryGirl.generate(:empty_core_csv)
+          core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
         end
 
         it { should be_invalid }
 
         it 'should show the proper error message' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:data].should include error
+          core_csv_importer.errors[:input].should include error
         end
       end
 

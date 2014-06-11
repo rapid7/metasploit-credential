@@ -19,7 +19,7 @@ class Metasploit::Credential::Importer::Core
   #
 
   # @!attribute csv_object
-  #   The {CSV} instance created from {#data}
+  #   The {CSV} instance created from {#input}
   #   @return [CSV]
   attr_reader :csv_object
 
@@ -43,7 +43,7 @@ class Metasploit::Credential::Importer::Core
   #
 
 
-  # Creates a {Metasploit::Credential::Core} object from the data in a CSV row
+  # Creates a {Metasploit::Credential::Core} object from the input in a CSV row
   # @param [Hash] args
   # @option args [Metasploit::Credential::Public] :public the public cred to associate
   # @option args [Metasploit::Credential::Private] :private the private cred to associate
@@ -61,24 +61,24 @@ class Metasploit::Credential::Importer::Core
     core.save!
   end
 
-  # An instance of {CSV} from whence cometh the sweet sweet credential data
+  # An instance of {CSV} from whence cometh the sweet sweet credential input
   #
   # @return [CSV]
   def csv_object
-    @csv_object ||= CSV.new(data, headers:true, return_headers: true)
+    @csv_object ||= CSV.new(input, headers:true, return_headers: true)
   end
 
 
-  # The key data inside the file at +key_file_name+
+  # The key input inside the file at +key_file_name+
   #
   # @return [String]
-  def key_data_from_file(key_file_name)
-    full_key_file_path = "#{File.dirname(data.path)}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/#{key_file_name}"
+  def key_input_from_file(key_file_name)
+    full_key_file_path = "#{File.dirname(input.path)}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/#{key_file_name}"
     File.open(full_key_file_path, 'r').read
   end
 
-  # Performs a pretty naive import from the data in {#csv_object}, allowing the import to have different private types
-  # per row, and attempting to reduce database lookups by storing found or created {Metasploit::Credential::Realm}
+  # Performs a pretty naive import from the input in {#csv_object}, allowing the import to have different private types
+  # per row, and attempting to reduce inputbase lookups by storing found or created {Metasploit::Credential::Realm}
   # objects in a lookup Hash that gets updated with every new Realm found, and then consulted in analysis of subsequent
   # rows.
   #
@@ -102,7 +102,7 @@ class Metasploit::Credential::Importer::Core
 
       if ALLOWED_PRIVATE_TYPE_NAMES.include? private_class.name
         if private_class == Metasploit::Credential::SSHKey
-          private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
+          private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_input_from_file(private_data)).first_or_create
         else
           private_object_for_row = private_class.where(data: row['private_data']).first_or_create
         end
@@ -129,16 +129,16 @@ class Metasploit::Credential::Importer::Core
             csv_object.rewind
             true
           else
-            errors.add(:data, :empty_csv)
+            errors.add(:input, :empty_csv)
           end
         else
-          errors.add(:data, :incorrect_csv_headers)
+          errors.add(:input, :incorrect_csv_headers)
         end
       else
         fail "CSV has already been accessed past index 0"
       end
     rescue ::CSV::MalformedCSVError
-      errors.add(:data, :malformed_csv)
+      errors.add(:input, :malformed_csv)
     end
   end
 end
