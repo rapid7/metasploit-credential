@@ -9,12 +9,6 @@ gemspec
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
 gem 'net-ssh'
-# This isn't in gemspec because metasploit-framework has its own patched version of 'zip' that needs to use instead of
-# this gem.
-# Zip::ZipFile for Metasploit::Credential::Importer::Zip
-gem 'rubyzip',
-    # The NEWS in metasploit-framework mentions 0.9.4 as the last release, so assume the gem 0.9.4 is compatible.
-    '<= 0.9.4'
 
 group :development do
   # markdown formatting for yard
