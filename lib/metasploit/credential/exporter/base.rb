@@ -6,6 +6,12 @@ module Metasploit
 
         included do
           include ActiveModel::Validations
+
+          # @!attribute data
+          #   A {Hash} that holds the credentials data to be exported.
+          #   @return [Hash]
+          attr_accessor :data
+
           # @!attribute output
           #   An {IO} that holds the exported data. {File} in normal usage.
           #   @return [IO]
