@@ -16,6 +16,17 @@ class Metasploit::Credential::Exporter::Pwdump
   # The version of the export format
   VERSION = "2.0"
 
+
+  #
+  # Attributes
+  #
+
+  # @!attribute logins
+  #   Holds the raw information from the database before it is formatted into the {#data} attribute
+  #   @return [Array<Metasploit::Credential::Login>]
+  attr_accessor :logins
+
+
   #
   # Instance Methods
   #
