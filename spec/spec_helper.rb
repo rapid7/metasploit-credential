@@ -20,7 +20,8 @@ require 'rspec/rails'
 
 rooteds = [
     Metasploit::Concern,
-    Metasploit::Credential::Engine
+    Metasploit::Credential::Engine,
+    MetasploitDataModels::Engine
 ]
 
 rooteds.each do |rooted|
