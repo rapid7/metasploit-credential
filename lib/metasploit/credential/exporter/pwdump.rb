@@ -20,9 +20,8 @@ class Metasploit::Credential::Exporter::Pwdump
   def data
     unless instance_variable_defined? :@data
       @data = {}
-      cores = logins.collect(&:core)
-      @data[:ntlm]           = cores.select{ |c| c.private.is_a? Metasploit::Credential::NTLMHash }
-      @data[:non_replayable] = cores.select{ |c| c.private.is_a? Metasploit::Credential::NonreplayableHash}
+      @data[:ntlm]           = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NTLMHash }
+      @data[:non_replayable] = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NonreplayableHash }
     end
     @data
   end
@@ -38,7 +37,9 @@ class Metasploit::Credential::Exporter::Pwdump
   # @return[String]
   def format_nonreplayable_hash(login)
     creds_data = data_for_login(login)
-    "#{creds_data[:username]}:#{creds_data[:hash]}"
+    username = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:username])
+    hash     = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:hash])
+    "#{username}:#{hash}:::"
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NTLMHash} for output
@@ -56,8 +57,11 @@ class Metasploit::Credential::Exporter::Pwdump
     template.result get_binding
   end
 
+  # Returns the count of services in the group creds contained in +hash_array+
+  # @param [Array<Metasploit::Credential::Login>] hash_array
+  # @return [Fixnum]
   def service_count_for_hashes(hash_array)
-
+    hash_array.collect(&:service).collect(&:id).uniq.size
   end
 
 
