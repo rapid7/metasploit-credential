@@ -9,6 +9,13 @@ describe Metasploit::Credential::Exporter::Pwdump do
   let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core) }
 
   describe "formatting" do
+    describe "associated Mdm::Service objects" do
+      it 'should properly format the service information' do
+        service = login.service
+        exporter.format_service_for_login(login).should == "#{service.host.address}:#{service.port}/#{service.proto} (#{service.name})"
+      end
+    end
+
     describe "non-replayable" do
       let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash }
 
@@ -29,7 +36,6 @@ describe Metasploit::Credential::Exporter::Pwdump do
         login.core.private.data = ""
         exporter.format_nonreplayable_hash(login).should == "#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::"
       end
-
     end
 
     describe "NTLM" do

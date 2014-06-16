@@ -13,6 +13,9 @@ class Metasploit::Credential::Exporter::Pwdump
   # Where the MSF pwdump template lives
   TEMPLATE_PATH = File.expand_path(File.join(File.dirname(__FILE__), "pwdump_template.erb"))
 
+  # The version of the export format
+  VERSION = "2.0"
+
   #
   # Instance Methods
   #
@@ -49,11 +52,23 @@ class Metasploit::Credential::Exporter::Pwdump
     creds_data = data_for_login(login)
     "#{creds_data[:username]}:#{login.id}:#{creds_data[:hash]}"
   end
-  
+
+  # Returns a string for the host/service/port/proto/service name combination in the pwdump file.
+  # This string is added to make it easier for a human to scan the file.
+  # @param [Metasploit::Credential::Login] login the login to look at
+  # @return [String]
+  def format_service_for_login(login)
+    service = login.service
+    address = service.host.address
+    "#{address}:#{service.port}/#{service.proto} (#{service.name})"
+  end
+
+  # Renders the collection credential objects in {#data} into the {ERB} template at {TEMPLATE PATH}
+  # @return [String]
   def rendered_output
-    @version_string = "foobar"
-    @workspace = "some workspace"
-    template = ERB.new(File.read TEMPLATE_PATH)
+    @version_string = VERSION
+    @workspace      = workspace
+    template        = ERB.new(File.read TEMPLATE_PATH)
     template.result get_binding
   end
 
@@ -63,7 +78,6 @@ class Metasploit::Credential::Exporter::Pwdump
   def service_count_for_hashes(hash_array)
     hash_array.collect(&:service).collect(&:id).uniq.size
   end
-
 
   private
 
