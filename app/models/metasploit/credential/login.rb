@@ -111,6 +111,23 @@ class Metasploit::Credential::Login < ActiveRecord::Base
                 in: Metasploit::Credential::Login::Status::ALL
             }
 
+
+  #
+  # Scopes
+  #
+
+  # Finds all {Metasploit::Credential::Login} objects that are associated with a given {Mdm::Workspace}
+  # @method in_workspace_including_hosts_and_services
+  # @scope Metasploit::Credential::Login
+  # @param workspace [Mdm::Workspace] the workspace to filter by
+  # @return [ActiveRecord::Relation] containing the logins
+  scope :in_workspace_including_hosts_and_services, ->(workspace) {
+    host_workspace_column = Mdm::Host.arel_table[:workspace_id]
+    joins(service: :host).includes(core: [:public, :private], service: :host).where(host_workspace_column.eq(workspace.id))
+  }
+
+
+
   #
   # Instance Methods
   #
