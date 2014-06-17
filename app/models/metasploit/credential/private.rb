@@ -3,6 +3,8 @@
 #
 # Uses Single Table Inheritance to store subclass name in {#type} per Rails convention.
 class Metasploit::Credential::Private < ActiveRecord::Base
+  include Metasploit::Model::Search
+
   #
   # Associations
   #
@@ -53,6 +55,13 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   #
 
   attr_accessible :data
+
+  #
+  # Search Attributes
+  #
+
+  search_attribute :data,
+                   type: :string
 
   #
   # Validations
