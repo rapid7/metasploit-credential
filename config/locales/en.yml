@@ -11,6 +11,8 @@ en:
               empty_csv: "the supplied CSV file appears to contain no data"
               incorrect_csv_headers: "your CSV has incorrect headers for this import type"
               malformed_csv: "the supplied file is malformed and can't be parsed as CSV"
+            private_credential_type:
+              invalid_type: "the supplied credential type is not valid for this import"
         metasploit/credential/importer/zip:
           attributes:
             data:
