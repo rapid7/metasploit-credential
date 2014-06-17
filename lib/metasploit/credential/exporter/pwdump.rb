@@ -36,6 +36,7 @@ class Metasploit::Credential::Exporter::Pwdump
       @data = {}
       @data[:ntlm]           = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NTLMHash }
       @data[:non_replayable] = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NonreplayableHash }
+      @data[:password]       = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::Password }
     end
     @data
   end
@@ -52,7 +53,7 @@ class Metasploit::Credential::Exporter::Pwdump
   def format_nonreplayable_hash(login)
     creds_data = data_for_login(login)
     username = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:username])
-    hash     = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:hash])
+    hash     = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:private_data])
     "#{username}:#{hash}:::"
   end
 
@@ -61,7 +62,15 @@ class Metasploit::Credential::Exporter::Pwdump
   # @return[String]
   def format_ntlm_hash(login)
     creds_data = data_for_login(login)
-    "#{creds_data[:username]}:#{login.id}:#{creds_data[:hash]}"
+    "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}"
+  end
+
+  # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::Password} for output
+  # @param [Metasploit::Credential::Login] login
+  # @return[String]
+  def format_password(login)
+    creds_data = data_for_login(login)
+    "#{creds_data[:username]} #{creds_data[:private_data]}"
   end
 
   # Returns a string for the host/service/port/proto/service name combination in the pwdump file.
@@ -96,11 +105,11 @@ class Metasploit::Credential::Exporter::Pwdump
   # @param[Metasploit::Credential::Login] login
   # @return[Hash]
   def data_for_login(login)
-    username = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
-    hash     = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING
+    username     = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
+    private_data = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING
     {
       username: username,
-      hash: hash
+      private_data: private_data
     }
   end
 

@@ -75,10 +75,10 @@ class Metasploit::Credential::Importer::Core
   end
 
 
-  # The key input inside the file at +key_file_name+
+  # The key data inside the file at +key_file_name+
   #
   # @return [String]
-  def key_input_from_file(key_file_name)
+  def key_data_from_file(key_file_name)
     full_key_file_path = "#{File.dirname(input.path)}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/#{key_file_name}"
     File.open(full_key_file_path, 'r').read
   end
