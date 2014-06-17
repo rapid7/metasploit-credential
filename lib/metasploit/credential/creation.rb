@@ -99,7 +99,7 @@ module Metasploit
           realm_id = nil
         end
 
-        core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_create
+        core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
         if core.origin_id.nil?
           core.origin = origin
         end

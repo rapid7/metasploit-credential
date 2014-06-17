@@ -11,69 +11,135 @@ describe Metasploit::Credential::Importer::Core do
   end
 
   describe "validations" do
-    describe "with well-formed CSV input" do
-      describe "with a compliant header" do
+    describe "short-form imports" do
+      describe "with well-formed CSV data" do
+        before(:each) do
+          core_csv_importer.data = FactoryGirl.generate :short_well_formed_csv
+          core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
+        end
+
         it { should be_valid }
       end
 
-      describe "with a non-compliant header" do
+      describe "with a non-supported credential type" do
         let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
+          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.private_credential_type.invalid_type')
         end
 
         before(:each) do
-          core_csv_importer.input = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
+          core_csv_importer.data = FactoryGirl.generate :short_well_formed_csv
+          core_csv_importer.private_credential_type = "Metasploit::Credential::SSHKey"
         end
 
-        it { should_not be_valid }
+        it{ should_not be_valid }
 
-        it 'should report the error being incorrect headers' do
+        it 'should report the error being invalid private type' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:input].should include error
+          core_csv_importer.errors[:private_credential_type].should include error
         end
       end
 
-      describe "with a malformed CSV" do
+      describe "with non-compliant headers" do
         let(:error) do
           I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.malformed_csv')
         end
 
         before(:each) do
-          core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
+          core_csv_importer.data = FactoryGirl.generate :short_well_formed_csv_non_compliant_header
+          core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
-        it { should be_invalid }
+        it{ should_not be_valid }
 
-        it 'should report the error being malformed CSV' do
+        it 'should report the error being invalid headers' do
           core_csv_importer.valid?
           core_csv_importer.errors[:input].should include error
         end
       end
+    end
 
-      describe "with an empty CSV" do
-        let(:error) do
-          I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.empty_csv')
+    describe "long-form imports" do
+      describe "with well-formed CSV data" do
+        describe "with a compliant header" do
+          it { should be_valid }
         end
 
-        before(:each) do
-          core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
+        describe "with a non-compliant header" do
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.incorrect_csv_headers')
+          end
+
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
+          end
+
+          it { should_not be_valid }
+
+          it 'should report the error being incorrect headers' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
         end
 
-        it { should be_invalid }
+        describe "with a malformed CSV" do
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.malformed_csv')
+          end
 
-        it 'should show the proper error message' do
-          core_csv_importer.valid?
-          core_csv_importer.errors[:input].should include error
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:malformed_csv)
+          end
+
+          it { should be_invalid }
+
+          it 'should report the error being malformed CSV' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
+        end
+
+        describe "with an empty CSV" do
+          let(:error) do
+            I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.data.empty_csv')
+          end
+
+          before(:each) do
+            core_csv_importer.data = FactoryGirl.generate(:empty_core_csv)
+          end
+
+          it { should be_invalid }
+
+          it 'should show the proper error message' do
+            core_csv_importer.valid?
+            core_csv_importer.errors[:data].should include error
+          end
+        end
+
+        describe "when accesssing without rewind" do
+          before(:each) do
+            core_csv_importer.csv_object.gets
+          end
+
+          it 'should raise a runtime error when attempting to validate' do
+            expect{ core_csv_importer.valid? }.to raise_error(RuntimeError)
+          end
         end
       end
+    end
 
-      describe "when accesssing without rewind" do
-        before(:each) do
-          core_csv_importer.csv_object.gets
+    describe "short-form imports" do
+      before(:each) do
+        core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
+        core_csv_importer.data = FactoryGirl.generate :short_well_formed_csv
+      end
+
+      describe "when the data in the CSV is all new" do
+        it 'should create new Metasploit::Credential::Public for that row' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(2)
         end
 
-        it 'should raise a runtime error when attempting to validate' do
-          expect{ core_csv_importer.valid? }.to raise_error(RuntimeError)
+        it 'should create new Metasploit::Credential::Private for that row' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Password, :count).from(0).to(2)
         end
       end
     end
