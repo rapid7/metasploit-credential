@@ -56,7 +56,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           )
         }
 
-        context 'Metasploit::Credential::Private#type' do
+        context 'Metasploit::Credential::Private#data' do
           context 'wth Metasploit::Credential::PasswordHash subclass' do
             let(:matching_attributes) {
               {
