@@ -117,7 +117,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
             #
 
             let(:factory) {
-              :metasploit_credential_password
+              :metasploit_credential_ssh_key
             }
 
             it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
