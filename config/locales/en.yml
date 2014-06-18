@@ -7,7 +7,7 @@ en:
       models:
         metasploit/credential/importer/core:
           attributes:
-            data:
+            input:
               empty_csv: "the supplied CSV file appears to contain no data"
               incorrect_csv_headers: "your CSV has incorrect headers for this import type"
               malformed_csv: "the supplied file is malformed and can't be parsed as CSV"
@@ -15,7 +15,7 @@ en:
               invalid_type: "the supplied credential type is not valid for this import"
         metasploit/credential/importer/zip:
           attributes:
-            data:
+            input:
               malformed_archive: "The provided zip file appears to be malformed and cannot be parsed"
               missing_keys: "This Metasploit credentials zip export appears to contain no SSH keys. If you wish to import credentials not tied to keys, remove the key entries from the manifest file and upload it by itself."
               missing_manifest: "This Metasploit credentials zip export appears to be missing its CSV manifest"

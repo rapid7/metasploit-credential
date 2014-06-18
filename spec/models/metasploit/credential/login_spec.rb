@@ -484,4 +484,20 @@ describe Metasploit::Credential::Login do
       end
     end
   end
+
+  context "scopes" do
+    include_context 'Mdm::Workspace'
+
+    context "::in_workspace_with_hosts_and_services" do
+      let(:service){ FactoryGirl.create :mdm_service }
+      let(:origin){ FactoryGirl.create :metasploit_credential_origin_service, service: service}
+      let(:core){ FactoryGirl.create :metasploit_credential_core, workspace: service.host.workspace, origin: origin}
+
+      subject(:login){ FactoryGirl.create :metasploit_credential_login, core: core}
+
+      it 'should find the right objects' do
+        Metasploit::Credential::Login.in_workspace_including_hosts_and_services(service.host.workspace).should include(login)
+      end
+    end
+  end
 end

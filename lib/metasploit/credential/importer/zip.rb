@@ -32,7 +32,7 @@ class Metasploit::Credential::Importer::Zip
   # Validations
   #
 
-  validate :data_is_well_formed
+  validate :input_is_well_formed
 
   #
   # Instance Methods
@@ -45,14 +45,14 @@ class Metasploit::Credential::Importer::Zip
   #
   # @return [void]
   def import!
-    ::Zip::File.open(data.path)
+    ::Zip::File.open(input.path)
     csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
-    csv_data = File.open(csv_path)
-    Metasploit::Credential::Importer::Core.new(data: csv_data, origin: origin).import!
+    csv_input = File.open(csv_path)
+    Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin).import!
   end
 
   def extracted_zip_path
-    full_path     = Pathname.new data
+    full_path     = Pathname.new input
     path_fragment = full_path.dirname.to_s
     zip_dir_name  = full_path.basename(".*").to_s
     path_fragment + '/' + zip_dir_name
@@ -63,23 +63,23 @@ class Metasploit::Credential::Importer::Zip
   # can be handled with the {::Zip::File::open} method.
   #
   # @return [void]
-  def data_is_well_formed
+  def input_is_well_formed
     begin
-      Zip::File.open data.path do |archive|
+      Zip::File.open input.path do |archive|
         manifest_file = archive.find_entry(MANIFEST_FILE_NAME)
 
         if manifest_file
           if archive.find_entry(KEYS_SUBDIRECTORY_NAME)
             true
           else
-            errors.add(:data, :missing_keys)
+            errors.add(:input, :missing_keys)
           end
         else
-          errors.add(:data, :missing_manifest)
+          errors.add(:input, :missing_manifest)
         end
       end
     rescue ::Zip::Error
-      errors.add(:data, :malformed_archive)
+      errors.add(:input, :malformed_archive)
     end
   end
 

@@ -27,10 +27,10 @@ module Metasploit
         included do
           include ActiveModel::Validations
 
-          # @!attribute data
+          # @!attribute input
           #   An {IO} that holds the import data. {File} in normal usage, {StringIO} in testing
           #   @return [IO]
-          attr_accessor :data
+          attr_accessor :input
 
           # @!attribute origin
           #   An {Metasploit::Credential::Origin} that represents the discrete

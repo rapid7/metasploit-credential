@@ -3,7 +3,7 @@ FactoryGirl.define do
           class: Metasploit::Credential::Importer::Core do
 
     origin {FactoryGirl.build :metasploit_credential_origin_import }
-    data { generate(:well_formed_csv_compliant_header)}
+    input { generate(:well_formed_csv_compliant_header)}
   end
 
   # Well-formed CSV

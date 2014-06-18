@@ -6,7 +6,7 @@ require 'pathname'
 
 # {Metasploit::Credential::Importer::Multi} allows a single class to pass off a file to the correct importer as
 # long as the file meets certain basic requirements.  Each file type is identified, and if supported, another class
-# in the {Metasploit::Credential::Importer} namespace is instantiated with the {#data} attribute passed in there.
+# in the {Metasploit::Credential::Importer} namespace is instantiated with the {#input} attribute passed in there.
 class Metasploit::Credential::Importer::Multi
   include Metasploit::Credential::Importer::Base
 
@@ -15,7 +15,7 @@ class Metasploit::Credential::Importer::Multi
   #
 
   # @!attribute selected_importer
-  #   An instance of the importer class which will handle the processing of data into the system.
+  #   An instance of the importer class which will handle the processing of input into the system.
   #   @return [IO]
   attr_accessor :selected_importer
 
@@ -30,14 +30,14 @@ class Metasploit::Credential::Importer::Multi
   #
 
   def initialize(args={})
-    @data   = args.fetch(:data)
+    @input   = args.fetch(:input)
     @origin = args.fetch(:origin)
     @selected_importer = nil
 
     if zip?
-      @selected_importer = Metasploit::Credential::Importer::Zip.new(data: data, origin: origin)
+      @selected_importer = Metasploit::Credential::Importer::Zip.new(input: input, origin: origin)
     elsif csv?
-      @selected_importer =Metasploit::Credential::Importer::Core.new(data: data, origin: origin)
+      @selected_importer =Metasploit::Credential::Importer::Core.new(input: input, origin: origin)
     end
   end
 
@@ -54,7 +54,7 @@ class Metasploit::Credential::Importer::Multi
   # @return [Boolean]
   def zip?
     begin
-      ::Zip::File.open data.path
+      ::Zip::File.open input.path
       true
     rescue ::Zip::Error
       false
@@ -65,19 +65,19 @@ class Metasploit::Credential::Importer::Multi
   #
   # @return [Boolean]
   def csv?
-    ::Pathname.new(data.path).extname == '.csv'
+    ::Pathname.new(input.path).extname == '.csv'
   end
 
   private
 
-  # True if the format of {#data} is supported for import
+  # True if the format of {#input} is supported for import
   #
   # @return [Boolean]
   def is_supported_format
     if zip? || csv?
       true
     else
-      errors.add(:data, :unsupported_file_format)
+      errors.add(:input, :unsupported_file_format)
     end
   end
 end
