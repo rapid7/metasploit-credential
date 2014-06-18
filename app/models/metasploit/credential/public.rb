@@ -1,5 +1,7 @@
 # A publicly disclosed credential, i.e. a {#username}.
 class Metasploit::Credential::Public < ActiveRecord::Base
+  include Metasploit::Model::Search
+
   #
   # Associations
   #
@@ -38,6 +40,14 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   #
 
   attr_accessible :username
+
+  #
+  # Search Attributes
+  #
+
+  search_attribute :username,
+                   type: :string
+
 
   #
   # Validations
