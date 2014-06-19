@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 4
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 4
+      PATCH = 41
       # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
       PRERELEASE = 'electro-release'
 
