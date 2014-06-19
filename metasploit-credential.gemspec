@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
   s.description = 'The Metasploit::Credential namespace and its ActiveRecord::Base subclasses'
 
-  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
+  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['CONTRIBUTING.md', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
   s.add_development_dependency 'pg'
