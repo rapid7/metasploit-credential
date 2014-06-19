@@ -7,6 +7,40 @@ module Metasploit
         ActiveRecord::Base.connected?
       end
 
+      # This method takes a few simple parameters and creates a new username/password
+      # credential that was obtained by cracking a hash. It reuses the relevant
+      # components form the originating {Metasploit::Credential::Core} and builds new
+      # {Metasploit::Credential::Login} objects based on the ones attached to the originating
+      # {Metasploit::Credential::Core}
+      #
+      # @option opts [String] :username the username to find or create the {Metasploit::Credential::Public} from
+      # @option opts [String] :password the password to find or create the {Metasploit::Credential::Password} from
+      # @option opts [Fixnum] :core_id the id for the originating {Metasploit::Credential::Core}
+      def create_cracked_credential(opts={})
+        return nil unless active_db?
+        username = opts.fetch(:username)
+        password = opts.fetch(:password)
+        core_id  = opts.fetch(:core_id)
+
+        private  = Metasploit::Credential::Password.where(data: password).first_or_create!
+        public   = Metasploit::Credential::Public.where(username: username).first_or_create!
+        old_core = Metasploit::Credential::Core.find(core_id)
+        origin   = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
+        core     = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
+
+        if core.origin_id.nil?
+          core.origin = origin
+        end
+        core.save!
+
+
+        old_core.logins.each do |login|
+          service_id = login.service_id
+          Metasploit::Credential::Login.where(core_id: core.id, service_id: service_id, status:  Metasploit::Credential::Login::Status::UNTRIED).first_or_create!
+        end
+      end
+
+
       # This method is responsible for creation {Metasploit::Credential::Core} objects
       # and all sub-objects that it is dependent upon.
       #
