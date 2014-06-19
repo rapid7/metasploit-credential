@@ -102,7 +102,7 @@ Perform these steps prior to pushing to DESTINATION or the build will be broke o
 
 ## Version
 - [ ] Edit `lib/metasploit/credential/version.rb`
-- [ ] Change `PRELEASE` from `SOURCE_SUMMARY` to `DESTINATION_SUMMARY` to match the branch (DESTINATION) summary (DESTINATION_SUMMARY)
+- [ ] Change `PRERELEASE` from `SOURCE_SUMMARY` to `DESTINATION_SUMMARY` to match the branch (DESTINATION) summary (DESTINATION_SUMMARY)
 
 ## Gem build
 - [ ] gem build *.gemspec
