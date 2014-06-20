@@ -1,10 +1,14 @@
+#
+# Standard Library
+#
+
+require 'csv'
+
+
 # Creates {Metasploit::Credential::Core} objects and their associated {Metasploit::Credential::Public},
 # {Metasploit::Credential::Private}, and {Metasploit::Credential::Realm} objects from a CSV file.
 #
 # Successful import will also create a {Metasploit::Credential::Origin::Import}
-#
-
-require 'csv'
 class Metasploit::Credential::Importer::Core
   include Metasploit::Credential::Importer::Base
 
