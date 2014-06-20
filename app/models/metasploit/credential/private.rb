@@ -57,11 +57,29 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   attr_accessible :data
 
   #
+  #
+  # Search
+  #
+  #
+
+  #
   # Search Attributes
   #
 
   search_attribute :data,
                    type: :string
+
+  #
+  # Search Withs
+  #
+
+  search_with Metasploit::Credential::Search::Operator::Type,
+              class_names: %w{
+                Metasploit::Credential::NonreplayableHash
+                Metasploit::Credential::NTLMHash
+                Metasploit::Credential::Password
+                Metasploit::Credential::SSHKey
+              }
 
   #
   # Validations
