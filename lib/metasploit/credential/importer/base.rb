@@ -9,22 +9,28 @@ module Metasploit
         #
 
         # Whitelist of the {Metasploit::Credential::Private} subclass names allowed
-        # in importers.  Used to designate the names of classes that can be exported
-        # and are therefore allowed in imports.
-        ALLOWED_PRIVATE_TYPE_NAMES = [
+        # in long-form CSV imports.
+        LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES = [
                                       Metasploit::Credential::NonreplayableHash,
                                       Metasploit::Credential::NTLMHash,
                                       Metasploit::Credential::Password,
                                       Metasploit::Credential::SSHKey].map(&:name)
 
 
+        # Whitelist of the {Metasploit::Credential::Private} subclass names allowed
+        # in short-form CSV imports.
+        SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES = [
+                                      Metasploit::Credential::NonreplayableHash,
+                                      Metasploit::Credential::NTLMHash,
+                                      Metasploit::Credential::Password].map(&:name)
+
         included do
           include ActiveModel::Validations
 
-          # @!attribute data
+          # @!attribute input
           #   An {IO} that holds the import data. {File} in normal usage, {StringIO} in testing
           #   @return [IO]
-          attr_accessor :data
+          attr_accessor :input
 
           # @!attribute origin
           #   An {Metasploit::Credential::Origin} that represents the discrete

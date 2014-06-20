@@ -7,7 +7,7 @@ require 'zip'
 FactoryGirl.define do
   factory :metasploit_credential_importer_zip,
           class: Metasploit::Credential::Importer::Zip do
-    data { generate :metasploit_credential_importer_zip_file }
+    input { generate :metasploit_credential_importer_zip_file }
     origin {FactoryGirl.build :metasploit_credential_origin_import }
   end
 
@@ -46,7 +46,7 @@ FactoryGirl.define do
     # write out manifest CSV into the zip directory
     # 'key' used twice because we are using usernames for filenames
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
-      csv << Metasploit::Credential::Importer::Core::VALID_CSV_HEADERS
+      csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
         csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
@@ -89,7 +89,7 @@ FactoryGirl.define do
     # write out manifest CSV into the zip directory
     # 'key' used twice because we are using usernames for filenames
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
-      csv << Metasploit::Credential::Importer::Core::VALID_CSV_HEADERS
+      csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
         csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end

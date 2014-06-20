@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'securerandom'
-
 describe MetasploitDataModels::Search::Visitor::Relation do
   subject(:visitor) {
     described_class.new(
@@ -252,6 +250,42 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           it_should_behave_like 'matching class', Metasploit::Credential::NonreplayableHash
           it_should_behave_like 'matching class', Metasploit::Credential::NTLMHash
         end
+      end
+
+      context 'with Metasploit::Credential::Public' do
+        let(:klass) {
+          Metasploit::Credential::Public
+        }
+
+        let(:matching_username) {
+          'alice'
+        }
+
+        let(:non_matching_username) {
+          # must not LIKE match matching_username
+          'bob'
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: matching_username
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: non_matching_username
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :username
       end
     end
   end
