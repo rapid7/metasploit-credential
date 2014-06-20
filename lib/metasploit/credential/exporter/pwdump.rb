@@ -83,7 +83,7 @@ class Metasploit::Credential::Exporter::Pwdump
     "#{address}:#{service.port}/#{service.proto} (#{service.name})"
   end
 
-  # Renders the collection credential objects in {#data} into the {ERB} template at {TEMPLATE PATH}
+  # Renders the collection credential objects in {#data} into the `ERB` template at {TEMPLATE_PATH}
   # @return [String]
   def rendered_output
     @version_string = VERSION

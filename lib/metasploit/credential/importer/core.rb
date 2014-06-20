@@ -23,7 +23,7 @@ class Metasploit::Credential::Importer::Core
   #
 
   # @!attribute csv_object
-  #   The {CSV} instance created from {#input}
+  #   The `CSV` instance created from `#input`
   #   @return [CSV]
   attr_reader :csv_object
 
@@ -33,7 +33,7 @@ class Metasploit::Credential::Importer::Core
   #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
   #   {Metasploit::Credential::Private} objects created during the import.
   #   @return[String]
-  attr_accessor :private_credential_type
+  attr_accessor :private_credential_typei
 
 
   #
@@ -67,7 +67,7 @@ class Metasploit::Credential::Importer::Core
     core.save!
   end
 
-  # An instance of {CSV} from whence cometh the sweet sweet credential input
+  # An instance of `CSV` from whence cometh the sweet sweet credential input
   #
   # @return [CSV]
   def csv_object
