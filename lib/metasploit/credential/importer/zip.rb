@@ -11,11 +11,11 @@ class Metasploit::Credential::Importer::Zip
   # The name of the directory in the zip file's root directory that contains SSH keys
   KEYS_SUBDIRECTORY_NAME = "keys"
 
-  # The name of the file in the zip which is opened and passed as a {File} to an instance of
+  # The name of the file in the zip which is opened and passed as a `File` to an instance of
   # {Metasploit::Credential::Importer::CSV::Core}
   MANIFEST_FILE_NAME = "manifest.csv"
 
-  # An argument to {Dir::mktmpdir}
+  # An argument to `Dir::mktmpdir`t
   TEMP_UNZIP_PATH_PREFIX = "metasploit-imports"
 
   #
