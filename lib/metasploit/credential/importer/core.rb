@@ -37,7 +37,7 @@ class Metasploit::Credential::Importer::Core
   #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
   #   {Metasploit::Credential::Private} objects created during the import.
   #   @return[String]
-  attr_accessor :private_credential_typei
+  attr_accessor :private_credential_type
 
 
   #
