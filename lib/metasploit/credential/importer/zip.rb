@@ -51,6 +51,9 @@ class Metasploit::Credential::Importer::Zip
     Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin).import!
   end
 
+  # Returns the path to the directory where the zip was extracted.
+  #
+  # @return [String]
   def extracted_zip_path
     full_path     = Pathname.new input
     path_fragment = full_path.dirname.to_s
