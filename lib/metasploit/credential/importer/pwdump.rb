@@ -63,7 +63,9 @@ class Metasploit::Credential::Importer::Pwdump
     end
   end
 
-  # Perform the import of the credential data, creating {Mdm::Host} and {Mdm::Service} objects as needed
+  # Perform the import of the credential data, creating {Mdm::Host} and {Mdm::Service} objects as needed,
+  # parsing out data by matching against regex constants that match the various kinds of valid lines found
+  # in the file.  Ignore lines which match none of the REGEX constants.
   # @return [void]
   def import!
     service_info = nil
@@ -93,13 +95,19 @@ class Metasploit::Credential::Importer::Pwdump
       end
 
       # Skip unless we have enough to make a Login
-      next unless [service_info[:host_address], service_info[:port], username, private].compact!.size == 4
+      if service_info.present?
+        if [service_info[:host_address], service_info[:port], username, private].compact.size != 4
+          next
+        end
+      else
+        next
+      end
 
       public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
       private_obj = creds_class.where(data: private).first_or_create
 
       origin = Metasploit::Credential::Origin::Import.create(filename: filename)
-      core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace: workspace)
+      core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace_id: workspace.id)
 
       login_opts = {
         address:      service_info[:host_address],
@@ -122,7 +130,7 @@ class Metasploit::Credential::Importer::Pwdump
   # @return [Hash]
   def parsed_regex_results(username, private, dehex=false)
     results = {}
-    results[:user]     = blank_or_string(username, dehex)
+    results[:username] = blank_or_string(username, dehex)
     results[:private]  = blank_or_string(private, dehex)
 
     results

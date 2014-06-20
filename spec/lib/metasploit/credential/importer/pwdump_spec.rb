@@ -54,5 +54,44 @@ describe Metasploit::Credential::Importer::Pwdump do
       end
     end
   end
+
+  describe "#import!" do
+    describe "creating Credential objects" do
+      it 'should create the proper number of Cores' do
+        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Core, :count).from(0).to(5)
+      end
+
+      it 'should create the proper number of Logins' do
+        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Login, :count).from(0).to(5)
+      end
+
+      it 'should create the proper number of Publics' do
+        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Public, :count).from(0).to(2)
+      end
+
+      describe 'should create the proper number of Privates' do
+        it 'should create 1 NTLM hash' do
+          expect{pwdump_importer.import!}.to change(Metasploit::Credential::NTLMHash, :count).from(0).to(1)
+        end
+
+        it 'should create 2 NonreplayableHashes' do
+          expect{pwdump_importer.import!}.to change(Metasploit::Credential::NonreplayableHash, :count).from(0).to(2)
+        end
+
+        it 'should create 2 Passwords' do
+          expect{pwdump_importer.import!}.to change(Metasploit::Credential::Password, :count).from(0).to(2)
+        end
+      end
+    end
+
+    describe "creating Host objects" do
+      it 'should create the proper number of Hosts'
+    end
+
+    describe "creating Service objects" do
+      it 'should create the proper number of Services'
+    end
+
+  end
   
 end

@@ -16,7 +16,7 @@ module Metasploit::Credential::Text
 
   # Convert hex into characters
   # @return [String]
-  def dehex(str)
+  def self.dehex(str)
     hexen = str.scan(/\x5cx[0-9a-fA-F]{2}/n)
     hexen.each { |h|
       str.gsub!(h,h[2,2].to_i(16).chr)

@@ -231,8 +231,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   def consistent_workspaces
     case origin
       when Metasploit::Credential::Origin::Import
-        unless self.workspace == origin.task.try(:workspace)
-          errors.add(:workspace, :origin_task_workspace)
+        if origin.task.present?
+          unless self.workspace == origin.task.try(:workspace)
+            errors.add(:workspace, :origin_task_workspace)
+          end
         end
       when Metasploit::Credential::Origin::Manual
         user = origin.user
