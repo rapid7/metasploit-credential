@@ -20,7 +20,10 @@ FactoryGirl.define do
   # Create a zip with keys and manifest,
   #
   sequence :metasploit_credential_importer_zip_file do |n|
-    path = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}-#{Time.now.to_i}-#{n}"
+    prefix = 'metasploit_credential_importer_zip_file'
+    suffix = n.to_s
+    path = Dir.mktmpdir([prefix, suffix])
+
     keys_path = "#{path}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}"
     FileUtils.mkdir_p(keys_path)
 
@@ -71,8 +74,9 @@ FactoryGirl.define do
   # Create a zip without keys and WITH a manifest
   #
   sequence :metasploit_credential_importer_zip_file_invalid_no_keys do |n|
-    path = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}-#{Time.now.to_i}-#{n}"
-    FileUtils.mkdir_p(path)
+    prefix = 'metasploit_credential_importer_zip_file_invalid_no_keys'
+    suffix = n.to_s
+    path = Dir.mktmpdir([prefix, suffix])
 
     # Create keys
     key_data = 5.times.collect do
@@ -114,8 +118,11 @@ FactoryGirl.define do
   # Create a zip with keys and WITHOUT a manifest,
   #
   sequence :metasploit_credential_importer_zip_file_without_manifest do |n|
-    path = "/tmp/#{Metasploit::Credential::Importer::Zip::TEMP_UNZIP_PATH_PREFIX}-#{Time.now.to_i}-#{n}"
-    keys_path = "#{path}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}"
+    prefix = 'metasploit_credential_importer_zip_file_without_manifest'
+    suffix = n.to_s
+    path = Dir.mktmpdir([prefix, suffix])
+
+    keys_path = File.join(path, Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME)
     FileUtils.mkdir_p(keys_path)
 
     # Create keys
