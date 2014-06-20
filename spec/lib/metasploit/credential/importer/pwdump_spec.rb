@@ -85,11 +85,15 @@ describe Metasploit::Credential::Importer::Pwdump do
     end
 
     describe "creating Host objects" do
-      it 'should create the proper number of Hosts'
+      it 'should create the proper number of Hosts' do
+        expect{pwdump_importer.import!}.to change(Mdm::Host, :count).from(0).to(2)
+      end
     end
 
     describe "creating Service objects" do
-      it 'should create the proper number of Services'
+      it 'should create the proper number of Services' do
+        expect{pwdump_importer.import!}.to change(Mdm::Service, :count).from(0).to(2)
+      end
     end
 
   end
