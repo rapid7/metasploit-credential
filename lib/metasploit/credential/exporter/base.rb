@@ -1,6 +1,7 @@
 module Metasploit
   module Credential
     module Exporter
+      # Defines attributes common to allow exporters.
       module Base
         extend ActiveSupport::Concern
 
