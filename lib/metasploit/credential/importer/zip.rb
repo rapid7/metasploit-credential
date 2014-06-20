@@ -15,9 +15,6 @@ class Metasploit::Credential::Importer::Zip
   # {Metasploit::Credential::Importer::CSV::Core}
   MANIFEST_FILE_NAME = "manifest.csv"
 
-  # An argument to {Dir::mktmpdir}
-  TEMP_UNZIP_PATH_PREFIX = "metasploit-imports"
-
   #
   # Attributes
   #
