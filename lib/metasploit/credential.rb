@@ -34,10 +34,12 @@ module Metasploit
     autoload :Origin
     autoload :Text
 
+    # The prefix for all `ActiveRecord::Base#table_name`s for `ActiveRecord::Base` subclasses under this namespace.
+    #
+    # @return [String] `'metasploit_credential_'`
     def self.table_name_prefix
       'metasploit_credential_'
     end
-
   end
 end
 
