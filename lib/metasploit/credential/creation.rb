@@ -1,8 +1,12 @@
-
+# Implements a set of "convenience methods" for creating credentials and related portions of the object graph.  Creates
+# {Metasploit::Credential::Core} objects and their attendant relationships as well as {Metasploit::Credential::Login}
+# objects and their attendant {Mdm::Host} and {Mdm::Service} objects.
 module Metasploit
   module Credential
     module Creation
 
+      # Returns true if ActiveRecord has an active database connection, false otherwise.
+      # @return [Boolean]
       def active_db?
         ActiveRecord::Base.connected?
       end
@@ -346,19 +350,18 @@ module Metasploit
         protocol         = opts.fetch(:protocol)
         workspace_id     = opts.fetch(:workspace_id)
 
-        # Find or create the host object we need
         host_object    = Mdm::Host.where(address: address, workspace_id: workspace_id).first_or_create
-
-        # Next we find or create the Service object we need
         service_object = Mdm::Service.where(host_id: host_object.id, port: port, proto: protocol).first_or_initialize
+
         service_object.name = service_name
         service_object.save!
+
         service_object
       end
 
       # This method checks to see if a {Metasploit::Credential::Login} exists for a given
       # set of details. If it does exists, we then appropriately set the status to one of our
-      # failure statues.
+      # failure statuses.
       #
       # @option opts [String] :address The address of the host we attempted
       # @option opts [Fixnum] :port the port of the service we attempted

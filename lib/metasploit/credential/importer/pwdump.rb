@@ -7,6 +7,7 @@
 # of this library.
 class Metasploit::Credential::Importer::Pwdump
   include Metasploit::Credential::Importer::Base
+  include Metasploit::Credential::Creation
 
   #
   # Constants
@@ -38,57 +39,6 @@ class Metasploit::Credential::Importer::Pwdump
   # Instance Methods
   #
 
-  # Perform the import of the credential data, creating {Mdm::Host} and {Mdm::Service} objects as needed
-  # @return [void]
-  def import!
-    service_info = nil
-
-    input.each_line do |line|
-      case line
-        when COMMENT_LINE_START_REGEX
-          service_info = service_info_from_comment_string(line)
-        when SMB_WITH_HASH_REGEX
-          info = parsed_regex_results($1, $2)
-          user, pass = info[:user], info[:pass]
-          creds_class = Metasploit::Credential::NTLMHash
-        when SMB_WITH_JTR_BLANK_PASSWORD_REGEX
-          info = parsed_regex_results($1, $2)
-          user, pass = info[:user], info[:pass]
-          creds_class = Metasploit::Credential::NTLMHash
-        when SMB_WITH_PLAINTEXT_REGEX
-          info = parsed_regex_results($1, $2)
-          user, pass = info[:user], info[:pass]
-          creds_class = Metasploit::Credential::NTLMHash
-        when PLAINTEXT_REGEX
-          info = parsed_regex_results($1, $2, true)
-          user, pass = info[:user], info[:pass]
-          creds_class = Metasploit::Credential::Password
-        else
-          next
-      end
-
-      # create the cred Core via the Creation methods to
-      # ensure that the Host and Service objects get created
-
-    end
-  end
-
-
-  # Break a line into user, hash, and type
-  # @param [String] username
-  # @param [String] password
-  # @param [Boolean] dehex convert hex to char if true
-  # @return [Hash]
-  def parsed_regex_results(username, password, dehex=false)
-    results = {}
-    results[:user]  = blank_or_string(username, dehex)
-    results[:pass]  = blank_or_string(password, dehex)
-
-    results
-  end
-
-
-
   # Checks a string for matching {Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING} and returns blank string
   # if it matches that constant.
   # @param [String] check_string the string to check
@@ -106,6 +56,67 @@ class Metasploit::Credential::Importer::Pwdump
     end
   end
 
+  # Perform the import of the credential data, creating {Mdm::Host} and {Mdm::Service} objects as needed
+  # @return [void]
+  def import!
+    service_info = nil
+
+    input.each_line do |line|
+      case line
+        when COMMENT_LINE_START_REGEX
+          service_info = service_info_from_comment_string(line)
+        when SMB_WITH_HASH_REGEX
+          info = parsed_regex_results($1, $2)
+          username, private = info[:username], info[:private]
+          creds_class = Metasploit::Credential::NTLMHash
+        when SMB_WITH_JTR_BLANK_PASSWORD_REGEX
+          info = parsed_regex_results($1, $2)
+          username, private = info[:username], info[:private]
+          creds_class = Metasploit::Credential::NTLMHash
+        when SMB_WITH_PLAINTEXT_REGEX
+          info = parsed_regex_results($1, $2)
+          username, private = info[:username], info[:private]
+          creds_class = Metasploit::Credential::NTLMHash
+        when PLAINTEXT_REGEX
+          info = parsed_regex_results($1, $2, true)
+          username, private = info[:username], info[:private]
+          creds_class = Metasploit::Credential::Password
+        else
+          next
+      end
+      public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
+      private_obj = creds_class.where(data: private).first_or_create
+
+      origin = Metasploit::Credential::Origin::Import.create(filename: filename)
+      core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace: workspace)
+
+      login_opts = {
+        address:      service_info[:host_address],
+        port:         service_info[:port],
+        protocol:     service_info[:protocol],
+        service_name: service_info[:name],
+        workspace_id: workspace.id,
+        core:         core,
+        status: Metasploit::Credential::Login::Status::UNTRIED
+      }
+
+      create_credential_login(login_opts)
+    end
+  end
+
+  # Break a line into user, hash
+  # @param [String] username
+  # @param [String] private
+  # @param [Boolean] dehex convert hex to char if true
+  # @return [Hash]
+  def parsed_regex_results(username, private, dehex=false)
+    results = {}
+    results[:user]     = blank_or_string(username, dehex)
+    results[:private]  = blank_or_string(private, dehex)
+
+    results
+  end
+
   # Take an msfpwdump comment string and parse it into information necessary for
   # creating {Mdm::Host} and {Mdm::Service} objects.
   # @param [String] comment_string a string starting with a '#' that conforms to {SERVICE_COMMENT_REGEX}
@@ -115,14 +126,13 @@ class Metasploit::Credential::Importer::Pwdump
     if comment_string[SERVICE_COMMENT_REGEX]
       service_info[:host_address]  = $1
       service_info[:port]          = $2
-      service_info[:protocol]      = $4
+      service_info[:protocol]      = $4.present? ? $4 : "tcp"
       service_info[:name]          = $6
       service_info
     else
       nil
     end
   end
-
 
 end
 

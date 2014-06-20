@@ -27,6 +27,11 @@ module Metasploit
         included do
           include ActiveModel::Validations
 
+          # @!attribute filename
+          #   The name of the file that is being imported
+          #   @return [String]
+          attr_accessor :filename
+
           # @!attribute input
           #   An {IO} that holds the import data. {File} in normal usage, {StringIO} in testing
           #   @return [IO]

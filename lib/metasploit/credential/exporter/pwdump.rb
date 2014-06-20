@@ -59,7 +59,7 @@ class Metasploit::Credential::Exporter::Pwdump
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NTLMHash} for output
   # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @return [String]
   def format_ntlm_hash(login)
     creds_data = data_for_login(login)
     "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}"
@@ -67,7 +67,7 @@ class Metasploit::Credential::Exporter::Pwdump
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::Password} for output
   # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @return [ String]
   def format_password(login)
     creds_data = data_for_login(login)
     "#{creds_data[:username]} #{creds_data[:private_data]}"
@@ -102,8 +102,8 @@ class Metasploit::Credential::Exporter::Pwdump
   private
 
   # Returns a hash containing the public and private or the canonical blank string
-  # @param[Metasploit::Credential::Login] login
-  # @return[Hash]
+  # @param [Metasploit::Credential::Login] login
+  # @return [Hash]
   def data_for_login(login)
     username     = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
     private_data = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING
