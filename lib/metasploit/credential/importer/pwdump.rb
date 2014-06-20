@@ -35,6 +35,13 @@ class Metasploit::Credential::Importer::Pwdump
   # Matches a line with free-form text - less restrictive than {SMB_WITH_HASH_REGEX}
   SMB_WITH_PLAINTEXT_REGEX     = /^[\s]*([^\s:]+):(.+):[A-Fa-f0-9]*:[A-Fa-f0-9]*:::$/
 
+
+  #
+  # Validations
+  #
+
+  validates :filename, presence: true
+
   #
   # Instance Methods
   #
@@ -45,7 +52,7 @@ class Metasploit::Credential::Importer::Pwdump
   # @param [Boolean] dehex convert hex to char if true
   # @return [String]
   def blank_or_string(check_string, dehex=false)
-    if check_string.nil? || check_string ==  Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING || JTR_NO_PASSWORD_STRING
+    if check_string.blank? || check_string ==  Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING || check_string == JTR_NO_PASSWORD_STRING
       ""
     else
       if dehex
@@ -84,6 +91,10 @@ class Metasploit::Credential::Importer::Pwdump
         else
           next
       end
+
+      # Skip unless we have enough to make a Login
+      next unless [service_info[:host_address], service_info[:port], username, private].compact!.size == 4
+
       public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
       private_obj = creds_class.where(data: private).first_or_create
 
@@ -135,5 +146,3 @@ class Metasploit::Credential::Importer::Pwdump
   end
 
 end
-
-

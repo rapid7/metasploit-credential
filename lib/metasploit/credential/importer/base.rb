@@ -48,6 +48,11 @@ module Metasploit
           #   @return[Mdm::Workspace]
           attr_accessor :workspace
 
+          #
+          # Validations
+          #
+
+          validates :origin, presence: true
 
           # If no +workspace+ is provided at instantiation, assume that the workspace comes from an {Mdm::Task}
           #
