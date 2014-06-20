@@ -36,7 +36,11 @@ module Metasploit
 
         old_core.logins.each do |login|
           service_id = login.service_id
-          Metasploit::Credential::Login.where(core_id: core.id, service_id: service_id, status:  Metasploit::Credential::Login::Status::UNTRIED).first_or_create!
+          new_login = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_id).first_or_initialize
+          if new_login.status.blank?
+            new_login.status =  Metasploit::Credential::Login::Status::UNTRIED
+          end
+          new_login.save!
         end
       end
 
