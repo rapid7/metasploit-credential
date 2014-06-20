@@ -1,6 +1,8 @@
 
 module Metasploit
   module Credential
+    # Helper methods for finding or creating a tree of credentials.  The method ensure that duplicate credentials are
+    # not created.
     module Creation
 
       def active_db?
