@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '>= 0.17.3.pre.metasploit.pre.concern', '< 0.18'
+  s.add_runtime_dependency 'metasploit_data_models', '>= 0.17.3', '< 0.18'
   # Metasploit::Model::Search
   s.add_runtime_dependency 'metasploit-model', '>= 0.24.1.pre.semantic.pre.versioning.pre.2.pre.0', '< 0.25'
   # Metasploit::Credential::NTLMHash helper methods
