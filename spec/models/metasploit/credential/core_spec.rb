@@ -476,14 +476,6 @@ describe Metasploit::Credential::Core do
               it { should include error }
             end
           end
-
-          context 'without Metasploit::Credential::Origin::Import#task' do
-            let(:task) do
-              nil
-            end
-
-            it { should include(error) }
-          end
         end
 
         context 'with Metasploit::Credential::Origin::Manual' do
