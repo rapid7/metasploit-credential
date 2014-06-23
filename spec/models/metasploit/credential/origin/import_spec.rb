@@ -15,7 +15,7 @@ describe Metasploit::Credential::Origin::Import do
       it_should_behave_like 'timestamp database columns'
 
       context 'foreign keys' do
-        it { should have_db_column(:task_id).of_type(:integer).with_options(null: false) }
+        it { should have_db_column(:task_id).of_type(:integer) }
       end
     end
 
