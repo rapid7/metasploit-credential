@@ -19,6 +19,9 @@ class Metasploit::Credential::Importer::Pwdump
   # The string that John the Ripper uses to designate a lack of password in a credentials entry
   JTR_NO_PASSWORD_STRING = "NO PASSWORD"
 
+  # Matches lines that contain usernames and non-SMB hashes
+  NONREPLAYABLE_REGEX          = /^[\s]*([\x21-\x7f]+):([\x21-\x7f]+):::/n
+
   # Matches lines that contain usernames and plaintext passwords
   PLAINTEXT_REGEX              = /^[\s]*([\x21-\x7f]+)[\s]+([\x21-\x7f]+)?/n
 
@@ -86,6 +89,10 @@ class Metasploit::Credential::Importer::Pwdump
           info = parsed_regex_results($1, $2)
           username, private = info[:username], info[:private]
           creds_class = Metasploit::Credential::NTLMHash
+        when NONREPLAYABLE_REGEX
+          info = parsed_regex_results($1, $2)
+          username, private = info[:username], info[:private]
+          creds_class = Metasploit::Credential::NonreplayableHash
         when PLAINTEXT_REGEX
           info = parsed_regex_results($1, $2, true)
           username, private = info[:username], info[:private]

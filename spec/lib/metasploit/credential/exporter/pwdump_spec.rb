@@ -68,17 +68,17 @@ describe Metasploit::Credential::Exporter::Pwdump do
       end
 
       it 'should have the proper formatting with extant data' do
-        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{login.core.private.data}"
+        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{login.core.private.data}:::"
       end
 
       it 'should have the proper formatting with a missing public' do
         login.core.public.username = ""
-        exporter.format_ntlm_hash(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.id}:#{login.core.private.data}"
+        exporter.format_ntlm_hash(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.id}:#{login.core.private.data}:::"
       end
 
       it 'should have the proper formatting with a missing private' do
         login.core.private.data = ""
-        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}"
+        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::"
       end
     end
 

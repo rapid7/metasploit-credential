@@ -54,7 +54,7 @@ class Metasploit::Credential::Exporter::Pwdump
     creds_data = data_for_login(login)
     username = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:username])
     hash     = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:private_data])
-    "#{username} #{hash}"
+    "#{username}:#{hash}:::"
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NTLMHash} for output
