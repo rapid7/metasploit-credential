@@ -8,6 +8,7 @@ describe Metasploit::Credential::Exporter::Core do
   let(:origin) { FactoryGirl.create(:metasploit_credential_origin_import) }
   let(:workspace){ FactoryGirl.create(:mdm_workspace) }
   let(:core){ FactoryGirl.create(:metasploit_credential_core, workspace: workspace, origin: origin) }
+  let(:login){ FactoryGirl.create(:metasploit_credential_login, service: service, core:core) }
 
   subject(:core_exporter){ Metasploit::Credential::Exporter::Core.new(workspace: workspace) }
 
@@ -36,12 +37,20 @@ describe Metasploit::Credential::Exporter::Core do
   end
 
   describe "#key_path" do
-    describe "when the argument is a Core" do
+    let(:key_path_basename_string){ "#{core.public.username}-#{core.private.id}" }
 
+    describe "when the argument is a Core" do
+      it 'should be formed from the Public#username and the Private#id' do
+        key_path = core_exporter.key_path(core)
+        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+      end
     end
 
     describe "when the argument is a Login" do
-      
+      it 'should be formed from the Public#username and the Private#id' do
+        key_path = core_exporter.key_path(login)
+        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+      end
     end
   end
 
@@ -124,9 +133,13 @@ describe Metasploit::Credential::Exporter::Core do
     end
   end
 
-  describe "#output_file_path" do
+  describe "#output_directory_path" do
     it 'should be in the platform-agnostic temp directory' do
-      core_exporter.output_file_path.should include(Dir.tmpdir)
+      core_exporter.output_directory_path.should include(Dir.tmpdir)
+    end
+
+    it 'should have the set export prefix' do
+      core_exporter.output_directory_path.should include(Metasploit::Credential::Exporter::Core::TEMP_ZIP_PATH_PREFIX)
     end
   end
 

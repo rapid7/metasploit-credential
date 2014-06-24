@@ -77,7 +77,7 @@ class Metasploit::Credential::Exporter::Core
   # @param [Hash] line the result of {#line_for_login} or #{line_for_core}
   # @return [String]
   def key_path(datum)
-    core = datum.is_a? Metasploit::Credential::Core ? datum : datum.core
+    core = datum.is_a?(Metasploit::Credential::Core) ? datum : datum.core
     dir_path = File.join(output_directory_path, Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME)
     FileUtils.mkdir_p(dir_path)
     File.join(dir_path,"#{core.public.username}-#{core.private.id}")
