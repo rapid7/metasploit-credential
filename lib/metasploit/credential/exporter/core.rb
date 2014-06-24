@@ -32,7 +32,8 @@ class Metasploit::Credential::Exporter::Core
   #
 
   def initialize(args)
-    @mode = args.fetch[:mode].present? ? args.fetch[:mode] : DEFAULT_MODE
+    @mode = args[:mode].present? ? args.fetch(:mode) : DEFAULT_MODE
+    fail "Invalid mode" unless ALLOWED_MODES.include?(mode)
     super args
   end
 
@@ -67,8 +68,8 @@ class Metasploit::Credential::Exporter::Core
   def line_for_core(core)
     {
       username: core.public.username,
-      private_type: core.private.type.name,
-      private_data: core.private.data.name,
+      private_type: core.private.type.demodulize,
+      private_data: core.private.data,
     }
   end
 end
