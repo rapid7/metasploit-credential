@@ -19,10 +19,27 @@ describe Metasploit::Credential::Exporter::Core do
     it 'should raise an exception if initialized with an invalid mode' do
       expect{ Metasploit::Credential::Exporter::Core.new(mode: :fail_mode) }.to raise_error(RuntimeError)
     end
+  end
 
+  describe "#header_line" do
+    describe "in :login mode" do
+      it 'should have the proper headers' do
+        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS.push(:host_address, :service_port, :service_name, :service_protocol)
+      end
+    end
+
+    describe "in :core mode" do
+      it 'should have the proper headers' do
+        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
+      end
+    end
   end
 
   describe "#line_for_core" do
+    it 'should produce values in the proper order' do
+      core_exporter.line_for_core(core).values.should == [core.public.username, core.private.type.demodulize,
+                                                          core.private.data, core.realm.key, core.realm.value]
+    end
 
     it 'should produce a hash with the public username' do
       result_hash = core_exporter.line_for_core(core)
@@ -42,6 +59,13 @@ describe Metasploit::Credential::Exporter::Core do
 
   describe "#line_for_login" do
     let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core, service: service) }
+
+    it 'should produce values in the proper order' do
+      core_exporter.line_for_login(login).values.should == [core.public.username, core.private.type.demodulize,
+                                                            core.private.data, core.realm.key, core.realm.value,
+                                                            login.service.host.address, login.service.port,
+                                                            login.service.name, login.service.proto]
+    end
 
     it 'should produce a hash with the service host address' do
       result_hash = core_exporter.line_for_login(login)
@@ -76,6 +100,23 @@ describe Metasploit::Credential::Exporter::Core do
     it 'should produce a hash with the demodulized name of the  private type' do
       result_hash = core_exporter.line_for_login(login)
       result_hash[:private_type].should == login.core.private.type.demodulize
+    end
+  end
+
+  describe "#output" do
+    it 'should be a writable File' do
+      file_stat = core_exporter.output.stat
+      file_stat.should be_writable
+    end
+
+    it 'should not be opened in binmode' do
+      core_exporter.output.should_not be_binmode
+    end
+  end
+
+  describe "#output_file_path" do
+    it 'should be in the platform-agnostic temp directory' do
+      core_exporter.output_file_path.should include(Dir.tmpdir)
     end
   end
 
