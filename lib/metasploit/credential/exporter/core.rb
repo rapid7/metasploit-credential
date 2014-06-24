@@ -12,6 +12,10 @@ class Metasploit::Credential::Exporter::Core
   # The downcased and Symbolized name of the default object type to export
   DEFAULT_MODE  = :login
 
+  # An argument to {Dir::mktmpdir}
+  TEMP_ZIP_PATH_PREFIX = "metasploit-exports"
+
+
   #
   # Attributes
   #
@@ -21,15 +25,21 @@ class Metasploit::Credential::Exporter::Core
   #   @return [Array]
   attr_accessor :export_data
 
+  # @!attribute finalized_zip_file
+  #   The final output artifacts, zipped
+  #   @return [Zip::File]
+  attr_accessor :finalized_zip_file
+
   # @!attribute mode
   #   One of `:login` or `:core`
   #   @return [Symbol]
   attr_accessor :mode
 
-  # @!attribute output_file_path
+  # @!attribute output_directory_path
   #   The platform-independent location of the export file on disk
   #   @return [String]
-  attr_accessor :output_file_path
+  attr_accessor :output_directory_path
+
 
   #
   # Instance Methods
@@ -44,29 +54,55 @@ class Metasploit::Credential::Exporter::Core
   # Iterate over the {#export_data} and write lines to the CSV, returning the completed
   # CSV file.
   # @return [CSV]
-  def rendered_csv
+  def render_csv_and_keys_to_output_directory
     CSV.open(output) do |csv|
       csv << header_line
       export_data.each do |datum|
         line = self.send("line_for_#{mode}", datum)
+
+        # Special-case any SSHKeys in the import
+        if line[:private_type] == "SSHKey"
+          key_path = path_for_key(line, datum)
+          write_key_file(key_path, line[:private_data])
+          line[:private_data] = key_path
+        end
+
         csv << line.values
       end
     end
   end
 
+
+  # Returns a platform-agnostic filesystem path where the key data will be saved as a file
+  # @param [Hash] line the result of {#line_for_login} or #{line_for_core}
+  # @return [String]
+  def key_path(datum)
+    core = datum.is_a? Metasploit::Credential::Core ? datum : datum.core
+    dir_path = File.join(output_directory_path, Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME)
+    FileUtils.mkdir_p(dir_path)
+    File.join(dir_path,"#{core.public.username}-#{core.private.id}")
+  end
+
+  # @param [String] path the filesystem path where the +data+ will be written
+  # @param [String] data the key data that will be written out at +path+
+  # @return [void]
+  def write_key_file(path, data)
+
+  end
+
   # The IO object that contains the exported data
   # @return [IO]
   def output
-    @output ||= File.open(output_file_path, 'w')
+    @output ||= File.open(File.join(output_directory_path, Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME), 'w')
   end
 
-  # The platform-independent location of the export file on disk, set in `Dir.tmpdir` by default
+  # The platform-independent location of the export directory on disk, set in `Dir.tmpdir` by default
   # @return [String]
-  def output_file_path
-    @output_file_path ||= File.join(Dir.tmpdir, "creds-#{mode.to_s}-#{Time.now.to_s}")
+  def output_directory_path
+    @output_directory_path ||= Dir.mktmpdir(TEMP_ZIP_PATH_PREFIX)
   end
 
-  # Returns the header line, which is dependent on mode
+  # Returns the CSV header line, which is dependent on mode
   # @return [Array<Symbol>]
   def header_line
     case mode

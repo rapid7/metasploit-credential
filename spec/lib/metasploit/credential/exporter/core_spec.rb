@@ -35,6 +35,16 @@ describe Metasploit::Credential::Exporter::Core do
     end
   end
 
+  describe "#key_path" do
+    describe "when the argument is a Core" do
+
+    end
+
+    describe "when the argument is a Login" do
+      
+    end
+  end
+
   describe "#line_for_core" do
     it 'should produce values in the proper order' do
       core_exporter.line_for_core(core).values.should == [core.public.username, core.private.type.demodulize,
