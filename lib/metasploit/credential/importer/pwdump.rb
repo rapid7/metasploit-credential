@@ -51,8 +51,8 @@ class Metasploit::Credential::Importer::Pwdump
 
   # Checks a string for matching {Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING} and returns blank string
   # if it matches that constant.
-  # @param [String] check_string the string to check
-  # @param [Boolean] dehex convert hex to char if true
+  # @param check_string [String] the string to check
+  # @param dehex [Boolean] convert hex to char if true
   # @return [String]
   def blank_or_string(check_string, dehex=false)
     if check_string.blank? || check_string ==  Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING || check_string == JTR_NO_PASSWORD_STRING
@@ -131,9 +131,9 @@ class Metasploit::Credential::Importer::Pwdump
   end
 
   # Break a line into user, hash
-  # @param [String] username
-  # @param [String] private
-  # @param [Boolean] dehex convert hex to char if true
+  # @param username [String]
+  # @param private [String]
+  # @param dehex [Boolean] convert hex to char if true
   # @return [Hash]
   def parsed_regex_results(username, private, dehex=false)
     results = {}
@@ -145,7 +145,7 @@ class Metasploit::Credential::Importer::Pwdump
 
   # Take an msfpwdump comment string and parse it into information necessary for
   # creating {Mdm::Host} and {Mdm::Service} objects.
-  # @param [String] comment_string a string starting with a '#' that conforms to {SERVICE_COMMENT_REGEX}
+  # @param comment_string [String] a string starting with a '#' that conforms to {SERVICE_COMMENT_REGEX}
   # @return [Hash]
   def service_info_from_comment_string(comment_string)
     service_info = {}
