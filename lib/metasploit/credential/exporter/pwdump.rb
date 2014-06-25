@@ -48,8 +48,8 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NonReplayableHash} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_nonreplayable_hash(login)
     creds_data = data_for_login(login)
     username = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:username])
@@ -58,16 +58,16 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NTLMHash} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_ntlm_hash(login)
     creds_data = data_for_login(login)
-    "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}"
+    "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}:::"
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::Password} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_password(login)
     creds_data = data_for_login(login)
     "#{creds_data[:username]} #{creds_data[:private_data]}"
@@ -75,7 +75,7 @@ class Metasploit::Credential::Exporter::Pwdump
 
   # Returns a string for the host/service/port/proto/service name combination in the pwdump file.
   # This string is added to make it easier for a human to scan the file.
-  # @param [Metasploit::Credential::Login] login the login to look at
+  # @param login [Metasploit::Credential::Login] the login to look at
   # @return [String]
   def format_service_for_login(login)
     service = login.service
@@ -93,7 +93,7 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Returns the count of services in the group creds contained in +hash_array+
-  # @param [Array<Metasploit::Credential::Login>] hash_array
+  # @param hash_array [Array<Metasploit::Credential::Login>]
   # @return [Fixnum]
   def service_count_for_hashes(hash_array)
     hash_array.collect(&:service).collect(&:id).uniq.size
@@ -102,8 +102,8 @@ class Metasploit::Credential::Exporter::Pwdump
   private
 
   # Returns a hash containing the public and private or the canonical blank string
-  # @param[Metasploit::Credential::Login] login
-  # @return[Hash]
+  # @param login [Metasploit::Credential::Login]
+  # @return [Hash]
   def data_for_login(login)
     username     = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
     private_data = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING

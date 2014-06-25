@@ -11,7 +11,7 @@ class CreateMetasploitCredentialOriginImports < ActiveRecord::Migration
       # Foreign Keys
       #
 
-      t.references :task, null: false
+      t.references :task
 
       #
       # Timestamps

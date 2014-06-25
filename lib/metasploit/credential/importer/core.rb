@@ -32,7 +32,7 @@ class Metasploit::Credential::Importer::Core
   # @!attribute private_credential_type
   #   The name of one of the subclasses of {Metasploit::Credential::Private}.  This will be the same for all the
   #   {Metasploit::Credential::Private} objects created during the import.
-  #   @return[String]
+  #   @return [String]
   attr_accessor :private_credential_type
 
 
@@ -76,7 +76,7 @@ class Metasploit::Credential::Importer::Core
 
 
   # The key data inside the file at +key_file_name+
-  #
+  # @param key_file_name [String]
   # @return [String]
   def key_data_from_file(key_file_name)
     full_key_file_path = "#{File.dirname(input.path)}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/#{key_file_name}"
@@ -150,6 +150,7 @@ class Metasploit::Credential::Importer::Core
   private
 
   # Returns true if the headers are correct, based on whether a private type has been chosen
+  # @param csv_headers [Array] the headers in the CSV contained in {#input}
   # @return [Boolean]
   def csv_headers_are_correct?(csv_headers)
     if private_credential_type.present?
