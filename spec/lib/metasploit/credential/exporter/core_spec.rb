@@ -135,11 +135,33 @@ describe Metasploit::Credential::Exporter::Core do
 
   describe "#output_directory_path" do
     it 'should be in the platform-agnostic temp directory' do
-      core_exporter.output_directory_path.should include(Dir.tmpdir)
+      core_exporter.output_final_directory_path.should include(Dir.tmpdir)
     end
 
     it 'should have the set export prefix' do
-      core_exporter.output_directory_path.should include(Metasploit::Credential::Exporter::Core::TEMP_ZIP_PATH_PREFIX)
+      core_exporter.output_final_directory_path.should include(Metasploit::Credential::Exporter::Core::TEMP_ZIP_PATH_PREFIX)
+    end
+
+    describe "uniqueness for export" do
+      let(:path_fragment){ "export-#{Time.now.to_s}" }
+
+      before(:each) do
+        core_exporter.stub(:output_final_subdirectory_name).and_return(path_fragment)
+      end
+
+      it 'should include a special time-stamped directory to contain the export data being staged' do
+        core_exporter.output_final_directory_path.should include(core_exporter.output_final_subdirectory_name)
+      end
+    end
+  end
+
+  describe "#render_manifest_and_output_keys" do
+    describe "when there are no SSH keys in the dataset" do
+
+    end
+
+    describe "when there ARE SSH keys in the dataset" do
+
     end
   end
 
