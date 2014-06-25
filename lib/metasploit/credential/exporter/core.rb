@@ -6,11 +6,18 @@ class Metasploit::Credential::Exporter::Core
   # Constants
   #
 
+
+  # The symbol representation of the mode for exporting {Metasploit::Credential::Core} objects
+  CORE_MODE = :core
+
+  # The symbol representation of the mode for exporting {Metasploit::Credential::Login} objects
+  LOGIN_MODE = :login
+
   # Valid modes
-  ALLOWED_MODES  = [:login, :core]
+  ALLOWED_MODES  = [LOGIN_MODE, CORE_MODE]
 
   # The downcased and Symbolized name of the default object type to export
-  DEFAULT_MODE  = :login
+  DEFAULT_MODE  = LOGIN_MODE
 
   # An argument to {Dir::mktmpdir}
   TEMP_ZIP_PATH_PREFIX = "metasploit-exports"
@@ -40,10 +47,38 @@ class Metasploit::Credential::Exporter::Core
   #   @return [String]
   attr_accessor :output_directory_path
 
+  # @!attribute whitelist_ids
+  #   A list of primary key IDs used to filter the objects in {#export_data}
+  #   @return [Array<Fixnum>]
+  attr_accessor :whitelist_ids
+
 
   #
   # Instance Methods
   #
+
+
+  # The munged data that will be iterated over for export
+  # @return [Array]
+  def data
+    return export_data if whitelist_ids.blank?
+    export_data.select{ |datum| whitelist_ids.include? datum.id }
+  end
+
+  # Returns an `Enumerable` full of either {Metasploit::Credential::Login} or {Metasploit::Credential::Core} objects
+  # depending on {#mode}
+  # @return [ActiveRecord::Relation]
+  def export_data
+    unless instance_variable_defined? :@export_data
+      @export_data = case mode
+        when LOGIN_MODE
+          Metasploit::Credential::Login.in_workspace_including_hosts_and_services(workspace)
+        when CORE_MODE
+          Metasploit::Credential::Core.workspace_id(workspace.id)
+      end
+    end
+    @export_data
+  end
 
   def initialize(args)
     @mode = args[:mode].present? ? args.fetch(:mode) : DEFAULT_MODE
@@ -57,7 +92,7 @@ class Metasploit::Credential::Exporter::Core
   def render_manifest_output_and_keys
     CSV.open(output) do |csv|
       csv << header_line
-      export_data.each do |datum|
+      data.each do |datum|
         line = self.send("line_for_#{mode}", datum)
 
         # Special-case any SSHKeys in the import
@@ -77,9 +112,9 @@ class Metasploit::Credential::Exporter::Core
   # @return [Array<Symbol>]
   def header_line
     case mode
-      when :login
+      when LOGIN_MODE
         Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS.push(:host_address, :service_port, :service_name, :service_protocol)
-      when :core
+      when CORE_MODE
         Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
     end
   end

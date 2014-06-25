@@ -20,16 +20,20 @@ describe Metasploit::Credential::Exporter::Core do
     it 'should raise an exception if initialized with an invalid mode' do
       expect{ Metasploit::Credential::Exporter::Core.new(mode: :fail_mode) }.to raise_error(RuntimeError)
     end
+
+    it 'should be in LOGIN_MODE by default' do
+      core_exporter.mode.should == Metasploit::Credential::Exporter::Core::LOGIN_MODE
+    end
   end
 
   describe "#header_line" do
-    describe "in :login mode" do
+    describe "in LOGIN_MODE" do
       it 'should have the proper headers' do
         core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS.push(:host_address, :service_port, :service_name, :service_protocol)
       end
     end
 
-    describe "in :core mode" do
+    describe "in CORE_MODE" do
       it 'should have the proper headers' do
         core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       end
@@ -151,6 +155,40 @@ describe Metasploit::Credential::Exporter::Core do
 
       it 'should include a special time-stamped directory to contain the export data being staged' do
         core_exporter.output_final_directory_path.should include(core_exporter.output_final_subdirectory_name)
+      end
+    end
+  end
+
+  describe "#data" do
+    describe "when whitelist_ids is present" do
+      it 'should contain only those objects whose IDs are in the whitelist' 
+    end
+
+    describe "when whitelist_ids is blank" do
+      it 'should be the same as #export_data'
+    end
+  end
+
+  describe "#export_data" do
+    describe "in CORE_MODE" do
+      before(:each) do
+        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+      end
+
+      it 'should grab data using the proper scope' do
+        Metasploit::Credential::Core.should_receive(:workspace_id).with(core_exporter.workspace.id)
+        core_exporter.export_data
+      end
+    end
+
+    describe "in LOGIN_MODE" do
+      before(:each) do
+        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+      end
+
+      it 'should grab data using the proper scope' do
+        Metasploit::Credential::Login.should_receive(:in_workspace_including_hosts_and_services).with(core_exporter.workspace)
+        core_exporter.export_data
       end
     end
   end
