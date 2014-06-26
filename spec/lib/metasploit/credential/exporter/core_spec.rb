@@ -155,12 +155,48 @@ describe Metasploit::Credential::Exporter::Core do
   end
 
   describe "#data" do
-    describe "when whitelist_ids is present" do
-      it 'should contain only those objects whose IDs are in the whitelist' 
+    describe "in LOGIN_MODE" do
+      before(:each) do
+        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+      end
+
+      describe "when whitelist_ids is present" do
+        before(:each) do
+          core_exporter.stub(:whitelist_ids).and_return([login1.id])
+        end
+
+        it 'should contain only those objects whose IDs are in the whitelist' do
+          core_exporter.data.should_not include(login2)
+        end
+      end
+
+      describe "when whitelist_ids is blank" do
+        it 'should be the same as #export_data' do
+          core_exporter.data.should == core_exporter.export_data
+        end
+      end
     end
 
-    describe "when whitelist_ids is blank" do
-      it 'should be the same as #export_data'
+    describe "in CORE_MODE" do
+      before(:each) do
+        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+      end
+
+      describe "when whitelist_ids is present" do
+        before(:each) do
+          core_exporter.stub(:whitelist_ids).and_return([core1.id])
+        end
+
+        it 'should contain only those objects whose IDs are in the whitelist' do
+          core_exporter.data.should_not include(core2)
+        end
+      end
+
+      describe "when whitelist_ids is blank" do
+        it 'should be the same as #export_data' do
+          core_exporter.data.should == core_exporter.export_data
+        end
+      end
     end
   end
 
