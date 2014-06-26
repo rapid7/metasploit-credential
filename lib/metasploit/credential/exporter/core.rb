@@ -1,6 +1,25 @@
+# This class is used to export {Metasploit::Credential::Core} information, optionally scoped to associated
+# {Metasploit::Credential::Login} objects.  In the case of exporting Login objects, the associated `Mdm::Host`
+# and `Mdm::Server` information is exported as well. Exported data can be optionally scoped to include only
+# a certain whitelist of database IDs.
+#
+# The {#export!} method creates a zip file on disk containing a CSV with the data.  If the {#workspace} contains
+# {Metasploit::Credential::SSHKey} objects on the exported {Metasploit::Credential::Core} objects, the keys are
+# exported to files inside a subdirectory of the zip file.
+# @example Exporting all Cores
+#   core_exporter = Metasploit::Credential::Exporter::Core.new(workspace: workspace, mode: :core)
+#   core_exporter.export!
+#   core_exporter.output_zipfile_path # => location of finished zip file
+# @example Exporting all Logins
+#   core_exporter = Metasploit::Credential::Exporter::Login.new(workspace: workspace, mode: :login)
+#   core_exporter.export!
+#   core_exporter.output_zipfile_path # => location of finished zip file
+# @example Exporting with whitelist
+#   core_exporter = Metasploit::Credential::Exporter::Login.new(workspace: workspace, mode: :login, whitelist_ids: whitelist_ids)
+#   core_exporter.export!
+#   core_exporter.output_zipfile_path # => location of finished zip file
 class Metasploit::Credential::Exporter::Core
   include Metasploit::Credential::Exporter::Base
-  include Metasploit::Credential::Creation
 
   #
   # Constants
