@@ -1,5 +1,5 @@
+# Helper module that contains methods for manipulating text into different formats.
 module Metasploit::Credential::Text
-
   # Turn non-printable chars into hex representations, leaving others alone
   # If +whitespace+ is true, converts whitespace (0x20, 0x09, etc) to hex as
   # well.

@@ -1,4 +1,4 @@
-# An origin for {#cores core credentials} that were cracked from a {#core core credentials}
+# An origin for {#cores core credentials} that were cracked from a {#originating_core core credentials}
 class Metasploit::Credential::Origin::CrackedPassword < ActiveRecord::Base
 
   #
@@ -6,7 +6,7 @@ class Metasploit::Credential::Origin::CrackedPassword < ActiveRecord::Base
   #
 
   # @!attribute cores
-  #   {Metasploit::Credential::Core Core credentials} imported from {#filename}.
+  #   {Metasploit::Credential::Core Core credentials} derived from cracking {#originating_core}.
   #
   #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
   has_many :cores,

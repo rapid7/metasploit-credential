@@ -116,7 +116,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   # Scopes
   #
 
-  # Finds all {Metasploit::Credential::Login} objects that are associated with a given {Mdm::Workspace}
+  # Finds all {Metasploit::Credential::Login} objects that are associated with a given `Mdm::Workspace`
   # @method in_workspace_including_hosts_and_services
   # @scope Metasploit::Credential::Login
   # @param workspace [Mdm::Workspace] the workspace to filter by

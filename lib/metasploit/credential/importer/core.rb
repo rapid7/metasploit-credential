@@ -1,10 +1,14 @@
+#
+# Standard Library
+#
+
+require 'csv'
+
+
 # Creates {Metasploit::Credential::Core} objects and their associated {Metasploit::Credential::Public},
 # {Metasploit::Credential::Private}, and {Metasploit::Credential::Realm} objects from a CSV file.
 #
 # Successful import will also create a {Metasploit::Credential::Origin::Import}
-#
-
-require 'csv'
 class Metasploit::Credential::Importer::Core
   include Metasploit::Credential::Importer::Base
 
@@ -23,7 +27,7 @@ class Metasploit::Credential::Importer::Core
   #
 
   # @!attribute csv_object
-  #   The {CSV} instance created from {#input}
+  #   The `CSV` instance created from `#input`
   #   @return [CSV]
   attr_reader :csv_object
 
@@ -67,7 +71,7 @@ class Metasploit::Credential::Importer::Core
     core.save!
   end
 
-  # An instance of {CSV} from whence cometh the sweet sweet credential input
+  # An instance of `CSV` from whence cometh the sweet sweet credential input
   #
   # @return [CSV]
   def csv_object

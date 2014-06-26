@@ -1,6 +1,7 @@
 module Metasploit
   module Credential
     module Importer
+      # Defines common attributes and helpers for all importers.
       module Base
         extend ActiveSupport::Concern
 

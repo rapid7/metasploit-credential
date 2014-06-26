@@ -6,7 +6,7 @@ require 'pathname'
 
 # {Metasploit::Credential::Importer::Multi} allows a single class to pass off a file to the correct importer as
 # long as the file meets certain basic requirements.  Each file type is identified, and if supported, another class
-# in the {Metasploit::Credential::Importer} namespace is instantiated with the {#input} attribute passed in there.
+# in the {Metasploit::Credential::Importer} namespace is instantiated with the `#input` attribute passed in there.
 class Metasploit::Credential::Importer::Multi
   include Metasploit::Credential::Importer::Base
 
@@ -49,7 +49,7 @@ class Metasploit::Credential::Importer::Multi
   end
 
 
-  # True if the file can be opened with {Zip::File::open}, false otherwise
+  # True if the file can be opened with `Zip::File::open`, false otherwise
   #
   # @return [Boolean]
   def zip?
@@ -70,7 +70,7 @@ class Metasploit::Credential::Importer::Multi
 
   private
 
-  # True if the format of {#input} is supported for import
+  # True if the format of `#input` is supported for import
   #
   # @return [Boolean]
   def is_supported_format

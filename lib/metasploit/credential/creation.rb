@@ -3,6 +3,8 @@
 # objects and their attendant {Mdm::Host} and {Mdm::Service} objects.
 module Metasploit
   module Credential
+    # Helper methods for finding or creating a tree of credentials.  The method ensure that duplicate credentials are
+    # not created.
     module Creation
 
       # Returns true if ActiveRecord has an active database connection, false otherwise.
@@ -54,16 +56,16 @@ module Metasploit
       #
       # @option opts [String] :jtr_format The format for John the ripper to use to try and crack this
       # @option opts [Symbol] :origin_type The Origin type we are trying to create
-      # @option opts [String] :address The address of the {Mdm::Host} to link this Origin to
-      # @option opts [Fixnum] :port The port number of the {Mdm::Service} to link this Origin to
-      # @option opts [String] :service_name The service name to use for the {Mdm::Service}
-      # @option opts [String] :protocol The protocol type of the {Mdm::Service} to link this Origin to
+      # @option opts [String] :address The address of the `Mdm::Host` to link this Origin to
+      # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Origin to
+      # @option opts [String] :service_name The service name to use for the `Mdm::Service`
+      # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Origin to
       # @option opts [String] :module_fullname The fullname of the Metasploit Module to link this Origin to
-      # @option opts [Fixnum] :workspace_id The ID of the {Mdm::Workspace} to use for the {Mdm::Host}
-      # @option opts [Fixnum] :task_id The ID of the {Mdm::Task} to link this Origin to
+      # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin to
       # @option opts [String] :filename The filename of the file that was imported
-      # @option opts [Fixnum] :user_id The ID of the {Mdm::User} to link this Origin to
-      # @option opts [Fixnum] :session_id The ID of the {Mdm::Session} to link this Origin to
+      # @option opts [Fixnum] :user_id The ID of the `Mdm::User` to link this Origin to
+      # @option opts [Fixnum] :session_id The ID of the `Mdm::Session` to link this Origin to
       # @option opts [String] :post_reference_name The reference name of the Metasploit Post module to link the origin to
       # @option opts [String] :private_data The actual data for the private (e.g. password, hash, key etc)
       # @option opts [Symbol] :private_type The type of {Metasploit::Credential::Private} to create
@@ -115,7 +117,7 @@ module Metasploit
       # @option opts [Metasploit::Credential::Origin] :origin The origin object to tie the core to
       # @option opts [Metasploit::Credential::Public] :public The {Metasploit::Credential::Public} component
       # @option opts [Metasploit::Credential::Private] :private The {Metasploit::Credential::Private} component
-      # @option opts [Fixnum] :workspace_id The ID of the {Mdm::Workspace} to tie the Core to
+      # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to tie the Core to
       # @return [NilClass] if there is no active database connection
       # @return [Metasploit::Credential::Core]
       def create_credential_core(opts={})
@@ -150,18 +152,18 @@ module Metasploit
       end
 
       # This method is responsible for creating a {Metasploit::Credential::Login} object
-      # which ties a {Metasploit::Credential::Core} to the {Mdm::Service} it is a valid
+      # which ties a {Metasploit::Credential::Core} to the `Mdm::Service` it is a valid
       # credential for.
       #
       # @option opts [String] :access_level The access level to assign to this login if we know it
-      # @option opts [String] :address The address of the {Mdm::Host} to link this Login to
+      # @option opts [String] :address The address of the `Mdm::Host` to link this Login to
       # @option opts [DateTime] :last_attempted_at The last time this Login was attempted
       # @option opts [Metasploit::Credential::Core] :core The {Metasploit::Credential::Core} to link this login to
-      # @option opts [Fixnum] :port The port number of the {Mdm::Service} to link this Login to
-      # @option opts [String] :service_name The service name to use for the {Mdm::Service}
+      # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Login to
+      # @option opts [String] :service_name The service name to use for the `Mdm::Service`
       # @option opts [String] :status The status for the Login object
-      # @option opts [String] :protocol The protocol type of the {Mdm::Service} to link this Login to
-      # @option opts [Fixnum] :workspace_id The ID of the {Mdm::Workspace} to use for the {Mdm::Host}
+      # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Login to
+      # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no active database connection
       # @return [Metasploit::Credential::Login]
@@ -186,16 +188,16 @@ module Metasploit
       # It takes a key for the Origin type and delegates to the correct sub-method.
       #
       # @option opts [Symbol] :origin_type The Origin type we are trying to create
-      # @option opts [String] :address The address of the {Mdm::Host} to link this Origin to
-      # @option opts [Fixnum] :port The port number of the {Mdm::Service} to link this Origin to
-      # @option opts [String] :service_name The service name to use for the {Mdm::Service}
-      # @option opts [String] :protocol The protocol type of the {Mdm::Service} to link this Origin to
+      # @option opts [String] :address The address of the `Mdm::Host` to link this Origin to
+      # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Origin to
+      # @option opts [String] :service_name The service name to use for the `Mdm::Service`
+      # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Origin to
       # @option opts [String] :module_fullname The fullname of the Metasploit Module to link this Origin to
-      # @option opts [Fixnum] :workspace_id The ID of the {Mdm::Workspace} to use for the {Mdm::Host}
-      # @option opts [Fixnum] :task_id The ID of the {Mdm::Task} to link this Origin to
+      # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin to
       # @option opts [String] :filename The filename of the file that was imported
-      # @option opts [Fixnum] :user_id The ID of the {Mdm::User} to link this Origin to
-      # @option opts [Fixnum] :session_id The ID of the {Mdm::Session} to link this Origin to
+      # @option opts [Fixnum] :user_id The ID of the `Mdm::User` to link this Origin to
+      # @option opts [Fixnum] :session_id The ID of the `Mdm::Session` to link this Origin to
       # @option opts [String] :post_reference_name The reference name of the Metasploit Post module to link the origin to
       # @raise [ArgumentError] if an invalid origin_type was provided
       # @raise [KeyError] if a required option is missing
@@ -238,7 +240,7 @@ module Metasploit
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Import} objects.
       #
-      # @option opts [Fixnum] :task_id The ID of the {Mdm::Task} to link this Origin to
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin to
       # @option opts [String] :filename The filename of the file that was imported
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
@@ -253,7 +255,7 @@ module Metasploit
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.
       #
-      # @option opts [Fixnum] :user_id The ID of the {Mdm::User} to link this Origin to
+      # @option opts [Fixnum] :user_id The ID of the `Mdm::User` to link this Origin to
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
       # @return [Metasploit::Credential::Origin::Manual] The created {Metasploit::Credential::Origin::Manual} object
@@ -265,13 +267,13 @@ module Metasploit
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Service} objects.
-      # If there is not a matching {Mdm::Host} it will create it. If there is not a matching
-      # {Mdm::Service} it will create that too.
+      # If there is not a matching `Mdm::Host` it will create it. If there is not a matching
+      # `Mdm::Service` it will create that too.
       #
-      # @option opts [String] :address The address of the {Mdm::Host} to link this Origin to
-      # @option opts [Fixnum] :port The port number of the {Mdm::Service} to link this Origin to
-      # @option opts [String] :service_name The service name to use for the {Mdm::Service}
-      # @option opts [String] :protocol The protocol type of the {Mdm::Service} to link this Origin to
+      # @option opts [String] :address The address of the `Mdm::Host` to link this Origin to
+      # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Origin to
+      # @option opts [String] :service_name The service name to use for the `Mdm::Service`
+      # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Origin to
       # @option opts [String] :module_fullname The fullname of the Metasploit Module to link this Origin to
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
@@ -287,7 +289,7 @@ module Metasploit
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Session} objects.
       #
-      # @option opts [Fixnum] :session_id The ID of the {Mdm::Session} to link this Origin to
+      # @option opts [Fixnum] :session_id The ID of the `Mdm::Session` to link this Origin to
       # @option opts [String] :post_reference_name The reference name of the Metasploit Post module to link the origin to
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
@@ -369,14 +371,14 @@ module Metasploit
 
 
 
-      # This method is responsible for creating a barebones {Mdm::Service} object
+      # This method is responsible for creating a barebones `Mdm::Service` object
       # for use by Credential object creation.
       #
-      # @option opts [String] :address The address of the {Mdm::Host}
-      # @option opts [Fixnum] :port The port number of the {Mdm::Service}
-      # @option opts [String] :service_name The service name to use for the {Mdm::Service}
-      # @option opts [String] :protocol The protocol type of the {Mdm::Service}
-      # @option opts [Fixnum] :workspace_id The ID of the {Mdm::Workspace} to use for the {Mdm::Host}
+      # @option opts [String] :address The address of the `Mdm::Host`
+      # @option opts [Fixnum] :port The port number of the `Mdm::Service`
+      # @option opts [String] :service_name The service name to use for the `Mdm::Service`
+      # @option opts [String] :protocol The protocol type of the `Mdm::Service``
+      # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
       # @return [Mdm::Service]

@@ -22,7 +22,10 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   # Valid format for {#data} composed of `'<LAN Manager hex digest>:<NT LAN Manager hex digest>'`.
   DATA_REGEXP = /\A#{LAN_MANAGER_HEX_DIGEST_REGEXP}:#{NT_LAN_MANAGER_HEX_DIGEST_REGEXP}\z/
 
+  # Value of {lan_manager_hex_digest_from_password_data} when the effective password is blank because it exceeds
+  # {LAN_MANAGER_MAX_CHARACTERS}
   BLANK_LM_HASH = 'aad3b435b51404eeaad3b435b51404ee'
+  # Value of {nt_lan_manager_hex_digest_from_password_data} when the password is blank.
   BLANK_NT_HASH = '31d6cfe0d16ae931b73c59d7e0c089c0'
 
   #

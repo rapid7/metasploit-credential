@@ -1,5 +1,51 @@
 require 'erb'
 
+# Exports {Metasploit::Credential::Login Metasploit::Credential::Logins} in the old pwdump format.
+#
+# # Service
+#
+# The service for a given login is in comment (`#`) above the login in the format
+# '`Mdm::Host#address`:`Mdm::Service#port`/`Mdm::Service#proto` (`Mdm::Service#name`)'
+#
+# # Logins
+#
+# There is one {Metasploit::Credential::Login} per line with the line format varying based on the `Class` of
+# {Metasploit::Credential::Login#core} {Metasploit::Credential::Core#private}.
+#
+# * {Metasploit::Credential::Public#username}:{Metasploit::Credential::NonreplayableHash#data}:::
+# * {Metasploit::Credential::Public#username}:{Metasploit::Credential::Login#id}:{Metasploit::Credential::NTLMHash#data}
+# * {Metasploit::Credential::Public#username} {Metasploit::Credential::Password#data}
+#
+# ## Blanks
+#
+# If the username or password is blank, then {BLANK_CRED_STRING} is used instead of an empty string.
+#
+# The full format is as follows:
+#
+#     #
+#     # Metasploit PWDump: <version>
+#     # Generated: <UTC Time>
+#     # Project: <Mdm::Workspace#name>
+#     #
+#     #########################################################
+#
+#     #  LM/NTLM Hashes (<Metasploit::Credential::NTLMHash count> hashes, <Metasploit::Credential::NTLMHash service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username>:<Metasploit::Credential::Login#id>:<Metasploit::Credential::NTLMHash#data>
+#
+#
+#     #  Hashes (<Metasploit::Credential::Nonreplayable count> hashes, <Metasploit::Credential::Nonreplayable service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username>:<Metasploit::Credential::NonreplayableHash#data>:::
+#
+#     #  Plaintext Passwords (<Metasploit::Credential::Password count> passwords, <Metasploit::Credential::Password service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username> <Metasploit::Credential::Password#data>
+#
+#
 class Metasploit::Credential::Exporter::Pwdump
   include Metasploit::Credential::Exporter::Base
 
@@ -83,7 +129,7 @@ class Metasploit::Credential::Exporter::Pwdump
     "#{address}:#{service.port}/#{service.proto} (#{service.name})"
   end
 
-  # Renders the collection credential objects in {#data} into the {ERB} template at {TEMPLATE PATH}
+  # Renders the collection credential objects in {#data} into the `ERB` template at {TEMPLATE_PATH}
   # @return [String]
   def rendered_output
     @version_string = VERSION

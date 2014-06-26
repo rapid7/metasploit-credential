@@ -11,7 +11,7 @@ class Metasploit::Credential::Importer::Zip
   # The name of the directory in the zip file's root directory that contains SSH keys
   KEYS_SUBDIRECTORY_NAME = "keys"
 
-  # The name of the file in the zip which is opened and passed as a {File} to an instance of
+  # The name of the file in the zip which is opened and passed as a `File` to an instance of
   # {Metasploit::Credential::Importer::CSV::Core}
   MANIFEST_FILE_NAME = "manifest.csv"
 
@@ -48,6 +48,9 @@ class Metasploit::Credential::Importer::Zip
     Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin).import!
   end
 
+  # Returns the path to the directory where the zip was extracted.
+  #
+  # @return [String]
   def extracted_zip_path
     full_path     = Pathname.new input
     path_fragment = full_path.dirname.to_s
