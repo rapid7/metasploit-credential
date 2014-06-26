@@ -61,11 +61,6 @@ class Metasploit::Credential::Exporter::Core
   #   @return [Symbol]
   attr_accessor :mode
 
-  # @!attribute output_directory_path
-  #   The platform-independent location of the export file on disk
-  #   @return [String]
-  attr_accessor :output_directory_path
-
   # @!attribute whitelist_ids
   #   A list of primary key IDs used to filter the objects in {#export_data}
   #   @return [Array<Fixnum>]
@@ -88,7 +83,7 @@ class Metasploit::Credential::Exporter::Core
   # @return [void]
   def export!
     render_manifest_output_and_keys
-    rendered_zip
+    render_zip
   end
 
   # Returns an `Enumerable` full of either {Metasploit::Credential::Login} or {Metasploit::Credential::Core} objects
@@ -205,13 +200,13 @@ class Metasploit::Credential::Exporter::Core
   # The final fragment of the {#output_final_directory_path}
   # @return [String]
   def output_final_subdirectory_name
-    "export-#{Time.now.to_i}"
+    @output_final_subdiretory_name ||= "export-#{Time.now.to_i}"
   end
 
   # The path to the finished `Zip::File` on disk
   # @return [String]
   def output_zipfile_path
-    Pathname.new(output_final_directory_path).dirname.to_s + zip_filename
+    Pathname.new(output_final_directory_path).dirname.to_s + '/' + zip_filename
   end
 
   # Creates a `Zip::File` by recursively zipping up the contents of {#output_final_directory_path}

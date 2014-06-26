@@ -28,6 +28,13 @@ describe Metasploit::Credential::Exporter::Core do
     end
   end
 
+  describe "#export!" do
+    it 'should create the zipfile' do
+      core_exporter.export!
+      File.exists?(core_exporter.output_zipfile_path).should be_true
+    end
+  end
+
   describe "#header_line" do
     describe "in LOGIN_MODE" do
       it 'should have the proper headers' do
@@ -357,7 +364,7 @@ describe Metasploit::Credential::Exporter::Core do
       end
     end
 
-    describe "#rendered_zip" do
+    describe "#render_zip" do
       describe "when there are no SSH keys in the dataset" do
         before(:each) do
           core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
