@@ -412,12 +412,25 @@ describe Metasploit::Credential::Exporter::Core do
           keys_entry.should_not be_blank
         end
 
-        it 'should contain a key for each SSH private in the export'
+        describe "the keys directory" do
+          before(:each) do
+            @key_entries = nil
+            Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
+              @key_entries = zip_file.glob("#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/*")
+            end
+          end
 
-        it 'should contain a keys directory with a file in it named with Public#username and Private#id'
+          it 'should contain a key for each SSH private in the export' do
+            @key_entries.size.should == core_exporter.data.select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size
+          end
 
+          it 'should contain a keys directory with a file in it named with Public#username and Private#id for each Core that uses an SSHKey' do
+            key_names = @key_entries.map{ |e| e.to_s.gsub("#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/", '') }
+            key_names.should include("#{core_with_key.public.username}-#{core_with_key.private.id}")
+          end
+
+        end
       end
     end
   end
-
 end
