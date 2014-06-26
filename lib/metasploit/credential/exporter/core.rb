@@ -107,26 +107,7 @@ class Metasploit::Credential::Exporter::Core
     super args
   end
 
-  # Iterate over the {#export_data} and write lines to the CSV at {#output}, returning the completed
-  # CSV file.
-  # @return [CSV]
-  def render_manifest_output_and_keys
-    CSV.open(output, 'wb') do |csv|
-      csv << header_line
-      data.each do |datum|
-        line = self.send("line_for_#{mode}", datum)
 
-        # Special-case any SSHKeys in the import
-        if line[:private_type] == Metasploit::Credential::SSHKey.name
-          key_path = path_for_key(datum)
-          write_key_file(key_path, line[:private_data])
-          line[:private_data] = key_path
-        end
-
-        csv << line.values
-      end
-    end
-  end
 
 
   # Returns the CSV header line, which is dependent on mode
@@ -209,8 +190,29 @@ class Metasploit::Credential::Exporter::Core
     Pathname.new(output_final_directory_path).dirname.to_s + '/' + zip_filename
   end
 
+  # Iterate over the {#export_data} and write lines to the CSV at {#output}, returning the completed
+  # CSV file.
+  # @return [CSV]
+  def render_manifest_output_and_keys
+    CSV.open(output, 'wb') do |csv|
+      csv << header_line
+      data.each do |datum|
+        line = self.send("line_for_#{mode}", datum)
+
+        # Special-case any SSHKeys in the import
+        if line[:private_type] == Metasploit::Credential::SSHKey.name
+          key_path = path_for_key(datum)
+          write_key_file(key_path, line[:private_data])
+          line[:private_data] = key_path
+        end
+
+        csv << line.values
+      end
+    end
+  end
+
   # Creates a `Zip::File` by recursively zipping up the contents of {#output_final_directory_path}
-  # @return [Zip::File]
+  # @return [void]
   def render_zip
     Zip::File.open(output_zipfile_path, Zip::File::CREATE) do |zipfile|
       Dir[File.join(output_final_directory_path, '**', '**')].each do |file|
