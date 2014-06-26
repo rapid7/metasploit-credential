@@ -103,8 +103,8 @@ class Metasploit::Credential::Exporter::Core
         line = self.send("line_for_#{mode}", datum)
 
         # Special-case any SSHKeys in the import
-        if line[:private_type] == "SSHKey"
-          key_path = path_for_key(line, datum)
+        if line[:private_type] == Metasploit::Credential::SSHKey.name
+          key_path = path_for_key(datum)
           write_key_file(key_path, line[:private_data])
           line[:private_data] = key_path
         end
@@ -129,7 +129,7 @@ class Metasploit::Credential::Exporter::Core
   # Returns a platform-agnostic filesystem path where the key data will be saved as a file
   # @param line [Hash] the result of {#line_for_login} or #{line_for_core}
   # @return [String]
-  def key_path(datum)
+  def path_for_key(datum)
     core = datum.is_a?(Metasploit::Credential::Core) ? datum : datum.core
     dir_path = File.join(output_final_directory_path, Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME)
     FileUtils.mkdir_p(dir_path)
@@ -197,10 +197,10 @@ class Metasploit::Credential::Exporter::Core
 
   # Creates a `Zip::File` by recursively zipping up the contents of {#output_final_directory_path}
   # @return [Zip::File]
-  def rendered_zip
+  def render_zip
     Zip::File.open(output_zipfile_path, Zip::File::CREATE) do |zipfile|
       Dir[File.join(output_final_directory_path, '**', '**')].each do |file|
-        zipfile.add(file.sub(directory, ''), file)
+        zipfile.add(file.sub(output_final_directory_path + '/', ''), file)
       end
     end
   end

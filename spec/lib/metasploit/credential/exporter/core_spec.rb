@@ -11,6 +11,13 @@ describe Metasploit::Credential::Exporter::Core do
     origin.task = nil
   end
 
+  #
+  # Clean up generated files/paths
+  #
+  after(:each) do
+    Dir.glob("#{Dir.tmpdir}/metasploit*").each {|d| FileUtils.rm_rf d}
+  end
+
   describe "initialization" do
     it 'should raise an exception if initialized with an invalid mode' do
       expect{ Metasploit::Credential::Exporter::Core.new(mode: :fail_mode) }.to raise_error(RuntimeError)
@@ -40,14 +47,14 @@ describe Metasploit::Credential::Exporter::Core do
 
     describe "when the argument is a Core" do
       it 'should be formed from the Public#username and the Private#id' do
-        key_path = core_exporter.key_path(core)
+        key_path = core_exporter.path_for_key(core)
         Pathname.new(key_path).basename.to_s.should == key_path_basename_string
       end
     end
 
     describe "when the argument is a Login" do
       it 'should be formed from the Public#username and the Private#id' do
-        key_path = core_exporter.key_path(login)
+        key_path = core_exporter.path_for_key(login)
         Pathname.new(key_path).basename.to_s.should == key_path_basename_string
       end
     end
@@ -224,143 +231,192 @@ describe Metasploit::Credential::Exporter::Core do
     end
   end
 
-  describe "#render_manifest_and_output_keys" do
-    #
-    # Clean up generated files/paths
-    #
-    after(:all) do
-      Dir.glob("#{Dir.tmpdir}/metasploit*").each {|d| FileUtils.rm_rf d}
-    end
+  describe "generation" do
+    describe "#render_manifest_and_output_keys" do
+      describe "in CORE_MODE" do
+        before(:each) do
+          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          core_exporter.render_manifest_output_and_keys
+          path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
-    describe "in CORE_MODE" do
-      before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
-        core_exporter.render_manifest_output_and_keys
-        path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
+          @core_publics            = []
+          @core_private_data       = []
+          @core_private_types      = []
+          @core_realm_keys         = []
+          @core_realm_values       = []
 
-        @core_publics            = []
-        @core_private_data       = []
-        @core_private_types      = []
-        @core_realm_keys         = []
-        @core_realm_values       = []
+          CSV.new(File.open(path), headers:true).each do |row|
+            @core_publics            << row['username']
+            @core_private_data       << row['private_data']
+            @core_private_types      << row['private_type']
+            @core_realm_keys         << row['realm_key']
+            @core_realm_values       << row['realm_value']
+          end
+        end
 
-        CSV.new(File.open(path), headers:true).each do |row|
-          @core_publics            << row['username']
-          @core_private_data       << row['private_data']
-          @core_private_types      << row['private_type']
-          @core_realm_keys         << row['realm_key']
-          @core_realm_values       << row['realm_value']
+        it 'should contain the Public#username for all Core objects' do
+          @core_publics.should include(core1.public.username)
+          @core_publics.should include(core2.public.username)
+        end
+
+        it 'should contain the Private#type for all Core objects' do
+          @core_private_types.should include(core1.private.type)
+          @core_private_types.should include(core2.private.type)
+        end
+
+        it 'should contain the Private#data for all Core objects' do
+          @core_private_data.should include(core1.private.data)
+          @core_private_data.should include(core2.private.data)
+        end
+
+        it 'should contain the Realm#key for all Core objects' do
+          @core_realm_keys.should include(core1.realm.key)
+          @core_realm_keys.should include(core2.realm.key)
+        end
+
+        it 'should contain the Realm#value for all Core objects' do
+          @core_realm_values.should include(core1.realm.value)
+          @core_realm_values.should include(core2.realm.value)
         end
       end
 
-      it 'should contain the Public#username for all Core objects' do
-        @core_publics.should include(core1.public.username)
-        @core_publics.should include(core2.public.username)
-      end
+      describe "in LOGIN_MODE" do
+        before(:each) do
+          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+          core_exporter.render_manifest_output_and_keys
+          path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
-      it 'should contain the Private#type for all Core objects' do
-        @core_private_types.should include(core1.private.type)
-        @core_private_types.should include(core2.private.type)
-      end
+          @login_publics            = []
+          @login_private_data       = []
+          @login_private_types      = []
+          @login_realm_keys         = []
+          @login_realm_values       = []
+          @login_host_addresses     = []
+          @login_service_ports      = []
+          @login_service_names      = []
+          @login_service_protocols  = []
 
-      it 'should contain the Private#data for all Core objects' do
-        @core_private_data.should include(core1.private.data)
-        @core_private_data.should include(core2.private.data)
-      end
+          CSV.new(File.open(path), headers:true).each do |row|
+            @login_publics            << row['username']
+            @login_private_data       << row['private_data']
+            @login_private_types      << row['private_type']
+            @login_realm_keys         << row['realm_key']
+            @login_realm_values       << row['realm_value']
+            @login_host_addresses     << row['host_address']
+            @login_service_ports      << row['service_port']
+            @login_service_names      << row['service_name']
+            @login_service_protocols  << row['service_protocol']
+          end
+        end
 
-      it 'should contain the Realm#key for all Core objects' do
-        @core_realm_keys.should include(core1.realm.key)
-        @core_realm_keys.should include(core2.realm.key)
-      end
 
-      it 'should contain the Realm#value for all Core objects' do
-        @core_realm_values.should include(core1.realm.value)
-        @core_realm_values.should include(core2.realm.value)
+        it 'should contain the Public#username for all Login objects' do
+          @login_publics.should include(login1.core.public.username)
+          @login_publics.should include(login2.core.public.username)
+        end
+
+        it 'should contain the Private#type for all Login objects' do
+          @login_private_types.should include(login1.core.private.type)
+          @login_private_types.should include(login2.core.private.type)
+        end
+
+        it 'should contain the Private#data for all Login objects' do
+          @login_private_data.should include(login1.core.private.data)
+          @login_private_data.should include(login2.core.private.data)
+        end
+
+        it 'should contain the Realm#key for all Login objects' do
+          @login_realm_keys.should include(login1.core.realm.key)
+          @login_realm_keys.should include(login2.core.realm.key)
+        end
+
+        it 'should contain the Realm#value for all Login objects' do
+          @login_realm_values.should include(login1.core.realm.value)
+          @login_realm_values.should include(login2.core.realm.value)
+        end
+
+        it 'should contain the associated Mdm::Host#address for all Login objects' do
+          @login_host_addresses.should include(login1.service.host.address)
+          @login_host_addresses.should include(login2.service.host.address)
+        end
+
+        it 'should contain the associated Mdm::Service#port (stringified) for all Login objects' do
+          @login_service_ports.should include(login1.service.port.to_s)
+          @login_service_ports.should include(login2.service.port.to_s)
+        end
+
+        it 'should contain the associated Mdm::Service#name for all Login objects' do
+          @login_service_names.should include(login1.service.name)
+          @login_service_names.should include(login2.service.name)
+        end
+
+        it 'should contain the associated Mdm::Service#proto for all Login objects' do
+          @login_service_protocols.should include(login1.service.proto)
+          @login_service_protocols.should include(login2.service.proto)
+        end
       end
     end
 
-    describe "in LOGIN_MODE" do
-      before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
-        core_exporter.render_manifest_output_and_keys
-        path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
+    describe "#rendered_zip" do
+      describe "when there are no SSH keys in the dataset" do
+        before(:each) do
+          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          core_exporter.render_manifest_output_and_keys
+          core_exporter.render_zip
+        end
 
-        @login_publics            = []
-        @login_private_data       = []
-        @login_private_types      = []
-        @login_realm_keys         = []
-        @login_realm_values       = []
-        @login_host_addresses     = []
-        @login_service_ports      = []
-        @login_service_names      = []
-        @login_service_protocols  = []
+        it 'should contain the manifest file' do
+          manifest_entry = nil
+          Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
+            manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
+          end
+          manifest_entry.should_not be_blank
+        end
 
-        CSV.new(File.open(path), headers:true).each do |row|
-          @login_publics            << row['username']
-          @login_private_data       << row['private_data']
-          @login_private_types      << row['private_type']
-          @login_realm_keys         << row['realm_key']
-          @login_realm_values       << row['realm_value']
-          @login_host_addresses     << row['host_address']
-          @login_service_ports      << row['service_port']
-          @login_service_names      << row['service_name']
-          @login_service_protocols  << row['service_protocol']
+        it 'should not contain a keys directory' do
+          keys_entry = nil
+          Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
+            keys_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME).first
+          end
+          keys_entry.should be_blank
         end
       end
 
+      describe "when there ARE SSH keys in the dataset" do
+        let(:private_with_key){ FactoryGirl.create(:metasploit_credential_ssh_key)}
+        let!(:core_with_key){ FactoryGirl.create(:metasploit_credential_core,
+                                                 origin: origin,
+                                                 public: public1,
+                                                 private: private_with_key,
+                                                 workspace: workspace)}
 
-      it 'should contain the Public#username for all Login objects' do
-        @login_publics.should include(login1.core.public.username)
-        @login_publics.should include(login2.core.public.username)
+        before(:each) do
+          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          core_exporter.render_manifest_output_and_keys
+          core_exporter.render_zip
+        end
+
+        it 'should contain the manifest file' do
+          manifest_entry = nil
+          Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
+            manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
+          end
+          manifest_entry.should_not be_blank
+        end
+
+        it 'should contain a keys directory' do
+          keys_entry = nil
+          Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
+            keys_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME).first
+          end
+          keys_entry.should_not be_blank
+        end
+
+        it 'should contain a key for each SSH private in the export'
+
+        it 'should contain a keys directory with a file in it named with Public#username and Private#id'
+
       end
-
-      it 'should contain the Private#type for all Login objects' do
-        @login_private_types.should include(login1.core.private.type)
-        @login_private_types.should include(login2.core.private.type)
-      end
-
-      it 'should contain the Private#data for all Login objects' do
-        @login_private_data.should include(login1.core.private.data)
-        @login_private_data.should include(login2.core.private.data)
-      end
-
-      it 'should contain the Realm#key for all Login objects' do
-        @login_realm_keys.should include(login1.core.realm.key)
-        @login_realm_keys.should include(login2.core.realm.key)
-      end
-
-      it 'should contain the Realm#value for all Login objects' do
-        @login_realm_values.should include(login1.core.realm.value)
-        @login_realm_values.should include(login2.core.realm.value)
-      end
-
-      it 'should contain the associated Mdm::Host#address for all Login objects' do
-        @login_host_addresses.should include(login1.service.host.address)
-        @login_host_addresses.should include(login2.service.host.address)
-      end
-
-      it 'should contain the associated Mdm::Service#port (stringified) for all Login objects' do
-        @login_service_ports.should include(login1.service.port.to_s)
-        @login_service_ports.should include(login2.service.port.to_s)
-      end
-
-      it 'should contain the associated Mdm::Service#name for all Login objects' do
-        @login_service_names.should include(login1.service.name)
-        @login_service_names.should include(login2.service.name)
-      end
-
-      it 'should contain the associated Mdm::Service#proto for all Login objects' do
-        @login_service_protocols.should include(login1.service.proto)
-        @login_service_protocols.should include(login2.service.proto)
-      end
-    end
-
-    describe "when there are no SSH keys in the dataset" do
-
-    end
-
-    describe "when there ARE SSH keys in the dataset" do
-
     end
   end
 
