@@ -65,6 +65,13 @@ class Metasploit::Credential::Exporter::Core
     export_data.select{ |datum| whitelist_ids.include? datum.id }
   end
 
+  # Perform the export, creating the CSV and the zip file
+  # @return [void]
+  def export!
+    render_manifest_output_and_keys
+    rendered_zip
+  end
+
   # Returns an `Enumerable` full of either {Metasploit::Credential::Login} or {Metasploit::Credential::Core} objects
   # depending on {#mode}
   # @return [ActiveRecord::Relation]
@@ -90,7 +97,7 @@ class Metasploit::Credential::Exporter::Core
   # CSV file.
   # @return [CSV]
   def render_manifest_output_and_keys
-    CSV.open(output) do |csv|
+    CSV.open(output, 'wb') do |csv|
       csv << header_line
       data.each do |datum|
         line = self.send("line_for_#{mode}", datum)
@@ -152,7 +159,7 @@ class Metasploit::Credential::Exporter::Core
   def line_for_core(core)
     {
       username: core.public.username,
-      private_type: core.private.type.demodulize,
+      private_type: core.private.type,
       private_data: core.private.data,
       realm_key: core.realm.key,
       realm_value: core.realm.value,
@@ -171,7 +178,7 @@ class Metasploit::Credential::Exporter::Core
     unless instance_variable_defined? :@output_final_directory_path
       tmp_path  = Dir.mktmpdir(TEMP_ZIP_PATH_PREFIX)
       @output_final_directory_path = File.join(tmp_path, output_final_subdirectory_name)
-      FileUtils.mkdir @output_final_directory_path
+      FileUtils.mkdir_p @output_final_directory_path
     end
     @output_final_directory_path
   end
