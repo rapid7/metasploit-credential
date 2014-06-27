@@ -45,7 +45,7 @@ class Metasploit::Credential::Importer::Zip
     ::Zip::File.open(input.path)
     csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
     csv_input = File.open(csv_path)
-    Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin).import!
+    Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin, workspace: workspace).import!
   end
 
   # Returns the path to the directory where the zip was extracted.

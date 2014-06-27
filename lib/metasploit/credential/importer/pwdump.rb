@@ -72,61 +72,62 @@ class Metasploit::Credential::Importer::Pwdump
   # @return [void]
   def import!
     service_info = nil
+    Metasploit::Credential::Core.transaction do
+      input.each_line do |line|
+        case line
+          when COMMENT_LINE_START_REGEX
+            service_info = service_info_from_comment_string(line)
+          when SMB_WITH_HASH_REGEX
+            info = parsed_regex_results($1, $2)
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::NTLMHash
+          when SMB_WITH_JTR_BLANK_PASSWORD_REGEX
+            info = parsed_regex_results($1, $2)
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::NTLMHash
+          when SMB_WITH_PLAINTEXT_REGEX
+            info = parsed_regex_results($1, $2)
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::NTLMHash
+          when NONREPLAYABLE_REGEX
+            info = parsed_regex_results($1, $2)
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::NonreplayableHash
+          when PLAINTEXT_REGEX
+            info = parsed_regex_results($1, $2, true)
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::Password
+          else
+            next
+        end
 
-    input.each_line do |line|
-      case line
-        when COMMENT_LINE_START_REGEX
-          service_info = service_info_from_comment_string(line)
-        when SMB_WITH_HASH_REGEX
-          info = parsed_regex_results($1, $2)
-          username, private = info[:username], info[:private]
-          creds_class = Metasploit::Credential::NTLMHash
-        when SMB_WITH_JTR_BLANK_PASSWORD_REGEX
-          info = parsed_regex_results($1, $2)
-          username, private = info[:username], info[:private]
-          creds_class = Metasploit::Credential::NTLMHash
-        when SMB_WITH_PLAINTEXT_REGEX
-          info = parsed_regex_results($1, $2)
-          username, private = info[:username], info[:private]
-          creds_class = Metasploit::Credential::NTLMHash
-        when NONREPLAYABLE_REGEX
-          info = parsed_regex_results($1, $2)
-          username, private = info[:username], info[:private]
-          creds_class = Metasploit::Credential::NonreplayableHash
-        when PLAINTEXT_REGEX
-          info = parsed_regex_results($1, $2, true)
-          username, private = info[:username], info[:private]
-          creds_class = Metasploit::Credential::Password
+        # Skip unless we have enough to make a Login
+        if service_info.present?
+          if [service_info[:host_address], service_info[:port], username, private].compact.size != 4
+            next
+          end
         else
           next
-      end
-
-      # Skip unless we have enough to make a Login
-      if service_info.present?
-        if [service_info[:host_address], service_info[:port], username, private].compact.size != 4
-          next
         end
-      else
-        next
+
+        public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
+        private_obj = creds_class.where(data: private).first_or_create
+
+        origin = Metasploit::Credential::Origin::Import.create(filename: filename)
+        core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace_id: workspace.id)
+
+        login_opts = {
+          address:      service_info[:host_address],
+          port:         service_info[:port],
+          protocol:     service_info[:protocol],
+          service_name: service_info[:name],
+          workspace_id: workspace.id,
+          core:         core,
+          status: Metasploit::Credential::Login::Status::UNTRIED
+        }
+
+        create_credential_login(login_opts)
       end
-
-      public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
-      private_obj = creds_class.where(data: private).first_or_create
-
-      origin = Metasploit::Credential::Origin::Import.create(filename: filename)
-      core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace_id: workspace.id)
-
-      login_opts = {
-        address:      service_info[:host_address],
-        port:         service_info[:port],
-        protocol:     service_info[:protocol],
-        service_name: service_info[:name],
-        workspace_id: workspace.id,
-        core:         core,
-        status: Metasploit::Credential::Login::Status::UNTRIED
-      }
-
-      create_credential_login(login_opts)
     end
   end
 
