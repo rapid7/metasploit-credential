@@ -79,7 +79,7 @@ class Metasploit::Credential::Importer::Core
   #
   # @return [String]
   def key_data_from_file(key_file_name)
-    full_key_file_path = "#{File.dirname(input.path)}/#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/#{key_file_name}"
+    full_key_file_path = File.join(File.dirname(input.path), Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME, key_file_name)
     File.open(full_key_file_path, 'r').read
   end
 
@@ -103,33 +103,35 @@ class Metasploit::Credential::Importer::Core
   # @return [void]
   def import_long_form
     realms = Hash.new
-    csv_object.each do |row|
-      next if row.header_row?
+    Metasploit::Credential::Core.transaction do
+      csv_object.each do |row|
+        next if row.header_row?
 
-      realm_key     = row['realm_key']
-      realm_value   = row['realm_value']  # Use the name of the Realm as a lookup for getting the object
-      private_class = row['private_type'].constantize
-      private_data  = row['private_data']
+        realm_key     = row['realm_key']
+        realm_value   = row['realm_value']  # Use the name of the Realm as a lookup for getting the object
+        private_class = row['private_type'].constantize
+        private_data  = row['private_data']
 
-      if realms[realm_value].nil?
-        realms[realm_value]  = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
-      end
-
-      realm_object_for_row   = realms[realm_value]
-      public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
-
-      if LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? private_class.name
-        if private_class == Metasploit::Credential::SSHKey
-          private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
-        else
-          private_object_for_row = private_class.where(data: row['private_data']).first_or_create
+        if realms[realm_value].nil?
+          realms[realm_value]  = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
         end
-      else
-        # TODO: handle the case where there is a screwed up name
-        # error condition: something unknown/unsupported in type column
-      end
 
-      create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
+        realm_object_for_row   = realms[realm_value]
+        public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
+
+        if LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? private_class.name
+          if private_class == Metasploit::Credential::SSHKey
+            private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
+          else
+            private_object_for_row = private_class.where(data: private_data).first_or_create
+          end
+        else
+          # TODO: handle the case where there is a screwed up name
+          # error condition: something unknown/unsupported in type column
+        end
+
+        create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
+      end
     end
   end
 
@@ -137,12 +139,14 @@ class Metasploit::Credential::Importer::Core
   # and no {Metasploit::Credential::Realm} data
   # @return [void]
   def import_short_form
-    csv_object.each do |row|
-      next if row.header_row?
+    Metasploit::Credential::Core.transaction do
+      csv_object.each do |row|
+        next if row.header_row?
 
-      public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
-      private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
-      create_core( public: public_object_for_row, private: private_object_for_row)
+        public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
+        private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+        create_core( public: public_object_for_row, private: private_object_for_row)
+      end
     end
   end
 

@@ -107,9 +107,6 @@ class Metasploit::Credential::Exporter::Core
     super args
   end
 
-
-
-
   # Returns the CSV header line, which is dependent on mode
   # @return [Array<Symbol>]
   def header_line
@@ -203,7 +200,7 @@ class Metasploit::Credential::Exporter::Core
         if line[:private_type] == Metasploit::Credential::SSHKey.name
           key_path = path_for_key(datum)
           write_key_file(key_path, line[:private_data])
-          line[:private_data] = key_path
+          line[:private_data] = File.basename(key_path)
         end
 
         csv << line.values
