@@ -112,7 +112,7 @@ class Metasploit::Credential::Exporter::Core
   def header_line
     case mode
       when LOGIN_MODE
-        Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS.push(:host_address, :service_port, :service_name, :service_protocol)
+        Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       when CORE_MODE
         Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
     end

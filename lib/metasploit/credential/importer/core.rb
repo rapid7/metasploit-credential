@@ -7,13 +7,14 @@
 require 'csv'
 class Metasploit::Credential::Importer::Core
   include Metasploit::Credential::Importer::Base
+  include Metasploit::Credential::Creation
 
   #
   # Constants
   #
 
   # Valid headers for a CSV containing heterogenous {Metasploit::Credential::Private} types and values for {Metasploit::Credential::Realm}
-  VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value]
+  VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value, :host_address, :service_port, :service_name, :service_protocol]
 
   # Valid headers for a "short" CSV containing only data for {Metasploit::Credential::Public} and {Metasploit::Credential::Private} objects
   VALID_SHORT_CSV_HEADERS = [:username,  :private_data]
@@ -65,6 +66,7 @@ class Metasploit::Credential::Importer::Core
     core.realm     = args.fetch(:realm) if args[:realm].present?
 
     core.save!
+    core
   end
 
   # An instance of {CSV} from whence cometh the sweet sweet credential input
@@ -112,6 +114,13 @@ class Metasploit::Credential::Importer::Core
         private_class = row['private_type'].constantize
         private_data  = row['private_data']
 
+        # Host and Service information for Logins
+        host_address     = row['host_address']
+        service_port     = row['service_port']
+        service_protocol = row['service_protocol']
+        service_name     = row['service_name']
+
+
         if realms[realm_value].nil?
           realms[realm_value]  = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
         end
@@ -125,12 +134,26 @@ class Metasploit::Credential::Importer::Core
           else
             private_object_for_row = private_class.where(data: private_data).first_or_create
           end
-        else
+
           # TODO: handle the case where there is a screwed up name
           # error condition: something unknown/unsupported in type column
         end
 
-        create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
+        new_core = create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
+
+        # Make Logins with attendant Host/Service information if we are doing that
+        if host_address.present? && service_port.present? && service_protocol.present?
+          login_opts = {
+            core: new_core,
+            status: Metasploit::Credential::Login::Status::UNTRIED,  # don't trust creds on import
+            address: host_address,
+            port: service_port,
+            protocol: service_protocol,
+            workspace_id: workspace.id,
+            service_name: service_name.present? ? service_name : ""
+          }
+          create_credential_login(login_opts)
+        end
       end
     end
   end
