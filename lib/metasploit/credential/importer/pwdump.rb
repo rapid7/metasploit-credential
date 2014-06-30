@@ -20,24 +20,26 @@ class Metasploit::Credential::Importer::Pwdump
   JTR_NO_PASSWORD_STRING = "NO PASSWORD"
 
   # Matches lines that contain usernames and non-SMB hashes
-  NONREPLAYABLE_REGEX          = /^[\s]*([\x21-\x7f]+):([\x21-\x7f]+):::/n
+  NONREPLAYABLE_REGEX               = /^[\s]*([\x21-\x7f]+):([\x21-\x7f]+):::/n
 
   # Matches lines that contain usernames and plaintext passwords
-  PLAINTEXT_REGEX              = /^[\s]*([\x21-\x7f]+)[\s]+([\x21-\x7f]+)?/n
+  PLAINTEXT_REGEX                   = /^[\s]*([\x21-\x7f]+)[\s]+([\x21-\x7f]+)?/n
 
   # Matches a line that we use to get information for creating {Mdm::Host} and {Mdm::Service} objects
   # TODO: change to use named groups from 1.9+
-  SERVICE_COMMENT_REGEX        = /^#[\s]*([0-9.]+):([0-9]+)(\x2f(tcp|udp))?[\s]*(\x28([^\x29]*)\x29)?/n
+  SERVICE_COMMENT_REGEX             = /^#[\s]*([0-9.]+):([0-9]+)(\x2f(tcp|udp))?[\s]*(\x28([^\x29]*)\x29)?/n
 
   # Matches the way that John the Ripper exports SMB hashes with no password piece
   SMB_WITH_JTR_BLANK_PASSWORD_REGEX = /^[\s]*([^\s:]+):([0-9]+):NO PASSWORD\*+:NO PASSWORD\*+[^\s]*$/
 
   # Matches LM/NTLM hash format
-  SMB_WITH_HASH_REGEX          = /^[\s]*([^\s:]+):[0-9]+:([A-Fa-f0-9]+:[A-Fa-f0-9]+):[^\s]*$/
+  SMB_WITH_HASH_REGEX               = /^[\s]*([^\s:]+):[0-9]+:([A-Fa-f0-9]+:[A-Fa-f0-9]+):[^\s]*$/
 
   # Matches a line with free-form text - less restrictive than {SMB_WITH_HASH_REGEX}
-  SMB_WITH_PLAINTEXT_REGEX     = /^[\s]*([^\s:]+):(.+):[A-Fa-f0-9]*:[A-Fa-f0-9]*:::$/
+  SMB_WITH_PLAINTEXT_REGEX          = /^[\s]*([^\s:]+):(.+):[A-Fa-f0-9]*:[A-Fa-f0-9]*:::$/
 
+  # Matches warning lines in legacy pwdump files
+  WARNING_REGEX                     = /^[\s]*Warning:/
 
   #
   # Validations
@@ -75,6 +77,8 @@ class Metasploit::Credential::Importer::Pwdump
     Metasploit::Credential::Core.transaction do
       input.each_line do |line|
         case line
+          when WARNING_REGEX
+            next
           when COMMENT_LINE_START_REGEX
             service_info = service_info_from_comment_string(line)
           when SMB_WITH_HASH_REGEX

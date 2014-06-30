@@ -21,6 +21,9 @@ FactoryGirl.define do
 # 192.168.0.2:4567/snmp ()
 metasploit_credential_public_username1:1:aad3b435b51404eeaad3b435b51404ee:79d2d315bcb541a94d4f094a74b46cb2:::
 
+# SSH Private Keys (1 services, 1 keys)
+# 114.144.78.235:22/tcp (ssh)
+Warning: missing SSH key file 'kljsdlkfjfkl;jasdf;lkasjdf;lkjasdf;lkjasdf;lkj'.
 
 # Hashes (2 hashes, 2 services)
 # 192.168.0.2:4567/tcp (snmp)
