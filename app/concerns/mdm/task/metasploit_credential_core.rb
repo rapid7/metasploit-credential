@@ -12,7 +12,8 @@ module Mdm::Task::MetasploitCredentialCore
     #
     #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
     has_and_belongs_to_many :credential_cores, 
-                            :class_name => "Metasploit::Credential::Core", 
-                            :join_table => "credential_cores_tasks"
+                            class_name: "Metasploit::Credential::Core", 
+                            join_table: "credential_cores_tasks",
+                            uniq: true
   end
 end
