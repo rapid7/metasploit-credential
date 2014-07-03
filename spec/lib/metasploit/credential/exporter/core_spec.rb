@@ -38,7 +38,7 @@ describe Metasploit::Credential::Exporter::Core do
   describe "#header_line" do
     describe "in LOGIN_MODE" do
       it 'should have the proper headers' do
-        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS.push(:host_address, :service_port, :service_name, :service_protocol)
+        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       end
     end
 
