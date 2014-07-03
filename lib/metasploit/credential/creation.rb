@@ -62,7 +62,7 @@ module Metasploit
       # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Origin to
       # @option opts [String] :module_fullname The fullname of the Metasploit Module to link this Origin to
       # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
-      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin to
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin and Core to
       # @option opts [String] :filename The filename of the file that was imported
       # @option opts [Fixnum] :user_id The ID of the `Mdm::User` to link this Origin to
       # @option opts [Fixnum] :session_id The ID of the `Mdm::Session` to link this Origin to
@@ -118,6 +118,7 @@ module Metasploit
       # @option opts [Metasploit::Credential::Public] :public The {Metasploit::Credential::Public} component
       # @option opts [Metasploit::Credential::Private] :private The {Metasploit::Credential::Private} component
       # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to tie the Core to
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Core to
       # @return [NilClass] if there is no active database connection
       # @return [Metasploit::Credential::Core]
       def create_credential_core(opts={})
@@ -142,10 +143,12 @@ module Metasploit
         else
           realm_id = nil
         end
-
         core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
         if core.origin_id.nil?
           core.origin = origin
+        end
+        if opts[:task_id]
+          core.tasks << Mdm::Task.find(opts[:task_id])
         end
         core.save!
         core
@@ -164,6 +167,7 @@ module Metasploit
       # @option opts [String] :status The status for the Login object
       # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Login to
       # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
+      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Login to
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no active database connection
       # @return [Metasploit::Credential::Login]
@@ -176,7 +180,11 @@ module Metasploit
 
         service_object = create_credential_service(opts)
         login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
-
+        
+        if opts[:task_id]
+          login_object.tasks << Mdm::Task.find(opts[:task_id])
+        end
+        
         login_object.access_level      = access_level if access_level
         login_object.last_attempted_at = last_attempted_at if last_attempted_at
         login_object.status            = status

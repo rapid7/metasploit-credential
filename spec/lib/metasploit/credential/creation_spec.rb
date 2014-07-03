@@ -384,11 +384,13 @@ describe Metasploit::Credential::Creation do
   end
 
   context '#create_credential_core' do
-    let(:origin)  { FactoryGirl.create(:metasploit_credential_origin_service) }
-    let(:public)  { FactoryGirl.create(:metasploit_credential_public)}
-    let(:private) { FactoryGirl.create(:metasploit_credential_password)}
-    let(:realm)   { FactoryGirl.create(:metasploit_credential_realm)}
-
+    let(:origin)    { FactoryGirl.create(:metasploit_credential_origin_service) }
+    let(:public)    { FactoryGirl.create(:metasploit_credential_public)}
+    let(:private)   { FactoryGirl.create(:metasploit_credential_password)}
+    let(:realm)     { FactoryGirl.create(:metasploit_credential_realm)} 
+    let(:workspace) { origin.service.host.workspace }
+    let(:task)      { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    
     it 'raises a KeyError if any required option is missing' do
       opts = {}
       expect{ test_object.create_credential_core(opts)}.to raise_error KeyError
@@ -409,8 +411,57 @@ describe Metasploit::Credential::Creation do
       }
       expect{test_object.create_credential_core(opts)}.to change{Metasploit::Credential::Core.count}.by(1)
     end
-
+    it 'associates the new Metasploit::Credential::Core with a task if passed' do
+      opts = {
+          origin: origin,
+          public: public,
+          private: private,
+          realm: realm,
+          workspace_id: origin.service.host.workspace_id,
+          task_id: task.id
+      }
+      core = test_object.create_credential_core(opts)
+      core.tasks.should include(task)
+    end
 
   end
 
+  context '#create_credential_login' do
+    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:credential_core) { FactoryGirl.create(:metasploit_credential_core_manual, workspace: workspace) }
+    
+    it 'creates a Metasploit::Credential::Login' do
+      login_data = {
+        address: service.host.address,
+        port: service.port,
+        service_name: service.name,
+        protocol: service.proto,
+        workspace_id: workspace.id,
+        core: credential_core,
+        last_attempted_at: DateTime.current,
+        status: Metasploit::Credential::Login::Status::SUCCESSFUL,
+      }
+      expect{test_object.create_credential_login(login_data)}.to change{Metasploit::Credential::Login.count}.by(1)
+    end
+    it "associates the Metasploit::Credential::Core with a task if passed" do
+      login_data = {
+        address: service.host.address,
+        port: service.port,
+        service_name: service.name,
+        protocol: service.proto,
+        workspace_id: workspace.id,
+        task_id: task.id,
+        core: credential_core,
+        last_attempted_at: DateTime.current,
+        status: Metasploit::Credential::Login::Status::SUCCESSFUL,
+      }
+      login = test_object.create_credential_login(login_data)
+      login.tasks.should include(task)
+      
+    end
+    
+  end
+  
 end

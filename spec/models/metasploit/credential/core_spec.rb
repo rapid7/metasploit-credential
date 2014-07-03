@@ -10,6 +10,7 @@ describe Metasploit::Credential::Core do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
+    it { should have_and_belong_to_many(:tasks).class_name('Mdm::Task') }
     it { should have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
     it { should belong_to(:origin) }
     it { should belong_to(:private).class_name('Metasploit::Credential::Private') }
