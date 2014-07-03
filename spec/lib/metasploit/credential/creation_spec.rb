@@ -389,7 +389,7 @@ describe Metasploit::Credential::Creation do
     let(:private)   { FactoryGirl.create(:metasploit_credential_password)}
     let(:realm)     { FactoryGirl.create(:metasploit_credential_realm)} 
     let(:workspace) { origin.service.host.workspace }
-    let(:tasks)     { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:task)      { FactoryGirl.create(:mdm_task, workspace: workspace) }
     
     it 'raises a KeyError if any required option is missing' do
       opts = {}
