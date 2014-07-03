@@ -8,8 +8,6 @@ module Metasploit
       MINOR = 5
       # The patch number, scoped to the {MINOR} version number.
       PATCH = 1
-      # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
-      PRERELEASE = 'readme'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
