@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140605173747) do
+ActiveRecord::Schema.define(:version => 20140702184622) do
 
   create_table "api_keys", :force => true do |t|
     t.text     "token"
@@ -26,6 +26,11 @@ ActiveRecord::Schema.define(:version => 20140605173747) do
     t.string   "ua_name",    :limit => 64
     t.string   "ua_ver",     :limit => 32
     t.datetime "updated_at"
+  end
+
+  create_table "credential_cores_tasks", :id => false, :force => true do |t|
+    t.integer "core_id"
+    t.integer "task_id"
   end
 
   create_table "creds", :force => true do |t|
@@ -92,7 +97,7 @@ ActiveRecord::Schema.define(:version => 20140605173747) do
 
   create_table "hosts", :force => true do |t|
     t.datetime "created_at"
-    t.string   "address",               :limit => nil,                  :null => false
+    t.string   "address",                                               :null => false
     t.string   "mac"
     t.string   "comm"
     t.string   "name"
@@ -667,7 +672,7 @@ ActiveRecord::Schema.define(:version => 20140605173747) do
 
   create_table "wmap_requests", :force => true do |t|
     t.string   "host"
-    t.string   "address",    :limit => nil
+    t.string   "address"
     t.integer  "port"
     t.integer  "ssl"
     t.string   "meth",       :limit => 32
@@ -684,7 +689,7 @@ ActiveRecord::Schema.define(:version => 20140605173747) do
 
   create_table "wmap_targets", :force => true do |t|
     t.string   "host"
-    t.string   "address",    :limit => nil
+    t.string   "address"
     t.integer  "port"
     t.integer  "ssl"
     t.integer  "selected"
