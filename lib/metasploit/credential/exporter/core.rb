@@ -153,8 +153,8 @@ class Metasploit::Credential::Exporter::Core
       username: core.public.username,
       private_type: core.private.type,
       private_data: core.private.data,
-      realm_key: core.realm.key,
-      realm_value: core.realm.value,
+      realm_key: core.realm.try(:key),
+      realm_value: core.realm.try(:value)
     }
   end
 
