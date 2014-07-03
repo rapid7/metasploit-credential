@@ -139,7 +139,7 @@ class Metasploit::Credential::Exporter::Core
     result.merge({
       host_address: login.service.host.address,
       service_port: login.service.port,
-      service_name: login.service.name,
+      service_name: login.service.try(:name),
       service_protocol: login.service.proto
     })
   end
@@ -151,8 +151,8 @@ class Metasploit::Credential::Exporter::Core
   def line_for_core(core)
     {
       username: core.public.username,
-      private_type: core.private.type,
-      private_data: core.private.data,
+      private_type: core.private.try(:type),
+      private_data: core.private.try(:data),
       realm_key: core.realm.try(:key),
       realm_value: core.realm.try(:value)
     }
