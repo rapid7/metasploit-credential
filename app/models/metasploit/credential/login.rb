@@ -7,6 +7,12 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
   # Associations
   #
+  
+  # @!attribute tasks
+  #   The {Mdm::Task tasks} using this to track what tasks interacted with a given core.
+  #
+  #   @return [ActiveRecord::Relation<Mdm::Task>]
+  has_and_belongs_to_many :tasks, :class_name => "Mdm::Task", :join_table => "credential_logins_tasks"
 
   # @!attribute core
   #   The {Metasploit::Credential::Core core credential} used to authenticate to {#service}.
