@@ -226,7 +226,41 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @scope Metasploit::Credential::Core
   # @param id [Integer] the workspace to look in
   # @return [ActiveRecord::Relation] scoped to the workspace
-  scope :workspace_id, lambda { |id| where(workspace_id: id) }
+  scope :workspace_id, ->(id) {
+    where(workspace_id: id)
+  }
+
+  # Eager loads {Metasploit::Credential::Login} objects associated to Cores
+  #
+  # @method with_logins
+  # @return [ActiveRecord::Relation]
+  scope :with_logins, ->() {
+    includes(:logins)
+  }
+
+  # Eager loads {Metasploit::Credential::Public} objects associated to Cores
+  #
+  # @method with_public
+  # @return [ActiveRecord::Relation]
+  scope :with_public, ->() {
+    includes(:public)
+  }
+
+  # Eager loads {Metasploit::Credential::Private} objects associated to Cores
+  #
+  # @method with_private
+  # @return [ActiveRecord::Relation]
+  scope :with_private, ->() {
+    includes(:private)
+  }
+
+  # Eager loads {Metasploit::Credential::Realm} objects associated to Cores
+  #
+  # @method with_realm
+  # @return [ActiveRecord::Relation]
+  scope :with_realm, ->() {
+    includes(:realm)
+  }
 
   #
   # Instance Methods

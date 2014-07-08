@@ -126,23 +126,10 @@ module Metasploit
         origin       = opts.fetch(:origin)
         workspace_id = opts.fetch(:workspace_id)
 
-        if opts[:private]
-          private_id = opts[:private].id
-        else
-          private_id = nil
-        end
+        private_id = opts[:private].try(:id)
+        public_id  = opts[:public].try(:id)
+        realm_id   = opts[:realm].try(:id)
 
-        if opts[:public]
-          public_id = opts[:public].id
-        else
-          public_id = nil
-        end
-
-        if opts[:realm]
-          realm_id = opts[:realm].id
-        else
-          realm_id = nil
-        end
         core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
         if core.origin_id.nil?
           core.origin = origin
@@ -338,7 +325,7 @@ module Metasploit
             private_object.jtr_format = 'nt,lm'
           when :nonreplayable_hash
             private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
-            if opts[:jtr_format]
+            if opts[:jtr_format].present?
               private_object.jtr_format = opts[:jtr_format]
             end
           else
