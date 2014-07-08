@@ -30,7 +30,7 @@ describe Metasploit::Credential::Realm do
         }
 
         it 'is Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN' do
-          expect(key).to eq(described_class::Key::ACTIVE_DIRECTORY_DOMAIN)
+          expect(key).to eq(Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN)
         end
       end
     end
@@ -48,7 +48,7 @@ describe Metasploit::Credential::Realm do
         }
 
         it 'is Metasploit::Credential::Realm::Key::ORACLE_SYSTEM_IDENTIFIER' do
-          expect(key).to eq(described_class::Key::ORACLE_SYSTEM_IDENTIFIER)
+          expect(key).to eq(Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER)
         end
       end
     end
@@ -66,7 +66,7 @@ describe Metasploit::Credential::Realm do
         }
 
         it 'is Metasploit::Credential::Realm::Key::POSTGRESQL_DATABASE' do
-          expect(key).to eq(described_class::Key::POSTGRESQL_DATABASE)
+          expect(key).to eq(Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE)
         end
       end
     end
@@ -87,7 +87,7 @@ describe Metasploit::Credential::Realm do
 
   context 'validations' do
     context 'on #key' do
-      it { should ensure_inclusion_of(:key).in_array(described_class::Key::ALL) }
+      it { should ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
       it { should validate_presence_of :key }
     end
 

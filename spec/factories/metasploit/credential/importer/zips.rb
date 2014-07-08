@@ -51,7 +51,7 @@ FactoryGirl.define do
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
       csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
-        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
+        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
     end
 
@@ -95,7 +95,7 @@ FactoryGirl.define do
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
       csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
-        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
+        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
     end
 

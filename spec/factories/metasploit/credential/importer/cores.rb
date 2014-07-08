@@ -12,9 +12,9 @@ FactoryGirl.define do
   sequence :well_formed_csv_compliant_header do |n|
     csv_string =<<-eos
 username,private_type,private_data,realm_key,realm_value
-han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Credential::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
+han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
     eos
     StringIO.new(csv_string)
   end
@@ -58,8 +58,8 @@ princessl-#{n},bagelHead
   sequence :well_formed_csv_non_compliant_header do |n|
     csv_string =<<-eos
 notgood,noncompliant,badheader,morebadheader
-han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief, #{Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief, #{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
     eos
     StringIO.new(csv_string)
   end

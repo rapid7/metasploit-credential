@@ -136,6 +136,7 @@ module Metasploit
         else
           realm_id = nil
         end
+        p opts[:realm]
 
         core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
         if core.origin_id.nil?
@@ -360,7 +361,7 @@ module Metasploit
         realm_key   = opts.fetch(:realm_key)
         realm_value = opts.fetch(:realm_value)
 
-        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
+        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create!
       end
 
 
