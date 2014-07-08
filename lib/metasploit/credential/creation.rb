@@ -108,7 +108,11 @@ module Metasploit
         if opts.has_key?(:username)
           core_opts[:public] = create_credential_public(opts)
         end
-
+        
+        if opts.has_key?(:task_id)
+          core_opts[:task_id] = opts[:task_id]
+        end
+        
         create_credential_core(core_opts)
       end
 
