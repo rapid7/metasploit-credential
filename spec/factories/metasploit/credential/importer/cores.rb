@@ -11,7 +11,7 @@ FactoryGirl.define do
   # Contains 2 realms
   sequence :well_formed_csv_compliant_header do |n|
     csv_string =<<-eos
-username,private_type,private_data,realm_key,realm_value
+username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol
 han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
 princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
 lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
