@@ -80,9 +80,9 @@ class Metasploit::Credential::Exporter::Pwdump
   def data
     unless instance_variable_defined? :@data
       @data = {}
-      @data[:ntlm]           = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NTLMHash }
-      @data[:non_replayable] = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::NonreplayableHash }
-      @data[:password]       = logins.select{ |l| l.core.private.is_a? Metasploit::Credential::Password }
+      @data[:ntlm]           = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::NTLMHash) }
+      @data[:non_replayable] = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::NonreplayableHash) }
+      @data[:password]       = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::Password) }
     end
     @data
   end
@@ -151,8 +151,11 @@ class Metasploit::Credential::Exporter::Pwdump
   # @param login [Metasploit::Credential::Login]
   # @return [Hash]
   def data_for_login(login)
-    username     = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
-    private_data = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING
+    public  = login.core.try(:public)
+    private = login.core.try(:private)
+
+    username     = public.present? && public.username.present? ? public.username : BLANK_CRED_STRING
+    private_data = private.present? && private.data.present? ? private.data : BLANK_CRED_STRING
     {
       username: username,
       private_data: private_data

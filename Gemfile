@@ -43,5 +43,5 @@ group :development, :test do
   # TODO make compatible with rspec 3.0.0
   gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
-  gem 'rspec-rails'
+  gem 'rspec-rails', '< 3.0.0'
 end
