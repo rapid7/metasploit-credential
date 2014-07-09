@@ -46,3 +46,7 @@ And then execute:
 Or install it yourself as:
 
     $ gem install net-ssh
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)

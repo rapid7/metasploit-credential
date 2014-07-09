@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
   s.description = 'The Metasploit::Credential namespace and its ActiveRecord::Base subclasses'
 
-  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
+  s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['CONTRIBUTING.md', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
   s.add_development_dependency 'pg'
@@ -22,9 +22,9 @@ Gem::Specification.new do |s|
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '>= 0.17.3', '< 0.18'
+  s.add_runtime_dependency 'metasploit_data_models', '>= 0.18.0', '< 0.19'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model' , '~> 0.25.3'
+  s.add_runtime_dependency 'metasploit-model', '>= 0.25.1', '< 0.26'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys

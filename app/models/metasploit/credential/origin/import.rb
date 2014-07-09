@@ -48,14 +48,6 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
 
   attr_accessible :filename
 
-  #
-  # Validations
-  #
-
-  validates :filename,
-            presence: true
-  validates :task,
-            presence: true
 
   Metasploit::Concern.run(self)
 end

@@ -1,5 +1,5 @@
+# Helper module that contains methods for manipulating text into different formats.
 module Metasploit::Credential::Text
-
   # Turn non-printable chars into hex representations, leaving others alone
   # If +whitespace+ is true, converts whitespace (0x20, 0x09, etc) to hex as
   # well.
@@ -13,4 +13,15 @@ module Metasploit::Credential::Text
       str.gsub(/([\x00-\x08\x0b\x0c\x0e-\x1f\x80-\xFF])/n){ |x| "\\x%.2x" % x.unpack("C*")[0]}
     end
   end
+
+  # Convert hex into characters
+  # @return [String]
+  def self.dehex(str)
+    hexen = str.scan(/\x5cx[0-9a-fA-F]{2}/n)
+    hexen.each { |h|
+      str.gsub!(h,h[2,2].to_i(16).chr)
+    }
+    str
+  end
+
 end

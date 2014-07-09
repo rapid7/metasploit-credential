@@ -1,6 +1,7 @@
 module Metasploit
   module Credential
     module Importer
+      # Defines common attributes and helpers for all importers.
       module Base
         extend ActiveSupport::Concern
 
@@ -27,6 +28,11 @@ module Metasploit
         included do
           include ActiveModel::Validations
 
+          # @!attribute filename
+          #   The name of the file that is being imported
+          #   @return [String]
+          attr_accessor :filename
+
           # @!attribute input
           #   An {IO} that holds the import data. {File} in normal usage, {StringIO} in testing
           #   @return [IO]
@@ -43,6 +49,11 @@ module Metasploit
           #   @return[Mdm::Workspace]
           attr_accessor :workspace
 
+          #
+          # Validations
+          #
+
+          validates :origin, presence: true
 
           # If no +workspace+ is provided at instantiation, assume that the workspace comes from an {Mdm::Task}
           #

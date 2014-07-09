@@ -221,6 +221,24 @@ describe Metasploit::Credential::Importer::Core do
         expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Core, :count).from(0).to(3)
       end
     end
+
+    context "when there are Logins in the input" do
+      before(:each) do
+        core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_with_service_info
+      end
+
+      it 'should create Logins' do
+        expect{core_csv_importer.import!}.to change(Metasploit::Credential::Login, :count).from(0).to(2)
+      end
+
+      it 'should create Mdm::Host objects' do
+        expect{core_csv_importer.import!}.to change(Mdm::Host, :count).from(0).to(2)
+      end
+
+      it 'should create Mdm::Service objects' do
+        expect{core_csv_importer.import!}.to change(Mdm::Service, :count).from(0).to(2)
+      end
+    end
   end
 
 end

@@ -10,6 +10,7 @@ describe Metasploit::Credential::Core do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
+    it { should have_and_belong_to_many(:tasks).class_name('Mdm::Task') }
     it { should have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
     it { should belong_to(:origin) }
     it { should belong_to(:private).class_name('Metasploit::Credential::Private') }
@@ -475,14 +476,6 @@ describe Metasploit::Credential::Core do
 
               it { should include error }
             end
-          end
-
-          context 'without Metasploit::Credential::Origin::Import#task' do
-            let(:task) do
-              nil
-            end
-
-            it { should include(error) }
           end
         end
 

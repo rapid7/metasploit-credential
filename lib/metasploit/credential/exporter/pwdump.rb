@@ -1,5 +1,51 @@
 require 'erb'
 
+# Exports {Metasploit::Credential::Login Metasploit::Credential::Logins} in the old pwdump format.
+#
+# # Service
+#
+# The service for a given login is in comment (`#`) above the login in the format
+# '`Mdm::Host#address`:`Mdm::Service#port`/`Mdm::Service#proto` (`Mdm::Service#name`)'
+#
+# # Logins
+#
+# There is one {Metasploit::Credential::Login} per line with the line format varying based on the `Class` of
+# {Metasploit::Credential::Login#core} {Metasploit::Credential::Core#private}.
+#
+# * {Metasploit::Credential::Public#username}:{Metasploit::Credential::NonreplayableHash#data}:::
+# * {Metasploit::Credential::Public#username}:{Metasploit::Credential::Login#id}:{Metasploit::Credential::NTLMHash#data}
+# * {Metasploit::Credential::Public#username} {Metasploit::Credential::Password#data}
+#
+# ## Blanks
+#
+# If the username or password is blank, then {BLANK_CRED_STRING} is used instead of an empty string.
+#
+# The full format is as follows:
+#
+#     #
+#     # Metasploit PWDump: <version>
+#     # Generated: <UTC Time>
+#     # Project: <Mdm::Workspace#name>
+#     #
+#     #########################################################
+#
+#     #  LM/NTLM Hashes (<Metasploit::Credential::NTLMHash count> hashes, <Metasploit::Credential::NTLMHash service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username>:<Metasploit::Credential::Login#id>:<Metasploit::Credential::NTLMHash#data>
+#
+#
+#     #  Hashes (<Metasploit::Credential::Nonreplayable count> hashes, <Metasploit::Credential::Nonreplayable service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username>:<Metasploit::Credential::NonreplayableHash#data>:::
+#
+#     #  Plaintext Passwords (<Metasploit::Credential::Password count> passwords, <Metasploit::Credential::Password service count> services)
+#
+#     # <Mdm::Host#address>:<Mdm::Service#port>/<Mdm::Service#proto> (<Mdm::Service#name>)
+#     <Metasploit::Credential::Public#username> <Metasploit::Credential::Password#data>
+#
+#
 class Metasploit::Credential::Exporter::Pwdump
   include Metasploit::Credential::Exporter::Base
 
@@ -48,8 +94,8 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NonReplayableHash} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_nonreplayable_hash(login)
     creds_data = data_for_login(login)
     username = Metasploit::Credential::Text.ascii_safe_hex(creds_data[:username])
@@ -58,16 +104,16 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::NTLMHash} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_ntlm_hash(login)
     creds_data = data_for_login(login)
-    "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}"
+    "#{creds_data[:username]}:#{login.id}:#{creds_data[:private_data]}:::"
   end
 
   # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::Password} for output
-  # @param [Metasploit::Credential::Login] login
-  # @return[String]
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
   def format_password(login)
     creds_data = data_for_login(login)
     "#{creds_data[:username]} #{creds_data[:private_data]}"
@@ -75,7 +121,7 @@ class Metasploit::Credential::Exporter::Pwdump
 
   # Returns a string for the host/service/port/proto/service name combination in the pwdump file.
   # This string is added to make it easier for a human to scan the file.
-  # @param [Metasploit::Credential::Login] login the login to look at
+  # @param login [Metasploit::Credential::Login] the login to look at
   # @return [String]
   def format_service_for_login(login)
     service = login.service
@@ -83,7 +129,7 @@ class Metasploit::Credential::Exporter::Pwdump
     "#{address}:#{service.port}/#{service.proto} (#{service.name})"
   end
 
-  # Renders the collection credential objects in {#data} into the {ERB} template at {TEMPLATE PATH}
+  # Renders the collection credential objects in {#data} into the `ERB` template at {TEMPLATE_PATH}
   # @return [String]
   def rendered_output
     @version_string = VERSION
@@ -93,7 +139,7 @@ class Metasploit::Credential::Exporter::Pwdump
   end
 
   # Returns the count of services in the group creds contained in +hash_array+
-  # @param [Array<Metasploit::Credential::Login>] hash_array
+  # @param hash_array [Array<Metasploit::Credential::Login>]
   # @return [Fixnum]
   def service_count_for_hashes(hash_array)
     hash_array.collect(&:service).collect(&:id).uniq.size
@@ -102,8 +148,8 @@ class Metasploit::Credential::Exporter::Pwdump
   private
 
   # Returns a hash containing the public and private or the canonical blank string
-  # @param[Metasploit::Credential::Login] login
-  # @return[Hash]
+  # @param login [Metasploit::Credential::Login]
+  # @return [Hash]
   def data_for_login(login)
     username     = login.core.public.username.present? ? login.core.public.username : BLANK_CRED_STRING
     private_data = login.core.private.data.present? ? login.core.private.data : BLANK_CRED_STRING

@@ -15,7 +15,7 @@ describe Metasploit::Credential::Origin::Import do
       it_should_behave_like 'timestamp database columns'
 
       context 'foreign keys' do
-        it { should have_db_column(:task_id).of_type(:integer).with_options(null: false) }
+        it { should have_db_column(:task_id).of_type(:integer) }
       end
     end
 
@@ -42,10 +42,5 @@ describe Metasploit::Credential::Origin::Import do
     it { should_not allow_mass_assignment_of :task }
     it { should_not allow_mass_assignment_of :task_id }
     it { should_not allow_mass_assignment_of :updated_at }
-  end
-
-  context 'validations' do
-    it { should validate_presence_of :filename }
-    it { should validate_presence_of :task }
   end
 end
