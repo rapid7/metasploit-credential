@@ -81,6 +81,12 @@ describe Metasploit::Credential::Importer::Pwdump do
         it 'should create 2 Passwords' do
           expect{pwdump_importer.import!}.to change(Metasploit::Credential::Password, :count).from(0).to(2)
         end
+
+        # Legacy files may have these lines when missing SSH key files
+        it 'should not create a Private from a "Warning" line' do
+          pwdump_importer.import!
+          Metasploit::Credential::Private.where(data:'missing').should be_blank
+        end
       end
     end
 

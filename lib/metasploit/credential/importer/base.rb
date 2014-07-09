@@ -54,6 +54,7 @@ module Metasploit
           #
 
           validates :origin, presence: true
+          validates :input, presence: true
 
           # If no +workspace+ is provided at instantiation, assume that the workspace comes from an {Mdm::Task}
           #
