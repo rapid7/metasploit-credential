@@ -9,6 +9,7 @@
 
 require 'metasploit/concern'
 require 'metasploit_data_models'
+require 'metasploit/model'
 require 'zip'
 
 #
@@ -28,6 +29,7 @@ module Metasploit
   module Credential
     extend ActiveSupport::Autoload
 
+    autoload :Creation
     autoload :EntityRelationshipDiagram
     autoload :Importer
     autoload :Exporter

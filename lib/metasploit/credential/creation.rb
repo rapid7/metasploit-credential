@@ -378,7 +378,7 @@ module Metasploit
         realm_key   = opts.fetch(:realm_key)
         realm_value = opts.fetch(:realm_value)
 
-        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
+        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create!
       end
 
 

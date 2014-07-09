@@ -35,7 +35,7 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #
   #   The name of the key for the realm.
   #
-  #   @return [String] An element of {Metasploit::Credential::Realm::Key::ALL}
+  #   @return [String] An element of `Metasploit::Model::Realm::Key::ALL`
 
   # @!attribute updated_at
   #   The last time this realm was updated.
@@ -60,7 +60,7 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
 
   validates :key,
             inclusion: {
-                in: Metasploit::Credential::Realm::Key::ALL
+                in: Metasploit::Model::Realm::Key::ALL
             },
             presence: true
   validates :value,
