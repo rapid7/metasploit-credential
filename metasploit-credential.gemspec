@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   # Various Metasploit::Credential records have associations to Mdm records
   s.add_runtime_dependency 'metasploit_data_models', '>= 0.17.3', '< 0.18'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model' #, '>= 0.24.1.pre.semantic.pre.versioning.pre.2.pre.0', '< 0.25'
+  s.add_runtime_dependency 'metasploit-model' , '~> 0.25.3'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys
