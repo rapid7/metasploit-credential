@@ -431,54 +431,6 @@ describe Metasploit::Credential::Core do
       end
 
       context '#origin' do
-        context 'with Metasploit::Credential::Origin::Import' do
-          let(:error) do
-            I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.workspace.origin_task_workspace')
-          end
-
-          let(:origin) do
-            FactoryGirl.build(
-                :metasploit_credential_origin_import,
-                task: task
-            )
-          end
-
-          context 'with Metasploit::Credential::Origin::Import#task' do
-            let(:task) do
-              FactoryGirl.build(
-                  :mdm_task,
-                  workspace: task_workspace
-              )
-            end
-
-            context 'with Mdm::Task#workspace' do
-              context 'same as #workspace' do
-                let(:task_workspace) do
-                  workspace
-                end
-
-                it { should_not include error }
-              end
-
-              context 'different than #workspace' do
-                let(:task_workspace) do
-                  FactoryGirl.create(:mdm_workspace)
-                end
-
-                it { should include(error) }
-              end
-            end
-
-            context 'without Mdm::Task#workspace' do
-              let(:task_workspace) do
-                nil
-              end
-
-              it { should include error }
-            end
-          end
-        end
-
         context 'with Metasploit::Credential::Origin::Manual' do
           let(:error) do
             I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.workspace.origin_user_workspaces')

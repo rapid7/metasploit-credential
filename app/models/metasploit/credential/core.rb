@@ -12,11 +12,11 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #   The {Mdm::Task tasks} using this to track what tasks interacted with a given core.
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
-  has_and_belongs_to_many :tasks, 
-                          class_name: "Mdm::Task", 
+  has_and_belongs_to_many :tasks,
+                          class_name: "Mdm::Task",
                           join_table: "credential_cores_tasks",
                           uniq: true
-  
+
   # @!attribute logins
   #   The {Metasploit::Credential::Login logins} using this core credential to log into a service.
   #
@@ -273,12 +273,6 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [void]
   def consistent_workspaces
     case origin
-      when Metasploit::Credential::Origin::Import
-        if origin.task.present?
-          unless self.workspace == origin.task.try(:workspace)
-            errors.add(:workspace, :origin_task_workspace)
-          end
-        end
       when Metasploit::Credential::Origin::Manual
         user = origin.user
 

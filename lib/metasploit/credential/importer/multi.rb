@@ -30,14 +30,13 @@ class Metasploit::Credential::Importer::Multi
   #
 
   def initialize(args={})
-    @input   = args.fetch(:input)
-    @origin = args.fetch(:origin)
     @selected_importer = nil
+    super(args)
 
     if zip?
-      @selected_importer = Metasploit::Credential::Importer::Zip.new(input: input, origin: origin)
+      @selected_importer = Metasploit::Credential::Importer::Zip.new(input: input, origin: origin, workspace: workspace)
     elsif csv?
-      @selected_importer =Metasploit::Credential::Importer::Core.new(input: input, origin: origin)
+      @selected_importer = Metasploit::Credential::Importer::Core.new(input: input, origin: origin, workspace: workspace)
     end
   end
 

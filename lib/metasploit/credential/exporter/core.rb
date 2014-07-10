@@ -150,7 +150,7 @@ class Metasploit::Credential::Exporter::Core
   # @return [Hash]
   def line_for_core(core)
     {
-      username: core.public.username,
+      username: core.public.try(:username),
       private_type: core.private.try(:type),
       private_data: core.private.try(:data),
       realm_key: core.realm.try(:key),
