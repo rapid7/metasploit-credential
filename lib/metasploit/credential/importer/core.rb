@@ -136,7 +136,7 @@ class Metasploit::Credential::Importer::Core
         realm_object_for_row   = realms[realm_value]
         public_object_for_row  = Metasploit::Credential::Public.where(username: username).first_or_create
 
-        if LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
+        if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
           if private_class == Metasploit::Credential::SSHKey
             private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
           else

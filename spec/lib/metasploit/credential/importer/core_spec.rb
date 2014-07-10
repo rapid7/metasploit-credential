@@ -64,6 +64,26 @@ describe Metasploit::Credential::Importer::Core do
           it { should be_valid }
         end
 
+        describe "with data that includes a missing Public (username)" do
+          before(:each) do
+            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_public
+          end
+
+          it 'should create a new Metasploit::Credential::Public for each unique Public in the import' do
+            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(2)
+          end
+        end
+
+        describe "with data that includes a missing Private" do
+          before(:each) do
+            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_private
+          end
+
+          it 'should create a new Metasploit::Credential::Private for each unique Private in the import' do
+            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Private, :count).from(0).to(2)
+          end
+        end
+
         describe "with a non-compliant header" do
           let(:error) do
             I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
