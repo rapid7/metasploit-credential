@@ -138,9 +138,6 @@ class Metasploit::Credential::Importer::Core
           else
             private_object_for_row = private_class.where(data: private_data).first_or_create
           end
-
-          # TODO: handle the case where there is a screwed up name
-          # error condition: something unknown/unsupported in type column
         end
 
         new_core = create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
@@ -161,6 +158,7 @@ class Metasploit::Credential::Importer::Core
       end
     end
   end
+
 
   # Performs an import of a "short" form of CSV - one that contains only one type of {Metasploit::Credential::Private}
   # and no {Metasploit::Credential::Realm} data

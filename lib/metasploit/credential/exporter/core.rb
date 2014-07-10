@@ -150,7 +150,7 @@ class Metasploit::Credential::Exporter::Core
   # @return [Hash]
   def line_for_core(core)
     {
-      username: core.public.username,
+      username: core.public.try(:username),
       private_type: core.private.try(:type),
       private_data: core.private.try(:data),
       realm_key: core.realm.try(:key),
@@ -178,7 +178,7 @@ class Metasploit::Credential::Exporter::Core
   # The final fragment of the {#output_final_directory_path}
   # @return [String]
   def output_final_subdirectory_name
-    @output_final_subdiretory_name ||= "export-#{Time.now.to_i}"
+    @output_final_subdiretory_name ||= "creds-dump-#{workspace.id}-#{Time.now.to_i}"
   end
 
   # The path to the finished `Zip::File` on disk
