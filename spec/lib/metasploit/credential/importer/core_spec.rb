@@ -2,8 +2,9 @@ require 'spec_helper'
 
 describe Metasploit::Credential::Importer::Core do
   include_context 'Mdm::Workspace'
+  let(:workspace){FactoryGirl.create(:mdm_workspace)}
 
-  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer)}
+  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer, workspace:workspace)}
 
   # CSV objects are IOs
   after(:each) do

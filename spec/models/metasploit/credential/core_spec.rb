@@ -234,17 +234,6 @@ describe Metasploit::Credential::Core do
           end
 
           it { should be_valid }
-
-          context '#workspace' do
-            subject(:workspace) do
-              metasploit_credential_core.workspace
-            end
-
-            it 'is origin.task.workspace' do
-              expect(workspace).not_to be_nil
-              expect(workspace).to eq(origin.task.workspace)
-            end
-          end
         end
 
         context ':metasploit_credential_origin_manual' do
@@ -317,21 +306,6 @@ describe Metasploit::Credential::Core do
       end
 
       it { should be_valid }
-
-      context '#workspace' do
-        subject(:workspace) do
-          metasploit_credential_core_import.workspace
-        end
-
-        let(:origin) do
-          metasploit_credential_core_import.origin
-        end
-
-        it 'is origin.task.workspace' do
-          expect(workspace).not_to be_nil
-          expect(workspace).to eq(origin.task.workspace)
-        end
-      end
     end
 
     context 'metasploit_credential_core_manual' do

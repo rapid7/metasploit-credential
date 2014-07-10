@@ -58,11 +58,8 @@ FactoryGirl.define do
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
-        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 
@@ -102,11 +99,8 @@ FactoryGirl.define do
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
-        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 
@@ -147,9 +141,8 @@ FactoryGirl.define do
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 
