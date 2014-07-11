@@ -16,7 +16,7 @@ FactoryGirl.define do
     workspace {
       case origin
         when Metasploit::Credential::Origin::Import
-          origin.task.workspace
+          FactoryGirl.build(:mdm_workspace)
         when Metasploit::Credential::Origin::Manual
           user = origin.user
 

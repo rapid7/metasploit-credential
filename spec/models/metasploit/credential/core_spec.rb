@@ -234,17 +234,6 @@ describe Metasploit::Credential::Core do
           end
 
           it { should be_valid }
-
-          context '#workspace' do
-            subject(:workspace) do
-              metasploit_credential_core.workspace
-            end
-
-            it 'is origin.task.workspace' do
-              expect(workspace).not_to be_nil
-              expect(workspace).to eq(origin.task.workspace)
-            end
-          end
         end
 
         context ':metasploit_credential_origin_manual' do
@@ -317,21 +306,6 @@ describe Metasploit::Credential::Core do
       end
 
       it { should be_valid }
-
-      context '#workspace' do
-        subject(:workspace) do
-          metasploit_credential_core_import.workspace
-        end
-
-        let(:origin) do
-          metasploit_credential_core_import.origin
-        end
-
-        it 'is origin.task.workspace' do
-          expect(workspace).not_to be_nil
-          expect(workspace).to eq(origin.task.workspace)
-        end
-      end
     end
 
     context 'metasploit_credential_core_manual' do
@@ -431,54 +405,6 @@ describe Metasploit::Credential::Core do
       end
 
       context '#origin' do
-        context 'with Metasploit::Credential::Origin::Import' do
-          let(:error) do
-            I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.workspace.origin_task_workspace')
-          end
-
-          let(:origin) do
-            FactoryGirl.build(
-                :metasploit_credential_origin_import,
-                task: task
-            )
-          end
-
-          context 'with Metasploit::Credential::Origin::Import#task' do
-            let(:task) do
-              FactoryGirl.build(
-                  :mdm_task,
-                  workspace: task_workspace
-              )
-            end
-
-            context 'with Mdm::Task#workspace' do
-              context 'same as #workspace' do
-                let(:task_workspace) do
-                  workspace
-                end
-
-                it { should_not include error }
-              end
-
-              context 'different than #workspace' do
-                let(:task_workspace) do
-                  FactoryGirl.create(:mdm_workspace)
-                end
-
-                it { should include(error) }
-              end
-            end
-
-            context 'without Mdm::Task#workspace' do
-              let(:task_workspace) do
-                nil
-              end
-
-              it { should include error }
-            end
-          end
-        end
-
         context 'with Metasploit::Credential::Origin::Manual' do
           let(:error) do
             I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.workspace.origin_user_workspaces')
@@ -824,18 +750,43 @@ describe Metasploit::Credential::Core do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
-          end
-
-          context 'without #realm' do
-            let(:realm) do
-              nil
-            end
-
             it { should include(error) }
           end
+
         end
       end
+    end
+
+    context "#public_for_ssh_key" do
+      let(:error) do
+        I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.base.public_for_ssh_key')
+      end
+
+      let(:core) do
+        FactoryGirl.build(
+          :metasploit_credential_core,
+          private: FactoryGirl.build(:metasploit_credential_ssh_key),
+          public: FactoryGirl.build(:metasploit_credential_public)
+        )
+      end
+
+      it { core.should be_valid }
+
+      context "when the Public is missing" do
+        before(:each) do
+          core.public = nil
+        end
+
+        it 'should not be valid if Private is an SSHKey and Public is missing' do
+          core.should_not be_valid
+        end
+
+        it 'should show the proper error' do
+          core.valid?
+          core.errors[:base].should include(error)
+        end
+      end
+
     end
   end
 end

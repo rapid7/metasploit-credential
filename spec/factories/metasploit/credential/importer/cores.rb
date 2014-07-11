@@ -45,6 +45,34 @@ lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,,
     StringIO.new(csv_string)
   end
 
+  # Well-formed CSV
+  # Has a compliant header as defined by Metasploit::Credential::Importer::Core
+  # Contains 2 logins
+  # Contains core with a blank Public
+  sequence :well_formed_csv_compliant_header_missing_public do |n|
+    csv_string =<<-eos
+username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol
+,#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
+    eos
+    StringIO.new(csv_string)
+  end
+
+  # Well-formed CSV
+  # Has a compliant header as defined by Metasploit::Credential::Importer::Core
+  # Contains 2 logins
+  # Contains core with a blank Private
+  sequence :well_formed_csv_compliant_header_missing_private do |n|
+    csv_string =<<-eos
+username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol
+han_solo,,,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
+    eos
+    StringIO.new(csv_string)
+  end
+
 
   # Well-formed CSV
   # Conforms to "short" form, in which only username and private_data are specified in the file
