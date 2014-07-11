@@ -166,11 +166,6 @@ class Metasploit::Credential::Importer::Core
     end
   end
 
-  def row_is_valid?(row)
-
-    
-  end
-
   # Performs an import of a "short" form of CSV - one that contains only one type of {Metasploit::Credential::Private}
   # and no {Metasploit::Credential::Realm} data
   # @return [void]
