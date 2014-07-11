@@ -750,18 +750,43 @@ describe Metasploit::Credential::Core do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
-          end
-
-          context 'without #realm' do
-            let(:realm) do
-              nil
-            end
-
             it { should include(error) }
           end
+
         end
       end
+    end
+
+    context "#public_for_ssh_key" do
+      let(:error) do
+        I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.base.public_for_ssh_key')
+      end
+
+      let(:core) do
+        FactoryGirl.build(
+          :metasploit_credential_core,
+          private: FactoryGirl.build(:metasploit_credential_ssh_key),
+          public: FactoryGirl.build(:metasploit_credential_public)
+        )
+      end
+
+      it { core.should be_valid }
+
+      context "when the Public is missing" do
+        before(:each) do
+          core.public = nil
+        end
+
+        it 'should not be valid if Private is an SSHKey and Public is missing' do
+          core.should_not be_valid
+        end
+
+        it 'should show the proper error' do
+          core.valid?
+          core.errors[:base].should include(error)
+        end
+      end
+
     end
   end
 end

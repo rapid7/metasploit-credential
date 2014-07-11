@@ -103,6 +103,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   validate :consistent_workspaces
   validate :minimum_presence
+  validate :public_for_ssh_key
 
   #
   # Attribute Validations
@@ -305,12 +306,19 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   # @return [void]
   def minimum_presence
-    any_present = [:private, :public, :realm].any? { |attribute|
+    any_present = [:private, :public].any? { |attribute|
       send(attribute).present?
     }
 
     unless any_present
       errors.add(:base, :minimum_presence)
+    end
+  end
+
+  # Validates that a Core's Private of type {Metasploit::Credential::SSHKey} has a {Metasploit::Credential::Public}
+  def public_for_ssh_key
+    if private.present? && private.type == Metasploit::Credential::SSHKey.name
+      errors.add(:base, :public_for_ssh_key) unless public.present?
     end
   end
 
