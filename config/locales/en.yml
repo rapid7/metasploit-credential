@@ -28,11 +28,11 @@ en:
         metasploit/credential/core:
           attributes:
             base:
-              minimum_presence: "can't have private, public, and realm blank: at least one must be present."
+              minimum_presence: "can't have private and public blank - at least one must be present."
+              public_for_ssh_key: "can't have a private of type SSHKey with no associated public"
             workspace:
               origin_service_host_workspace: "does not match origin's service's host's workspace.  This could cause a cross-workspace credential disclosure."
               origin_session_host_workspace: "does not match origin's session's host's workspace.  This could cause a cross-workspace credential disclosure."
-              origin_task_workspace: "does not match origin's task's workspace.  This could cause a cross-workspace credential disclosure."
               origin_user_workspaces: "does not have a workspace that origin's user can access.  This could cause a cross-workspace credential disclosure."
         metasploit/credential/login:
           attributes:

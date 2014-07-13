@@ -25,6 +25,13 @@ class Metasploit::Credential::Importer::Zip
   #   @return [Metasploit::Credential::Importer::CSV::Manifest]
   attr_accessor :manifest_importer
 
+  # @!attribute extracted_zip_directory
+  #   The path to the directory holding the extracted zip contents
+  #
+  #   @return [String]
+  attr_accessor :extracted_zip_directory
+
+
   #
   # Validations
   #
@@ -42,8 +49,13 @@ class Metasploit::Credential::Importer::Zip
   #
   # @return [void]
   def import!
-    ::Zip::File.open(input.path)
-    csv_path = extracted_zip_path + '/' + MANIFEST_FILE_NAME
+    ::Zip::File.open(input.path) do |zip_file|
+      zip_file.each do |entry|
+        entry.extract(File.join(extracted_zip_directory, entry.name))
+      end
+    end
+
+    csv_path = File.join(extracted_zip_directory, MANIFEST_FILE_NAME)
     csv_input = File.open(csv_path)
     Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin, workspace: workspace).import!
   end
@@ -51,11 +63,8 @@ class Metasploit::Credential::Importer::Zip
   # Returns the path to the directory where the zip was extracted.
   #
   # @return [String]
-  def extracted_zip_path
-    full_path     = Pathname.new input
-    path_fragment = full_path.dirname.to_s
-    zip_dir_name  = full_path.basename(".*").to_s
-    path_fragment + '/' + zip_dir_name
+  def extracted_zip_directory
+    @extracted_zip_directory ||= Dir.mktmpdir
   end
 
 

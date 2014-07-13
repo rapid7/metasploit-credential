@@ -55,13 +55,6 @@ module Metasploit
 
           validates :origin, presence: true
           validates :input, presence: true
-
-          # If no +workspace+ is provided at instantiation, assume that the workspace comes from an {Mdm::Task}
-          #
-          # @return [Mdm::Workspace]
-          def workspace
-            @workspace ||= origin.task.workspace
-          end
         end
 
 
@@ -75,7 +68,7 @@ module Metasploit
             public_send("#{attribute}=", value)
           end
         end
-        
+
       end
     end
   end

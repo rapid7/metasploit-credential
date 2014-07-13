@@ -2,8 +2,9 @@ require 'spec_helper'
 
 describe Metasploit::Credential::Importer::Core do
   include_context 'Mdm::Workspace'
+  let(:workspace){FactoryGirl.create(:mdm_workspace)}
 
-  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer)}
+  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer, workspace:workspace)}
 
   # CSV objects are IOs
   after(:each) do
@@ -62,6 +63,26 @@ describe Metasploit::Credential::Importer::Core do
       describe "with well-formed CSV data" do
         describe "with a compliant header" do
           it { should be_valid }
+        end
+
+        describe "with data that includes a missing Public (username)" do
+          before(:each) do
+            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_public
+          end
+
+          it 'should create a new Metasploit::Credential::Public for each unique Public in the import' do
+            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(2)
+          end
+        end
+
+        describe "with data that includes a missing Private" do
+          before(:each) do
+            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_private
+          end
+
+          it 'should create a new Metasploit::Credential::Private for each unique Private in the import' do
+            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Private, :count).from(0).to(2)
+          end
         end
 
         describe "with a non-compliant header" do

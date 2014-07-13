@@ -112,11 +112,15 @@ class Metasploit::Credential::Importer::Core
     Metasploit::Credential::Core.transaction do
       csv_object.each do |row|
         next if row.header_row?
+        next unless row['username'].present? || row['private_data'].present?
+
+        username      = row['username'].present? ? row['username'] : ''
 
         realm_key     = row['realm_key']
         realm_value   = row['realm_value']  # Use the name of the Realm as a lookup for getting the object
-        private_class = row['private_type'].constantize
-        private_data  = row['private_data']
+
+        private_class = row['private_type'].present? ? row['private_type'].constantize : ''
+        private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         # Host and Service information for Logins
         host_address     = row['host_address']
@@ -130,9 +134,9 @@ class Metasploit::Credential::Importer::Core
         end
 
         realm_object_for_row   = realms[realm_value]
-        public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
+        public_object_for_row  = Metasploit::Credential::Public.where(username: username).first_or_create
 
-        if LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? private_class.name
+        if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
           if private_class == Metasploit::Credential::SSHKey
             private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
           else

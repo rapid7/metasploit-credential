@@ -51,18 +51,15 @@ FactoryGirl.define do
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
       csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
-        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
+        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
     end
 
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
-        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 
@@ -95,18 +92,15 @@ FactoryGirl.define do
     CSV.open("#{path}/#{Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME}", 'wb') do |csv|
       csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
       csv_hash.keys.each do |key|
-        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Credential::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
+        csv << [key, Metasploit::Credential::SSHKey.name, key, Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN, 'Rebels']
       end
     end
 
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        manifest_filename =  Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
-        next if zipfile.find_entry(manifest_filename) && entry == manifest_filename
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 
@@ -147,9 +141,8 @@ FactoryGirl.define do
     # Write out zip file
     zip_location = "#{path}.zip"
     ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
-      Dir.entries(path).each do |entry|
-        next if entry.first == '.'
-        zipfile.add(entry, path + '/' + entry)
+      Dir[File.join(path, '**', '**')].each do |file|
+        zipfile.add(file.sub(path + '/', ''), file)
       end
     end
 

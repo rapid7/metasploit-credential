@@ -4,7 +4,8 @@ describe Metasploit::Credential::Importer::Zip do
   include_context 'Mdm::Workspace'
   include_context 'metasploit_credential_importer_zip_file'
 
-  subject(:zip_importer){ FactoryGirl.build :metasploit_credential_importer_zip }
+  let(:workspace){FactoryGirl.create(:mdm_workspace)}
+  subject(:zip_importer){ FactoryGirl.build :metasploit_credential_importer_zip, workspace: workspace }
 
   describe "validations" do
     DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"

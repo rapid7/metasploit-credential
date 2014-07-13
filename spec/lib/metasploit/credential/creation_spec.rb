@@ -10,7 +10,7 @@ describe Metasploit::Credential::Creation do
 
   let(:session) { FactoryGirl.create(:mdm_session) }
 
-  let(:task) { FactoryGirl.create(:mdm_task)}
+  let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace)}
 
   let(:user) { FactoryGirl.create(:mdm_user)}
 
@@ -383,6 +383,23 @@ describe Metasploit::Credential::Creation do
     end
   end
 
+  context '#create_credential' do
+    
+    it 'associates the new Metasploit::Credential::Core with a task if passed' do
+      opts = {
+          origin_type: :manual,
+           user_id: user.id,
+          username: 'username',
+          private_data: 'password',
+          workspace_id: workspace.id,
+          task_id: task.id
+      }
+      core = test_object.create_credential(opts)
+      core.tasks.should include(task)
+    end
+    
+  end
+  
   context '#create_credential_core' do
     let(:origin)    { FactoryGirl.create(:metasploit_credential_origin_service) }
     let(:public)    { FactoryGirl.create(:metasploit_credential_public)}
@@ -407,7 +424,7 @@ describe Metasploit::Credential::Creation do
           public: public,
           private: private,
           realm: realm,
-          workspace_id: origin.service.host.workspace_id
+          workspace_id: workspace.id
       }
       expect{test_object.create_credential_core(opts)}.to change{Metasploit::Credential::Core.count}.by(1)
     end
@@ -417,7 +434,7 @@ describe Metasploit::Credential::Creation do
           public: public,
           private: private,
           realm: realm,
-          workspace_id: origin.service.host.workspace_id,
+          workspace_id: workspace.id,
           task_id: task.id
       }
       core = test_object.create_credential_core(opts)
