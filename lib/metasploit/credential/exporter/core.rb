@@ -29,6 +29,9 @@ class Metasploit::Credential::Exporter::Core
   # The symbol representation of the mode for exporting {Metasploit::Credential::Core} objects
   CORE_MODE = :core
 
+  # The pattern used to identify a creds dump zip or directory
+  CREDS_DUMP_FILE_IDENTIFIER = "creds-dump"
+
   # The symbol representation of the mode for exporting {Metasploit::Credential::Login} objects
   LOGIN_MODE = :login
 
@@ -178,7 +181,7 @@ class Metasploit::Credential::Exporter::Core
   # The final fragment of the {#output_final_directory_path}
   # @return [String]
   def output_final_subdirectory_name
-    @output_final_subdiretory_name ||= "creds-dump-#{workspace.id}-#{Time.now.to_i}"
+    @output_final_subdiretory_name ||= "#{CREDS_DUMP_FILE_IDENTIFIER}-dump-#{workspace.id}-#{Time.now.to_i}"
   end
 
   # The path to the finished `Zip::File` on disk
