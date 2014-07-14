@@ -33,6 +33,11 @@ describe Metasploit::Credential::Exporter::Core do
       core_exporter.export!
       File.exists?(core_exporter.output_zipfile_path).should be_true
     end
+
+    it 'should output to a directory whose name contains the standardized identifier' do
+      core_exporter.export!
+      core_exporter.output_final_directory_path.should include(Metasploit::Credential::Exporter::Core::CREDS_DUMP_FILE_IDENTIFIER)
+    end
   end
 
   describe "#header_line" do

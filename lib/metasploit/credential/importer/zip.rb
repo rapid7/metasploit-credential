@@ -15,6 +15,12 @@ class Metasploit::Credential::Importer::Zip
   # {Metasploit::Credential::Importer::CSV::Core}
   MANIFEST_FILE_NAME = "manifest.csv"
 
+  # Zip file identifying header length in bytes ({ZIP_HEADER_IDENTIFIER} length)
+  ZIP_HEADER_BYTE_LENGTH = 4
+
+  # Standard 4-byte binary header for all zips - http://www.fileformat.info/format/zip/corion.htm
+  ZIP_HEADER_IDENTIFIER = "PK\x03\x04"
+
   #
   # Attributes
   #

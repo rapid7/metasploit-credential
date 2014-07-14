@@ -302,7 +302,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
     end
   end
 
-  # Validates that at least one of {#private}, {#public}, or {#realm} is present.
+  # Validates that at least one of {#private} or {#public} is present.
   #
   # @return [void]
   def minimum_presence

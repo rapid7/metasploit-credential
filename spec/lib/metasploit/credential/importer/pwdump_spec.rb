@@ -61,6 +61,13 @@ describe Metasploit::Credential::Importer::Pwdump do
         expect{pwdump_importer.import!}.to change(Metasploit::Credential::Core, :count).from(0).to(5)
       end
 
+      it 'should create Cores with the same Origin' do
+        pwdump_importer.import!
+        origins = Metasploit::Credential::Core.all.collect(&:origin).uniq
+        origins.size.should be(1)
+        origins.first.id.should be(origin.id)
+      end
+
       it 'should create the proper number of Logins' do
         expect{pwdump_importer.import!}.to change(Metasploit::Credential::Login, :count).from(0).to(5)
       end
