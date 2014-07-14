@@ -77,4 +77,9 @@ describe Metasploit::Credential::Importer::Zip do
     end
   end
 
+  describe "zip constants" do
+    it 'should have ZIP_HEADER_IDENTIFIER whose length corresponds to ZIP_HEADER_BYTE_LENGTH' do
+      Metasploit::Credential::Importer::Zip::ZIP_HEADER_IDENTIFIER.size.should == Metasploit::Credential::Importer::Zip::ZIP_HEADER_BYTE_LENGTH
+    end
+  end
 end

@@ -117,7 +117,6 @@ class Metasploit::Credential::Importer::Pwdump
         public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
         private_obj = creds_class.where(data: private).first_or_create
 
-        origin = Metasploit::Credential::Origin::Import.create(filename: filename)
         core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace_id: workspace.id)
 
         login_opts = {
@@ -133,6 +132,10 @@ class Metasploit::Credential::Importer::Pwdump
         create_credential_login(login_opts)
       end
     end
+  end
+
+  def initialize(args={})
+    super args
   end
 
   # Break a line into user, hash
