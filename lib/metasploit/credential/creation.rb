@@ -447,12 +447,7 @@ module Metasploit
           login = Metasploit::Credential::Login.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
 
           if login.present?
-            case status
-              when :connection_error
-                login.status = Metasploit::Model::Login::Status::UNABLE_TO_CONNECT
-              when :failed
-                login.status = Metasploit::Model::Login::Status::INCORRECT
-            end
+            login.status = status
             login.save!
           end
         end
