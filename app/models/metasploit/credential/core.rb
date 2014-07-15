@@ -256,7 +256,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   }
 
   #
-  # Instance Methods
+  # Class Methods
   #
 
   # Wrapper to provide raw SQL string UNIONing cores from a host via
@@ -272,6 +272,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
       origin_session_host_id(host_id).ast
     ).to_sql
   end
+
+  #
+  # Instance Methods
+  #
 
   private
 
