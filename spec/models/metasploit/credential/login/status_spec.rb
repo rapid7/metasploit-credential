@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Login::Status do
+describe Metasploit::Model::Login::Status do
   context 'CONSTANTS' do
     context 'ALL' do
       subject(:all) do

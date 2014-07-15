@@ -101,49 +101,49 @@ describe Metasploit::Credential::Login do
           )
         end
 
-        context 'with Metasploit::Credential::Login::Status::DENIED_ACCESS' do
+        context 'with Metasploit::Model::Login::Status::DENIED_ACCESS' do
           let(:status) do
-            described_class::Status::DENIED_ACCESS
+            Metasploit::Model::Login::Status::DENIED_ACCESS
           end
 
           it { should be_valid }
         end
 
-        context 'with Metasploit::Credential::Login::Status::DISABLED' do
+        context 'with Metasploit::Model::Login::Status::DISABLED' do
           let(:status) do
-            described_class::Status::DISABLED
+            Metasploit::Model::Login::Status::DISABLED
           end
 
           it { should be_valid }
         end
 
-        context 'with Metasploit::Credential::Login::Status::LOCKED_OUT' do
+        context 'with Metasploit::Model::Login::Status::LOCKED_OUT' do
           let(:status) do
-            described_class::Status::LOCKED_OUT
+            Metasploit::Model::Login::Status::LOCKED_OUT
           end
 
           it { should be_valid }
         end
 
-        context 'with Metasploit::Credential::Login::Status::SUCCESSFUL' do
+        context 'with Metasploit::Model::Login::Status::SUCCESSFUL' do
           let(:status) do
-            described_class::Status::SUCCESSFUL
+            Metasploit::Model::Login::Status::SUCCESSFUL
           end
 
           it { should be_valid }
         end
 
-        context 'with Metasploit::Credential::Login::Status::UNABLE_TO_CONNECT' do
+        context 'with Metasploit::Model::Login::Status::UNABLE_TO_CONNECT' do
           let(:status) do
-            described_class::Status::UNABLE_TO_CONNECT
+            Metasploit::Model::Login::Status::UNABLE_TO_CONNECT
           end
 
           it { should be_valid }
         end
 
-        context 'with Metasploit::Credential::Login::Status::UNTRIED' do
+        context 'with Metasploit::Model::Login::Status::UNTRIED' do
           let(:status) do
-            described_class::Status::UNTRIED
+            Metasploit::Model::Login::Status::UNTRIED
           end
 
           it { should be_valid }
@@ -182,7 +182,7 @@ describe Metasploit::Credential::Login do
     end
 
     it { should validate_presence_of :service }
-    it { should ensure_inclusion_of(:status).in_array(described_class::Status::ALL) }
+    it { should ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
       include_context 'Mdm::Workspace'
@@ -212,13 +212,13 @@ describe Metasploit::Credential::Login do
       end
 
       context '#status' do
-        context 'with Metasploit::Credential::Login::Status::UNTRIED' do
+        context 'with Metasploit::Model::Login::Status::UNTRIED' do
           let(:error) do
             I18n.translate!('activerecord.errors.models.metasploit/credential/login.attributes.last_attempted_at.untried')
           end
 
           let(:status) do
-            described_class::Status::UNTRIED
+            Metasploit::Model::Login::Status::UNTRIED
           end
 
           context 'with #last_attempted' do
@@ -238,7 +238,7 @@ describe Metasploit::Credential::Login do
           end
         end
 
-        context 'without Metasploit::Credential::Login::Status::UNTRIED' do
+        context 'without Metasploit::Model::Login::Status::UNTRIED' do
           let(:error) do
             I18n.translate!('activerecord.errors.models.metasploit/credential/login.attributes.last_attempted_at.tried')
           end
@@ -248,7 +248,7 @@ describe Metasploit::Credential::Login do
           end
 
           let(:statuses) do
-            described_class::Status::ALL - [described_class::Status::UNTRIED]
+            Metasploit::Model::Login::Status::ALL - [Metasploit::Model::Login::Status::UNTRIED]
           end
 
           context 'with #last_attempted' do

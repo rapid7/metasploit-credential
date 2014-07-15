@@ -2,8 +2,6 @@
 class Metasploit::Credential::Login < ActiveRecord::Base
   extend ActiveSupport::Autoload
 
-  autoload :Status
-
   #
   # Associations
   #
@@ -62,14 +60,14 @@ class Metasploit::Credential::Login < ActiveRecord::Base
 
   # @!attribute status
   #   The status of this login, such as whether it is
-  #   {Metasploit::Credential::Login::Status::DENIED_ACCESS denied access},
-  #   {Metasploit::Credential::Login::Status::DISABLED disabled},
-  #   {Metasploit::Credential::Login::Status::LOCKED_OUT locked out},
-  #   {Metasploit::Credential::Login::Status::SUCCESSFUL successful},
-  #   {Metasploit::Credential::Login::Status::UNABLE_TO_CONNECT unable to connect},
-  #   {Metasploit::Credential::Login::Status::UNTRIED untried}
+  #   `Metasploit::Model::Login::Status::DENIED_ACCESS`,
+  #   `Metasploit::Model::Login::Status::DISABLED`,
+  #   `Metasploit::Model::Login::Status::LOCKED_OUT`,
+  #   `Metasploit::Model::Login::Status::SUCCESSFUL`,
+  #   `Metasploit::Model::Login::Status::UNABLE_TO_CONNECT`,
+  #   `Metasploit::Model::Login::Status::UNTRIED`
   #
-  #   @return [String] An element of {Metasploit::Credential::Login::Status::ALL}
+  #   @return [String] An element of `Metasploit::Model::Login::Status::ALL`
 
   # @!attribute updated_at
   #   The last time this login was updated.
@@ -117,7 +115,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
             presence: true
   validates :status,
             inclusion: {
-                in: Metasploit::Credential::Login::Status::ALL
+                in: Metasploit::Model::Login::Status::ALL
             }
 
 
@@ -157,7 +155,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
   # @return [void]
   def consistent_last_attempted_at
-    if status == Metasploit::Credential::Login::Status::UNTRIED
+    if status == Metasploit::Model::Login::Status::UNTRIED
       unless last_attempted_at.nil?
         errors.add(:last_attempted_at, :untried)
       end

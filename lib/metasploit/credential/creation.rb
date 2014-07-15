@@ -44,7 +44,7 @@ module Metasploit
           service_id = login.service_id
           new_login = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_id).first_or_initialize
           if new_login.status.blank?
-            new_login.status =  Metasploit::Credential::Login::Status::UNTRIED
+            new_login.status =  Metasploit::Model::Login::Status::UNTRIED
           end
           new_login.save!
         end
@@ -449,9 +449,9 @@ module Metasploit
           if login.present?
             case status
               when :connection_error
-                login.status = Metasploit::Credential::Login::Status::UNABLE_TO_CONNECT
+                login.status = Metasploit::Model::Login::Status::UNABLE_TO_CONNECT
               when :failed
-                login.status = Metasploit::Credential::Login::Status::INCORRECT
+                login.status = Metasploit::Model::Login::Status::INCORRECT
             end
             login.save!
           end
