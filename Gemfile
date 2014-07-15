@@ -10,8 +10,6 @@ gemspec
 # Metasploit::Credential::SSHKey validation and helper methods
 gem 'net-ssh'
 
-gem 'metasploit-model', path: '/Users/dmaloney/rapid7/metasploit-model'
-
 group :development do
   # markdown formatting for yard
   gem 'kramdown', platforms: :jruby
