@@ -209,15 +209,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
     core_table = Metasploit::Credential::Core.arel_table
-
-    # TODO: Fix this in Rails 4. In Rails 3 there is a known bug that prevents
-    #   .count from being called on the returned ActiveRecord::Relation.
-    #   https://github.com/rails/rails/issues/939
-    subquery = Arel::Nodes::Union.new(
-      origin_service_host_id(host_id).ast,
-      origin_session_host_id(host_id).ast
-    ).to_sql
-
+    subquery = Metasploit::Credential::Core.cores_from_host(host_id)
     where(core_table[:id].in(Arel::Nodes::SqlLiteral.new(subquery)))
   }
 
@@ -266,6 +258,20 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   # Instance Methods
   #
+
+  # Wrapper to provide raw SQL string UNIONing cores from a host via
+  # service origins or via session origins.
+  # TODO: Fix this in Rails 4. In Rails 3 there is a known bug that prevents
+  #   .count from being called on the returned ActiveRecord::Relation.
+  #   https://github.com/rails/rails/issues/939
+  # @param host_id [Integer]
+  # @return [String]
+  def self.cores_from_host(host_id)
+    Arel::Nodes::Union.new(
+      origin_service_host_id(host_id).ast,
+      origin_session_host_id(host_id).ast
+    ).to_sql
+  end
 
   private
 
