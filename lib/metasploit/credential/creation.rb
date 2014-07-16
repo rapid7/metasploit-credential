@@ -448,8 +448,10 @@ module Metasploit
 
           if login.present?
             login.status = status
+            login.last_attempted_at = DateTime.now
             login.save!
           end
+
         end
 
       end
