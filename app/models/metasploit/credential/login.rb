@@ -158,7 +158,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
       Metasploit::Credential::Core[:id].in(
         # We are concerned with per-username access attempts. This
         # can be across any of the cores on a host:
-        Arel::Nodes::SqlLiteral.new(Metasploit::Credential::Core.cores_from_host(host_id))
+        Arel::Nodes::SqlLiteral.new(Metasploit::Credential::Core.cores_from_host_sql(host_id))
       ).and(
         Metasploit::Credential::Login[:status].in(
           [

@@ -266,7 +266,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #   https://github.com/rails/rails/issues/939
   # @param host_id [Integer]
   # @return [String]
-  def self.cores_from_host(host_id)
+  def self.cores_from_host_sql(host_id)
     Arel::Nodes::Union.new(
       origin_service_host_id(host_id).ast,
       origin_session_host_id(host_id).ast
