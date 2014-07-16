@@ -458,7 +458,7 @@ describe Metasploit::Credential::Creation do
         workspace_id: workspace.id,
         core: credential_core,
         last_attempted_at: DateTime.current,
-        status: Metasploit::Credential::Login::Status::SUCCESSFUL,
+        status: Metasploit::Model::Login::Status::SUCCESSFUL,
       }
       expect{test_object.create_credential_login(login_data)}.to change{Metasploit::Credential::Login.count}.by(1)
     end
@@ -472,7 +472,7 @@ describe Metasploit::Credential::Creation do
         task_id: task.id,
         core: credential_core,
         last_attempted_at: DateTime.current,
-        status: Metasploit::Credential::Login::Status::SUCCESSFUL,
+        status: Metasploit::Model::Login::Status::SUCCESSFUL,
       }
       login = test_object.create_credential_login(login_data)
       login.tasks.should include(task)

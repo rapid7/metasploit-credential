@@ -5,9 +5,9 @@ module Metasploit
       # The major version number.
       MAJOR = 0
       # The minor version number, scoped to the {MAJOR} version number.
-      MINOR = 6
+      MINOR = 7
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 4
+      PATCH = 1
       # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
       PRERELEASE = "core-host-relation-scope-update"
 
@@ -26,7 +26,19 @@ module Metasploit
 
         version
       end
+
+      # The full gem version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
+      # {http://guides.rubygems.org/specification-reference/#version RubyGems versioning} format.
+      #
+      # @return [String] '{MAJOR}.{MINOR}.{PATCH}' on master.  '{MAJOR}.{MINOR}.{PATCH}.{PRERELEASE}' on any branch
+      #   other than master.
+      def self.gem
+        full.gsub('-', '.pre.')
+      end
     end
+
+    # @see Version.gem
+    GEM_VERSION = Version.gem
 
     # @see Version.full
     VERSION = Version.full
