@@ -37,10 +37,10 @@ module Metasploit
       end
     end
 
-    # @see Version.full
-    VERSION = Version.full
-
     # @see Version.gem
     GEM_VERSION = Version.gem
+
+    # @see Version.full
+    VERSION = Version.full
   end
 end
