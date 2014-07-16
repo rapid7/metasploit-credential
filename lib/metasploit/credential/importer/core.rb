@@ -150,7 +150,7 @@ class Metasploit::Credential::Importer::Core
         if host_address.present? && service_port.present? && service_protocol.present?
           login_opts = {
             core: new_core,
-            status: Metasploit::Credential::Login::Status::UNTRIED,  # don't trust creds on import
+            status: Metasploit::Model::Login::Status::UNTRIED,  # don't trust creds on import
             address: host_address,
             port: service_port,
             protocol: service_protocol,

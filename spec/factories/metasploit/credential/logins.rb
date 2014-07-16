@@ -15,7 +15,7 @@ FactoryGirl.define do
     association :core, factory: :metasploit_credential_core
 
     last_attempted_at {
-      unless status == Metasploit::Credential::Login::Status::UNTRIED
+      unless status == Metasploit::Model::Login::Status::UNTRIED
         DateTime.now.utc
       end
     }
@@ -33,5 +33,5 @@ FactoryGirl.define do
     "metasploit_credential_login_access_level#{n}"
   end
 
-  sequence :metasploit_credential_login_status, Metasploit::Credential::Login::Status::ALL.cycle
+  sequence :metasploit_credential_login_status, Metasploit::Model::Login::Status::ALL.cycle
 end

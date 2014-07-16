@@ -126,7 +126,7 @@ class Metasploit::Credential::Importer::Pwdump
           service_name: service_info[:name],
           workspace_id: workspace.id,
           core:         core,
-          status: Metasploit::Credential::Login::Status::UNTRIED
+          status: Metasploit::Model::Login::Status::UNTRIED
         }
 
         create_credential_login(login_opts)
