@@ -209,7 +209,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
     core_table = Metasploit::Credential::Core.arel_table
-    subquery = Metasploit::Credential::Core.cores_from_host(host_id)
+    subquery = Metasploit::Credential::Core.cores_from_host_sql(host_id)
     where(core_table[:id].in(Arel::Nodes::SqlLiteral.new(subquery)))
   }
 
