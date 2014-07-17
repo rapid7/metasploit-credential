@@ -89,6 +89,8 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   # Set of valid values for searching {#key}.
   #
   # @return [Set<String>] `Metasploit::Model::Realm::Key::ALL` as a `Set`.
+  # @see Metasploit::Model::Search::Operation::Set#membership
+  # @see Metasploit::Model::Search::Operator::Attribute#attribute_set
   def self.key_set
     @key_set ||= Set.new Metasploit::Model::Realm::Key::ALL
   end
