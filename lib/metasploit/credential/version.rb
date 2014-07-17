@@ -9,7 +9,7 @@ module Metasploit
       # The patch number, scoped to the {MINOR} version number.
       PATCH = 4
       # The prerelease name of the given {MAJOR}.{MINOR}.{PATCH} version number. Will not be defined on master.
-      PRERELEASE = "core-host-relation-scope-update"
+      PRERELEASE = "electro-release"
 
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
