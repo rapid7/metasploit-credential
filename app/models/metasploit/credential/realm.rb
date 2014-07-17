@@ -64,6 +64,8 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
                    type: {
                        set: :string
                    }
+  search_attribute :value,
+                   type: :string
 
   #
   # Validations

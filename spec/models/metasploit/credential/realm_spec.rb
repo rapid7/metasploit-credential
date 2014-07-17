@@ -97,6 +97,10 @@ describe Metasploit::Credential::Realm do
                             type: {
                                 set: :string
                             }
+
+      it_should_behave_like 'search_attribute',
+                            :value,
+                            type: :string
     end
   end
 
