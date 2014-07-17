@@ -287,6 +287,39 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               attribute: :username
       end
+
+      context 'with Metasploit::Credential::Realm' do
+        #
+        # lets
+        #
+
+        let(:matching_key) {
+          matching_record.key
+        }
+
+        let(:klass) {
+          Metasploit::Credential::Realm
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_realm
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_realm
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :key
+      end
     end
   end
 end

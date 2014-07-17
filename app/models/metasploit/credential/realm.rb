@@ -3,6 +3,8 @@
 class Metasploit::Credential::Realm < ActiveRecord::Base
   extend ActiveSupport::Autoload
 
+  include Metasploit::Model::Search
+
   autoload :Key
 
   #
@@ -55,6 +57,15 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   attr_accessible :value
 
   #
+  # Search
+  #
+
+  search_attribute :key,
+                   type: {
+                       set: :string
+                   }
+
+  #
   # Validations
   #
 
@@ -68,6 +79,17 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
             uniqueness: {
                 scope: :key
             }
+
+  #
+  # Class Methods
+  #
+
+  # Set of valid values for searching {#key}.
+  #
+  # @return [Set<String>] `Metasploit::Model::Realm::Key::ALL` as a `Set`.
+  def self.key_set
+    @key_set ||= Set.new Metasploit::Model::Realm::Key::ALL
+  end
 
   Metasploit::Concern.run(self)
 end
