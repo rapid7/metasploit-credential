@@ -173,6 +173,12 @@ describe Metasploit::Credential::Login do
       it_should_behave_like 'search_attribute',
                             :access_level,
                             type: :string
+
+      it_should_behave_like 'search_attribute',
+                            :status,
+                            type: {
+                                set: :string
+                            }
     end
   end
 

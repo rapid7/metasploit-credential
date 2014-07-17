@@ -35,6 +35,10 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           'admin'
         }
 
+        let(:matching_status) {
+          matching_record.status
+        }
+
         let(:non_matching_access_level) {
           'normal'
         }
@@ -59,6 +63,18 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               attribute: :access_level
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :status
+
+        context 'with all operators' do
+          let(:formatted) {
+            %Q{access_level:"#{matching_access_level}" status:"#{matching_status}"}
+          }
+
+          it 'returns only matching record' do
+            expect(visit).to match_array([matching_record])
+          end
+        end
       end
 
       context 'with Metasploit::Credential::Private' do

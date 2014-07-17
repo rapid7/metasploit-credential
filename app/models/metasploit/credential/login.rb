@@ -96,6 +96,10 @@ class Metasploit::Credential::Login < ActiveRecord::Base
 
   search_attribute :access_level,
                    type: :string
+  search_attribute :status,
+                   type: {
+                       set: :string
+                   }
 
   #
   #
@@ -142,6 +146,18 @@ class Metasploit::Credential::Login < ActiveRecord::Base
     joins(service: :host).includes(core: [:public, :private], service: :host).where(host_workspace_column.eq(workspace.id))
   }
 
+  #
+  # Class Methods
+  #
+
+  # The valid values for search {#status}.
+  #
+  # @return [Set<String>] `Metasploit::Model::Login::Status::ALL` as a `Set`.
+  # @see Metasploit::Model::Search::Operation::Set#membership
+  # @see Metasploit::Model::Search::Operator::Attribute#attribute_set
+  def self.status_set
+    @status_set ||= Set.new(Metasploit::Model::Login::Status::ALL)
+  end
 
 
   #

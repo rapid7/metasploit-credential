@@ -27,6 +27,8 @@ en:
             names:
               access_level:
                 help: "The level of access granted to the service by core credential, such as 'root' or 'Administrator'."
+              status:
+                help: "The status of this login: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'"
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
