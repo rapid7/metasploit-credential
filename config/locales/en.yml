@@ -20,6 +20,13 @@ en:
               missing_keys: "This Metasploit credentials zip export appears to contain no SSH keys. If you wish to import credentials not tied to keys, remove the key entries from the manifest file and upload it by itself."
               missing_manifest: "This Metasploit credentials zip export appears to be missing its CSV manifest"
   activerecord:
+    ancestors:
+      metasploit/credential/realm:
+        search:
+          operator:
+            names:
+              key:
+                help: "The type of realm, such as Active Directory Domain or PostgreSQL Database"
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"

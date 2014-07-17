@@ -85,6 +85,21 @@ describe Metasploit::Credential::Realm do
     it { should allow_mass_assignment_of(:value) }
   end
 
+
+  context 'search' do
+    context 'attributes' do
+      let(:base_class) {
+        described_class
+      }
+
+      it_should_behave_like 'search_attribute',
+                            :key,
+                            type: {
+                                set: :string
+                            }
+    end
+  end
+
   context 'validations' do
     context 'on #key' do
       it { should ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
