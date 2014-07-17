@@ -2,6 +2,8 @@
 class Metasploit::Credential::Login < ActiveRecord::Base
   extend ActiveSupport::Autoload
 
+  include Metasploit::Model::Search
+
   #
   # Associations
   #
@@ -87,6 +89,13 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   attr_accessible :access_level
   attr_accessible :last_attempted_at
   attr_accessible :status
+
+  #
+  # Search
+  #
+
+  search_attribute :access_level,
+                   type: :string
 
   #
   #

@@ -20,6 +20,47 @@ describe MetasploitDataModels::Search::Visitor::Relation do
     }
 
     context 'MetasploitDataModels::Search::Visitor::Relation#query Metasploit::Model::Search::Query#klass' do
+      context 'with Metasploit::Credential::Login' do
+        include_context 'Mdm::Workspace'
+
+        #
+        # lets
+        #
+
+        let(:klass) {
+          Metasploit::Credential::Login
+        }
+
+        let(:matching_access_level) {
+          'admin'
+        }
+
+        let(:non_matching_access_level) {
+          'normal'
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: matching_access_level
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: non_matching_access_level
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :access_level
+      end
+
       context 'with Metasploit::Credential::Private' do
         #
         # lets
