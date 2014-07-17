@@ -53,22 +53,6 @@ describe Metasploit::Credential::Importer::Zip do
       end
     end
 
-    context "when the zip file does not contain keys" do
-      let(:error) do
-        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.missing_keys')
-      end
-
-      before(:each) do
-        zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_invalid_no_keys
-      end
-
-      it { should_not be_valid }
-
-      it 'should show the proper error message' do
-        zip_importer.valid?
-        zip_importer.errors[:input].should include error
-      end
-    end
   end
 
   describe "#import!" do

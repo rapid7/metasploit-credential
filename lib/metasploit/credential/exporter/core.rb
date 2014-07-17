@@ -214,9 +214,13 @@ class Metasploit::Credential::Exporter::Core
   # Creates a `Zip::File` by recursively zipping up the contents of {#output_final_directory_path}
   # @return [void]
   def render_zip
+    zip_dir_path = Pathname.new(output_final_directory_path)
+
     Zip::File.open(output_zipfile_path, Zip::File::CREATE) do |zipfile|
       Dir[File.join(output_final_directory_path, '**', '**')].each do |file|
-        zipfile.add(file.sub(output_final_directory_path + '/', ''), file)
+        file_path = Pathname.new(file)
+        path_in_zip = file_path.relative_path_from(zip_dir_path)
+        zipfile.add(path_in_zip, file)
       end
     end
   end

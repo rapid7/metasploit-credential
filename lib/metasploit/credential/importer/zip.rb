@@ -82,13 +82,8 @@ class Metasploit::Credential::Importer::Zip
     begin
       Zip::File.open input.path do |archive|
         manifest_file = archive.find_entry(MANIFEST_FILE_NAME)
-
         if manifest_file
-          if archive.find_entry(KEYS_SUBDIRECTORY_NAME)
-            true
-          else
-            errors.add(:input, :missing_keys)
-          end
+          true
         else
           errors.add(:input, :missing_manifest)
         end
