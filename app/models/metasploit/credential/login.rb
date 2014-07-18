@@ -150,6 +150,37 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   # Class Methods
   #
 
+  # Each username that is related to a login on the passed host and
+  # the logins of particular statuses that are related
+  # to that public, ordered by the login last attempt date.
+  # @param host_id [Integer] the host to filter cores by
+  # @return [Hash{String => Array}]
+  def self.failed_logins_by_public(host_id)
+    select(
+      [
+        Metasploit::Credential::Login[Arel.star],
+        Metasploit::Credential::Public[:username]
+      ]
+    ).order(:last_attempted_at).
+      joins(
+      Metasploit::Credential::Login.join_association(:core),
+      Metasploit::Credential::Core.join_association(:public, Arel::Nodes::OuterJoin)
+    ).where(
+      Metasploit::Credential::Core[:id].in(
+        # We are concerned with per-username access attempts. This
+        # can be across any of the cores on a host:
+        Arel::Nodes::SqlLiteral.new(Metasploit::Credential::Core.cores_from_host_sql(host_id))
+      ).and(
+        Metasploit::Credential::Login[:status].in(
+          [
+            Metasploit::Model::Login::Status::DENIED_ACCESS,
+            Metasploit::Model::Login::Status::DISABLED,
+            Metasploit::Model::Login::Status::INCORRECT,
+          ]
+        ))
+    ).group_by(&:username)
+  end
+
   # The valid values for search {#status}.
   #
   # @return [Set<String>] `Metasploit::Model::Login::Status::ALL` as a `Set`.
@@ -158,7 +189,6 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   def self.status_set
     @status_set ||= Set.new(Metasploit::Model::Login::Status::ALL)
   end
-
 
   #
   # Instance Methods
