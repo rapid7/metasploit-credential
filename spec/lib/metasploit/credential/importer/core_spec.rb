@@ -197,6 +197,7 @@ describe Metasploit::Credential::Importer::Core do
         let(:preexisting_cred_data) do
           core_csv_importer.csv_object.gets
           row = core_csv_importer.csv_object.first
+          core_csv_importer.csv_object.rewind
           {
             username: row['username'],
             private_data: row['private_data'],
