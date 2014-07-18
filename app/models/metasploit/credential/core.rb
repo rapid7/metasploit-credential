@@ -270,6 +270,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   search_association :logins
   search_association :private
   search_association :public
+  search_association :realm
 
   #
   # Class Methods

@@ -217,6 +217,7 @@ describe Metasploit::Credential::Core do
       it_should_behave_like 'search_association', :logins
       it_should_behave_like 'search_association', :private
       it_should_behave_like 'search_association', :public
+      it_should_behave_like 'search_association', :realm
     end
   end
 

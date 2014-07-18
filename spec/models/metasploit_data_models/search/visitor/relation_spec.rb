@@ -49,6 +49,8 @@ describe MetasploitDataModels::Search::Visitor::Relation do
                   logins.status:"#{matching_login_status}"
                   private.data:"#{matching_private_data}"
                   public.username:"#{matching_public_username}"
+                  realm.key:"#{matching_realm_key}"
+                  realm.value:"#{matching_realm_value}"
                 }
               }
 
@@ -101,6 +103,22 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           'root'
         }
 
+        let(:matching_realm) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              key: matching_realm_key,
+              value: matching_realm_value
+          )
+        }
+
+        let(:matching_realm_key) {
+          Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE
+        }
+
+        let(:matching_realm_value) {
+          'postgres'
+        }
+
         let(:non_matching_login_access_level) {
           'normal'
         }
@@ -131,6 +149,22 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           'guest'
         }
 
+        let(:non_matching_realm) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              key: non_matching_realm_key,
+              value: non_matching_realm_value
+          )
+        }
+
+        let(:non_matching_realm_key) {
+          Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN
+        }
+
+        let(:non_matching_realm_value) {
+          'DOMAIN'
+        }
+
         let(:private_factory) {
           [
               :metasploit_credential_nonreplayable_hash,
@@ -157,7 +191,8 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           FactoryGirl.create(
               :metasploit_credential_core,
               private: matching_private,
-              public: matching_public
+              public: matching_public,
+              realm: matching_realm
           )
         }
 
@@ -174,7 +209,8 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           FactoryGirl.create(
               :metasploit_credential_core,
               private: non_matching_private,
-              public: non_matching_public
+              public: non_matching_public,
+              realm: non_matching_realm
           )
         }
 
@@ -189,6 +225,14 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               association: :public,
                               attribute: :username
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :realm,
+                              attribute: :key
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :realm,
+                              attribute: :value
 
         context 'wth Metasploit::Credential::PasswordHash' do
 
