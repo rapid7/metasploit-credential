@@ -828,9 +828,8 @@ describe Metasploit::Credential::Core do
         Metasploit::Credential::Core.existing_for_string_values(lookup_attributes)
       end
 
-      it 'should find existing cores looked up by the key identifying strings of their components' do
-        pending "Requires partial indexing for counting nils as dupes"
-        # expect(found_cores).not_to include(existing_core)
+      it 'should find existing cores with partial identifying information of their components' do
+        expect(found_cores).not_to include(existing_core)
       end
     end
 
