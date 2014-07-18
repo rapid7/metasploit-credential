@@ -29,6 +29,14 @@ en:
                 help: "The level of access granted to the service by core credential, such as 'root' or 'Administrator'."
               status:
                 help: "The status of this login: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'"
+      metasploit/credential/realm:
+        search:
+          operator:
+            names:
+              key:
+                help: "The type of realm, such as Active Directory Domain or PostgreSQL Database."
+              value:
+                help: "The name of the realm, such as the domain name or the database name."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
