@@ -20,6 +20,89 @@ describe MetasploitDataModels::Search::Visitor::Relation do
     }
 
     context 'MetasploitDataModels::Search::Visitor::Relation#query Metasploit::Model::Search::Query#klass' do
+      context 'with Metasploit::Credential::Core' do
+        include_context 'Mdm::Workspace'
+
+        #
+        # lets
+        #
+
+        let(:klass) {
+          Metasploit::Credential::Core
+        }
+
+        let(:matching_login_access_level) {
+          'Administrator'
+        }
+
+        let(:matching_login_status) {
+          Metasploit::Model::Login::Status::LOCKED_OUT
+        }
+
+        let(:non_matching_login_access_level) {
+          'normal'
+        }
+
+        let(:non_matching_login_status) {
+          Metasploit::Model::Login::Status::SUCCESSFUL
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_login) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: matching_login_access_level,
+              core: matching_record,
+              status: matching_login_status
+          )
+        }
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_core
+          )
+        }
+
+        let!(:non_matching_login) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: non_matching_login_access_level,
+              core: non_matching_record,
+              status: non_matching_login_status
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_core
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :logins,
+                              attribute: :access_level
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :logins,
+                              attribute: :status
+
+        context 'with all operators' do
+          let(:formatted) {
+            %Q{
+              logins.access_level:"#{matching_login_access_level}"
+              logins.status:"#{matching_login_status}"
+            }
+          }
+
+          it 'finds only matching record' do
+            expect(visit).to match_array([matching_record])
+          end
+        end
+      end
+
       context 'with Metasploit::Credential::Login' do
         include_context 'Mdm::Workspace'
 

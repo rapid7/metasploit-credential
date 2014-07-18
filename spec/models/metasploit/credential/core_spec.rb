@@ -208,6 +208,16 @@ describe Metasploit::Credential::Core do
 
   end
 
+  context 'search' do
+    let(:base_class) {
+      described_class
+    }
+
+    context 'associations' do
+      it_should_behave_like 'search_association', :logins
+    end
+  end
+
   context 'factories' do
     context 'metasploit_credential_core' do
       subject(:metasploit_credential_core) do

@@ -4,6 +4,8 @@
 #
 # A core credential must always have an {#origin}, but only needs 1 of {#private}, {#public}, or {#realm} set.
 class Metasploit::Credential::Core < ActiveRecord::Base
+  include Metasploit::Model::Search
+
   #
   # Associations
   #
@@ -254,6 +256,18 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   scope :with_realm, ->() {
     includes(:realm)
   }
+
+  #
+  #
+  # Search
+  #
+  #
+
+  #
+  # Search Associations
+  #
+
+  search_association :logins
 
   #
   # Class Methods
