@@ -118,36 +118,6 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Scopes
   #
 
-  # Finds existing Cores via strings instead of foreign keys
-  #
-  # @method existing_for_string_values(args)
-  # @scope Metasploit::Credential::Core
-  # @option args [String] :username the {Metsploit::Credential::Public#username} string to look up
-  # @option args [String] :private_data the {Metsploit::Credential::Private#data} string to look up
-  # @option args [String] :realm_key the {Metasploit::Credential::Realm#key} string to look up
-  # @option args [String] :realm_value the {Metasploit::Credential::Realm#value} string to look up
-  # @param workspace [Mdm::Workspace] the `Mdm::Workspace` the Core is associated with
-  # @return [ActiveRecord::Relation] scoped to that host
-  scope :existing_for_string_values, lambda { |args|
-    username          = args.fetch(:username)
-    private_data      = args.fetch(:private_data)
-    workspace         = args.fetch(:workspace)
-    realm_key         = args[:realm_key]
-    realm_value       = args[:realm_value]
-
-    joins(
-      Metasploit::Credential::Core.join_association(:public, Arel::Nodes::OuterJoin),
-      Metasploit::Credential::Core.join_association(:private, Arel::Nodes::OuterJoin),
-      Metasploit::Credential::Core.join_association(:realm, Arel::Nodes::OuterJoin)
-    )
-    .where(
-      Metasploit::Credential::Core[:workspace_id].eq(workspace.id)
-      .and(Metasploit::Credential::Public[:username].eq(username))
-      .and(Metasploit::Credential::Private[:data].eq(private_data))
-    )
-  }
-
-
 
   # Finds Cores that have successfully logged into a given host
   #
