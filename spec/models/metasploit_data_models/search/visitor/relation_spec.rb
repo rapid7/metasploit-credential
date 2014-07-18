@@ -39,6 +39,21 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           Metasploit::Model::Login::Status::LOCKED_OUT
         }
 
+        let(:matching_private) {
+          FactoryGirl.create(
+              private_factory,
+              matching_private_attributes
+          )
+        }
+
+        let(:matching_private_attributes) {
+          {}
+        }
+
+        let(:matching_private_data) {
+          matching_private.data
+        }
+
         let(:matching_public) {
           FactoryGirl.create(
               :metasploit_credential_public,
@@ -58,6 +73,17 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           Metasploit::Model::Login::Status::SUCCESSFUL
         }
 
+        let(:non_matching_private) {
+          FactoryGirl.create(
+              private_factory,
+              non_matching_private_attributes
+          )
+        }
+
+        let(:non_matching_private_attributes) {
+          {}
+        }
+
         let(:non_matching_public) {
           FactoryGirl.create(
               :metasploit_credential_public,
@@ -67,6 +93,15 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let(:non_matching_public_username) {
           'guest'
+        }
+
+        let(:private_factory) {
+          [
+              :metasploit_credential_nonreplayable_hash,
+              :metasploit_credential_ntlm_hash,
+              :metasploit_credential_password,
+              :metasploit_credential_ssh_key
+          ].sample
         }
 
         #
@@ -85,6 +120,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         let!(:matching_record) {
           FactoryGirl.create(
               :metasploit_credential_core,
+              private: matching_private,
               public: matching_public
           )
         }
@@ -101,6 +137,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         let!(:non_matching_record) {
           FactoryGirl.create(
               :metasploit_credential_core,
+              private: non_matching_private,
               public: non_matching_public
           )
         }
@@ -117,17 +154,134 @@ describe MetasploitDataModels::Search::Visitor::Relation do
                               association: :public,
                               attribute: :username
 
-        context 'with all operators' do
-          let(:formatted) {
-            %Q{
-              logins.access_level:"#{matching_login_access_level}"
-              logins.status:"#{matching_login_status}"
-              public.username:"#{matching_public_username}"
+        context 'wth Metasploit::Credential::PasswordHash subclass' do
+          let(:matching_private_attributes) {
+            {
+                password_data: '123456789'
             }
           }
 
-          it 'finds only matching record' do
-            expect(visit).to match_array([matching_record])
+          let(:non_matching_private_attributes) {
+            {
+                password_data: 'password'
+            }
+          }
+
+          context 'Metasploit::Credential::NonreplayableHash' do
+            let(:private_factory) {
+              :metasploit_credential_nonreplayable_hash
+            }
+
+            it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                                  association: :private,
+                                  attribute: :data
+
+            context 'with all operators' do
+              let(:formatted) {
+                %Q{
+                  logins.access_level:"#{matching_login_access_level}"
+                  logins.status:"#{matching_login_status}"
+                  private.data:"#{matching_private_data}"
+                  public.username:"#{matching_public_username}"
+                }
+              }
+
+              it 'finds only matching record' do
+                expect(visit).to match_array([matching_record])
+              end
+            end
+          end
+
+          context 'Metasploit::Credential::NTLMHash' do
+            let(:private_factory) {
+              :metasploit_credential_ntlm_hash
+            }
+
+            it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                                  association: :private,
+                                  attribute: :data
+
+            context 'with all operators' do
+              let(:formatted) {
+                %Q{
+                  logins.access_level:"#{matching_login_access_level}"
+                  logins.status:"#{matching_login_status}"
+                  private.data:"#{matching_private_data}"
+                  public.username:"#{matching_public_username}"
+                }
+              }
+
+              it 'finds only matching record' do
+                expect(visit).to match_array([matching_record])
+              end
+            end
+          end
+        end
+
+        context 'with Metasploit::Credential::Password' do
+          let(:factory) {
+            :metasploit_credential_password
+          }
+
+          let(:matching_attributes) {
+            {
+                data: '123456789'
+            }
+          }
+
+          let(:non_matching_attributes) {
+            {
+                # needs to not be a substring alias of matching_attributes[:password_data]
+                data: 'password'
+            }
+          }
+
+          it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                                association: :private,
+                                attribute: :data
+
+          context 'with all operators' do
+            let(:formatted) {
+              %Q{
+                logins.access_level:"#{matching_login_access_level}"
+                logins.status:"#{matching_login_status}"
+                private.data:"#{matching_private_data}"
+                public.username:"#{matching_public_username}"
+              }
+            }
+
+            it 'finds only matching record' do
+              expect(visit).to match_array([matching_record])
+            end
+          end
+        end
+
+        context 'with Metasploit::Credential::SSHKey' do
+          #
+          # lets
+          #
+
+          let(:factory) {
+            :metasploit_credential_ssh_key
+          }
+
+          it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                                association: :private,
+                                attribute: :data
+
+          context 'with all operators' do
+            let(:formatted) {
+              %Q{
+                logins.access_level:"#{matching_login_access_level}"
+                logins.status:"#{matching_login_status}"
+                private.data:"#{matching_private_data}"
+                public.username:"#{matching_public_username}"
+              }
+            }
+
+            it 'finds only matching record' do
+              expect(visit).to match_array([matching_record])
+            end
           end
         end
       end
