@@ -160,9 +160,9 @@ class Metasploit::Credential::Login < ActiveRecord::Base
       ).and(
         Metasploit::Credential::Login[:status].in(
           [
-            Metasploit::Credential::Login::Status::DENIED_ACCESS,
-            Metasploit::Credential::Login::Status::DISABLED,
-            Metasploit::Credential::Login::Status::INCORRECT,
+            Metasploit::Model::Login::Status::DENIED_ACCESS,
+            Metasploit::Model::Login::Status::DISABLED,
+            Metasploit::Model::Login::Status::INCORRECT,
           ]
         ))
     ).group_by(&:username)
