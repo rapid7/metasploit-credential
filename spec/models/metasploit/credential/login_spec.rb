@@ -164,6 +164,24 @@ describe Metasploit::Credential::Login do
     it { should_not allow_mass_assignment_of(:updated_at) }
   end
 
+  context 'search' do
+    context 'attributes' do
+      let(:base_class) {
+        described_class
+      }
+
+      it_should_behave_like 'search_attribute',
+                            :access_level,
+                            type: :string
+
+      it_should_behave_like 'search_attribute',
+                            :status,
+                            type: {
+                                set: :string
+                            }
+    end
+  end
+
   context 'validations' do
     it { should validate_presence_of :core }
 

@@ -20,6 +20,15 @@ en:
               missing_keys: "This Metasploit credentials zip export appears to contain no SSH keys. If you wish to import credentials not tied to keys, remove the key entries from the manifest file and upload it by itself."
               missing_manifest: "This Metasploit credentials zip export appears to be missing its CSV manifest"
   activerecord:
+    ancestors:
+      metasploit/credential/login:
+        search:
+          operator:
+            names:
+              access_level:
+                help: "The level of access granted to the service by core credential, such as 'root' or 'Administrator'."
+              status:
+                help: "The status of this login: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'"
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"

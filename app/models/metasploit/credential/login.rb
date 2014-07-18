@@ -2,6 +2,8 @@
 class Metasploit::Credential::Login < ActiveRecord::Base
   extend ActiveSupport::Autoload
 
+  include Metasploit::Model::Search
+
   #
   # Associations
   #
@@ -89,6 +91,17 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   attr_accessible :status
 
   #
+  # Search
+  #
+
+  search_attribute :access_level,
+                   type: :string
+  search_attribute :status,
+                   type: {
+                       set: :string
+                   }
+
+  #
   #
   # Validations
   #
@@ -134,7 +147,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   }
 
   #
-  # Class methods
+  # Class Methods
   #
 
   # Each username that is related to a login on the passed host and
@@ -160,12 +173,21 @@ class Metasploit::Credential::Login < ActiveRecord::Base
       ).and(
         Metasploit::Credential::Login[:status].in(
           [
-            Metasploit::Credential::Login::Status::DENIED_ACCESS,
-            Metasploit::Credential::Login::Status::DISABLED,
-            Metasploit::Credential::Login::Status::INCORRECT,
+            Metasploit::Model::Login::Status::DENIED_ACCESS,
+            Metasploit::Model::Login::Status::DISABLED,
+            Metasploit::Model::Login::Status::INCORRECT,
           ]
         ))
     ).group_by(&:username)
+  end
+
+  # The valid values for search {#status}.
+  #
+  # @return [Set<String>] `Metasploit::Model::Login::Status::ALL` as a `Set`.
+  # @see Metasploit::Model::Search::Operation::Set#membership
+  # @see Metasploit::Model::Search::Operator::Attribute#attribute_set
+  def self.status_set
+    @status_set ||= Set.new(Metasploit::Model::Login::Status::ALL)
   end
 
   #
