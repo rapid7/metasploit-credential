@@ -39,12 +39,34 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           Metasploit::Model::Login::Status::LOCKED_OUT
         }
 
+        let(:matching_public) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: matching_public_username
+          )
+        }
+
+        let(:matching_public_username) {
+          'root'
+        }
+
         let(:non_matching_login_access_level) {
           'normal'
         }
 
         let(:non_matching_login_status) {
           Metasploit::Model::Login::Status::SUCCESSFUL
+        }
+
+        let(:non_matching_public) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: non_matching_public_username
+          )
+        }
+
+        let(:non_matching_public_username) {
+          'guest'
         }
 
         #
@@ -62,7 +84,8 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let!(:matching_record) {
           FactoryGirl.create(
-              :metasploit_credential_core
+              :metasploit_credential_core,
+              public: matching_public
           )
         }
 
@@ -77,7 +100,8 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let!(:non_matching_record) {
           FactoryGirl.create(
-              :metasploit_credential_core
+              :metasploit_credential_core,
+              public: non_matching_public
           )
         }
 
@@ -89,11 +113,16 @@ describe MetasploitDataModels::Search::Visitor::Relation do
                               association: :logins,
                               attribute: :status
 
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :public,
+                              attribute: :username
+
         context 'with all operators' do
           let(:formatted) {
             %Q{
               logins.access_level:"#{matching_login_access_level}"
               logins.status:"#{matching_login_status}"
+              public.username:"#{matching_public_username}"
             }
           }
 

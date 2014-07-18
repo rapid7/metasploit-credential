@@ -215,6 +215,7 @@ describe Metasploit::Credential::Core do
 
     context 'associations' do
       it_should_behave_like 'search_association', :logins
+      it_should_behave_like 'search_association', :public
     end
   end
 
