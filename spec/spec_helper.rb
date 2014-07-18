@@ -21,6 +21,7 @@ require 'rspec/rails'
 rooteds = [
     Metasploit::Concern,
     Metasploit::Credential::Engine,
+    Metasploit::Model::Engine,
     MetasploitDataModels::Engine
 ]
 

@@ -287,6 +287,62 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               attribute: :username
       end
+
+      context 'with Metasploit::Credential::Realm' do
+        #
+        # lets
+        #
+
+        let(:klass) {
+          Metasploit::Credential::Realm
+        }
+
+        let(:matching_key) {
+          matching_record.key
+        }
+
+        let(:matching_value) {
+          'matching_value'
+        }
+
+        let(:non_matching_value) {
+          'other_value'
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              value: matching_value
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              value: non_matching_value
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :key
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              attribute: :value
+
+        context 'with all operators' do
+          let(:formatted) {
+            %Q{key:"#{matching_key}" value:"#{matching_value}"}
+          }
+
+          it 'finds only the matching record' do
+            expect(visit).to match_array([matching_record])
+          end
+        end
+      end
     end
   end
 end
