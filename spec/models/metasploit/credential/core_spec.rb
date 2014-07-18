@@ -788,5 +788,52 @@ describe Metasploit::Credential::Core do
       end
 
     end
+
+  end
+  describe "::existing_for_string_values" do
+    let(:existing_core) do
+      FactoryGirl.create(:metasploit_credential_core)
+    end
+
+    describe "with Realm data" do
+      let(:lookup_attributes) do
+        {
+          workspace: existing_core.workspace,
+          username: existing_core.public.username,
+          private_data: existing_core.private.data,
+          realm_key: existing_core.realm.key,
+          realm_value: existing_core.realm.value
+        }
+      end
+
+      let(:found_cores) do
+        Metasploit::Credential::Core.existing_for_string_values(lookup_attributes)
+      end
+
+      it 'should find existing cores looked up by the key identifying strings of their components' do
+        expect(found_cores).to include(existing_core)
+      end
+    end
+
+    describe "without Realm data" do
+      let(:lookup_attributes) do
+        {
+          workspace: existing_core.workspace,
+          username: existing_core.public.username,
+          private_data: existing_core.private.data,
+        }
+      end
+
+      let(:found_cores) do
+        Metasploit::Credential::Core.existing_for_string_values(lookup_attributes)
+      end
+
+      it 'should find existing cores looked up by the key identifying strings of their components' do
+        pending "Requires partial indexing for counting nils as dupes"
+        # expect(found_cores).not_to include(existing_core)
+      end
+    end
+
+
   end
 end

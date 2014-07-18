@@ -85,6 +85,35 @@ describe Metasploit::Credential::Importer::Core do
           end
         end
 
+        describe "with data that describes duplicate Cores" do
+          let(:preexisting_cred_data) do
+            core_csv_importer.csv_object.gets
+            row = core_csv_importer.csv_object.first
+            {
+              username: row['username'],
+              private_data: row['private_data'],
+              realm_key: row['realm_key'],
+              realm_value: row['realm_value'],
+            }
+          end
+
+          before(:each) do
+            core         = Metasploit::Credential::Core.new
+            core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+            core.private = FactoryGirl.create(:metasploit_credential_private, data: preexisting_cred_data[:private_data])
+            core.realm   = FactoryGirl.create(:metasploit_credential_realm, key: preexisting_cred_data[:realm_key],
+                                                                            value: preexisting_cred_data[:realm_value])
+            core.origin    = FactoryGirl.create(:metasploit_credential_origin_import)
+            core.workspace = workspace
+            core.save!
+          end
+
+          it 'should create a new Metasploit::Credential::Core for each unique row in the import' do
+            expect{core_csv_importer.import!}.to change(Metasploit::Credential::Core, :count).from(1).to(3)
+          end
+
+        end
+
         describe "with a non-compliant header" do
           let(:error) do
             I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
@@ -161,6 +190,30 @@ describe Metasploit::Credential::Importer::Core do
 
         it 'should create new Metasploit::Credential::Private for that row' do
           expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Password, :count).from(0).to(2)
+        end
+      end
+
+      describe "when the data in the CSV contains duplicates" do
+        let(:preexisting_cred_data) do
+          core_csv_importer.csv_object.gets
+          row = core_csv_importer.csv_object.first
+          {
+            username: row['username'],
+            private_data: row['private_data'],
+          }
+        end
+
+        before(:each) do
+          core         = Metasploit::Credential::Core.new
+          core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+          core.private = FactoryGirl.create(:metasploit_credential_private, data: preexisting_cred_data[:private_data])
+          core.origin  = FactoryGirl.create(:metasploit_credential_origin_import)
+          core.workspace = workspace
+          core.save!
+        end
+
+        it 'should create a new Metasploit::Credential::Core for each unique row in the import' do
+          expect{core_csv_importer.import!}.to change(Metasploit::Credential::Core, :count).from(1).to(2)
         end
       end
     end
