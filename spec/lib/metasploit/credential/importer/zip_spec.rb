@@ -1,0 +1,69 @@
+require 'spec_helper'
+
+describe Metasploit::Credential::Importer::Zip do
+  include_context 'Mdm::Workspace'
+  include_context 'metasploit_credential_importer_zip_file'
+
+  let(:workspace){FactoryGirl.create(:mdm_workspace)}
+  subject(:zip_importer){ FactoryGirl.build :metasploit_credential_importer_zip, workspace: workspace }
+
+  describe "validations" do
+    DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"
+
+    context "when the zip file contains a keys directory and a manifest CSV" do
+      it { should be_valid }
+    end
+
+    context "when the zip file is not actually an archive" do
+      let(:error) do
+        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.malformed_archive')
+      end
+
+      before(:each) do
+        File.open(DUMMY_ZIP_PATH, 'wb')
+        zip_importer.input = File.open(DUMMY_ZIP_PATH, 'r')
+      end
+
+      after(:each) do
+        FileUtils.rm(DUMMY_ZIP_PATH)
+      end
+
+      it { should_not be_valid }
+
+      it 'should show the proper error message' do
+        zip_importer.valid?
+        zip_importer.errors[:input].should include error
+      end
+    end
+
+    context "when the zip file does not contain a manifest CSV" do
+      let(:error) do
+        I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.missing_manifest')
+      end
+
+      before(:each) do
+        zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
+      end
+
+      it { should_not be_valid }
+
+      it 'should show the proper error message' do
+        zip_importer.valid?
+        zip_importer.errors[:input].should include error
+      end
+    end
+
+  end
+
+  describe "#import!" do
+    it 'should create Public credential objects for the usernames described in the manifest file' do
+      expect{zip_importer.import!}.to change{Metasploit::Credential::Private.count}.from(0).to(5)
+    end
+  end
+
+  describe "zip constants" do
+    it 'should have ZIP_HEADER_IDENTIFIER whose length corresponds to ZIP_HEADER_BYTE_LENGTH' do
+      Metasploit::Credential::Importer::Zip::ZIP_HEADER_IDENTIFIER.size.should == Metasploit::Credential::Importer::Zip::ZIP_HEADER_BYTE_LENGTH
+    end
+  end
+end
