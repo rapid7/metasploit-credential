@@ -1,4 +1,4 @@
-# Metasploit::Credential [![Build Status](https://travis-ci.org/rapid7/metasploit-credential.png)](https://travis-ci.org/rapid7/metasploit-credential)
+# Metasploit::Credential [![Build Status](https://travis-ci.org/rapid7/metasploit-credential.png)](https://travis-ci.org/rapid7/metasploit-credential)[![Code Climate](https://codeclimate.com/github/rapid7/metasploit-credential.png)](https://codeclimate.com/github/rapid7/metasploit-credential)
 
 ## Versioning
 
