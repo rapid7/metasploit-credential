@@ -801,5 +801,7 @@ describe Metasploit::Credential::Core do
       end
 
     end
+
   end
+
 end

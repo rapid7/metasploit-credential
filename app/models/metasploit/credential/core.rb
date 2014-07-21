@@ -120,6 +120,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Scopes
   #
 
+
   # Finds Cores that have successfully logged into a given host
   #
   # @method login_host_id(host_id)

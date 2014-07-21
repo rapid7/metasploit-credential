@@ -138,14 +138,17 @@ If your changes are incompatible with the previous branch's API, then increment 
 
 - [ ] Following the rules for [semantic versioning 2.0](http://semver.org/spec/v2.0.0.html), update [`MINOR`](lib/metasploit/credential/version.rb) and [`PATCH`](lib/metasploit/credential/version.rb) and commit the changes.
 
-## Tagging
+## JRuby
+- [ ] `rvm use jruby@metasploit_data_models`
+- [ ] `rm Gemfile.lock`
+- [ ] `bundle install`
+- [ ] `rake release`
 
-metasploit-credential is currently, private, so it is only tagged for internal use, instead of being released to
-rubygems.
-
-- [ ] `git tag --message 'Version MAJOR.MINOR.PATCH on the DESTINATION branch' 'vMAJOR.MINOR.PATCH-PRERELEASE'
-- [ ] `git push`
-- [ ] `git push --tags`
+## MRI Ruby
+- [ ] `rvm use ruby-1.9.3@metasploit_data_models`
+- [ ] `rm Gemfile.lock`
+- [ ] `bundle install`
+- [ ] `rake release`
 ```
 
 ### Downstream dependencies
