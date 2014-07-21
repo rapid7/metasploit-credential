@@ -7,7 +7,9 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 7
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 7
+      PATCH = 8
+      # The pre-release version, scoped to the {PATCH} version number.
+      PRERELEASE = 'public-integrations'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
