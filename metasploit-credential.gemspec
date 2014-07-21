@@ -17,8 +17,6 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['CONTRIBUTING.md', 'LICENSE', 'Rakefile', 'README.md']
   s.test_files = s.files.grep(/spec/)
 
-  s.add_development_dependency 'pg'
-
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
   # Various Metasploit::Credential records have associations to Mdm records
@@ -29,4 +27,15 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys
   s.add_runtime_dependency 'rubyzip', '~> 1.1'
+
+  if RUBY_PLATFORM =~ /java/
+    s.add_runtime_dependency 'jdbc-postgres'
+    s.add_runtime_dependency 'activerecord-jdbcpostgresql-adapter'
+
+    s.platform = Gem::Platform::JAVA
+  else
+    s.add_runtime_dependency 'pg'
+
+    s.platform = Gem::Platform::RUBY
+  end
 end
