@@ -219,6 +219,10 @@ describe Metasploit::Credential::Core do
       it_should_behave_like 'search_association', :public
       it_should_behave_like 'search_association', :realm
     end
+
+    context 'withs' do
+      it_should_behave_like 'search_with', Metasploit::Credential::Search::Operator::Completeness
+    end
   end
 
   context 'factories' do
