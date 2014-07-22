@@ -1,4 +1,4 @@
-# This class provides migration behavior for converting `Mdm::Cred` and `Mdm::Loot` objects to their appropriate counterparts in the
+# This class provides migration behavior for converting `Mdm::Cred` objects to their appropriate counterparts in the
 # {Metasploit::Credential} namespace.
 
 class Metasploit::Credential::Migrator
