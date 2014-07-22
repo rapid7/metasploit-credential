@@ -101,7 +101,23 @@ describe Metasploit::Credential::Migrator do
       end
 
       describe "when an Mdm::Cred is an SSH key" do
-        it 'should create a new SSHKey in the database'
+        let(:ssh_key_content){ FactoryGirl.build(:metasploit_credential_ssh_key).data }
+        let(:cred) do
+          FactoryGirl.create(:mdm_cred,
+                             service: service,
+                             ptype: 'ssh_key',
+                             pass: '/path/to/ssh_key'
+          )
+        end
+
+        before(:each) do
+          migrator.stub(:key_data_from_file).and_return ssh_key_content
+          migrator.convert_creds_in_workspace(cred.service.host.workspace)
+        end
+
+        it 'should create a new SSHKey in the database' do
+          Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+        end
       end
 
       describe "when an Mdm::Cred is a password" do
