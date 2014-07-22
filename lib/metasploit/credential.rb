@@ -31,8 +31,9 @@ module Metasploit
 
     autoload :Creation
     autoload :EntityRelationshipDiagram
-    autoload :Importer
     autoload :Exporter
+    autoload :Importer
+    autoload :Migrator
     autoload :Origin
     autoload :Text
 
