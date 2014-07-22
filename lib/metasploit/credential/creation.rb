@@ -252,7 +252,7 @@ module Metasploit
         return nil unless active_db?
         filename = opts.fetch(:filename)
 
-        Metasploit::Credential::Origin::Import.where(filename: filename, task_id: task_id).first_or_create
+        Metasploit::Credential::Origin::Import.where(filename: filename).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.
