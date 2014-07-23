@@ -108,11 +108,11 @@ module Metasploit
         if opts.has_key?(:username)
           core_opts[:public] = create_credential_public(opts)
         end
-        
+
         if opts.has_key?(:task_id)
           core_opts[:task_id] = opts[:task_id]
         end
-        
+
         create_credential_core(core_opts)
       end
 
@@ -171,11 +171,11 @@ module Metasploit
 
         service_object = create_credential_service(opts)
         login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
-        
+
         if opts[:task_id]
           login_object.tasks << Mdm::Task.find(opts[:task_id])
         end
-        
+
         login_object.access_level      = access_level if access_level
         login_object.last_attempted_at = last_attempted_at if last_attempted_at
         login_object.status            = status
@@ -239,17 +239,21 @@ module Metasploit
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Import} objects.
       #
-      # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin to
+      # @option opts [Fixnum,nil] :task_id The ID of the `Mdm::Task` to link this Origin to
       # @option opts [String] :filename The filename of the file that was imported
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
       # @return [Metasploit::Credential::Origin::Manual] The created {Metasploit::Credential::Origin::Import} object
       def create_credential_origin_import(opts={})
         return nil unless active_db?
-        task_id  = opts.fetch(:task_id)
-        filename = opts.fetch(:filename)
+        # Required
+        conditions = {
+          filename: opts.fetch(:filename)
+        }
+        # Optional
+        conditions[:task_id] = opts[:task_id] if opts.has_key?(:task_id)
 
-        Metasploit::Credential::Origin::Import.where(filename: filename, task_id: task_id).first_or_create
+        Metasploit::Credential::Origin::Import.where(conditions).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.
