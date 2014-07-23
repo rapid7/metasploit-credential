@@ -61,7 +61,7 @@ class Metasploit::Credential::Importer::Zip
       end
     end
 
-    csv_path = File.join(extracted_zip_directory, MANIFEST_FILE_NAME)
+    csv_path = Dir.glob(File.join(extracted_zip_directory,'**', MANIFEST_FILE_NAME)).first
     csv_input = File.open(csv_path)
     Metasploit::Credential::Importer::Core.new(input: csv_input, origin: origin, workspace: workspace).import!
   end
@@ -81,8 +81,8 @@ class Metasploit::Credential::Importer::Zip
   def input_is_well_formed
     begin
       Zip::File.open input.path do |archive|
-        manifest_file = archive.find_entry(MANIFEST_FILE_NAME)
-        if manifest_file
+        glob_check  = archive.glob("**#{File::SEPARATOR}#{MANIFEST_FILE_NAME}")
+        if glob_check.present?
           true
         else
           errors.add(:input, :missing_manifest)
