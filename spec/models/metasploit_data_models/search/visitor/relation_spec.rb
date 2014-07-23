@@ -20,6 +20,270 @@ describe MetasploitDataModels::Search::Visitor::Relation do
     }
 
     context 'MetasploitDataModels::Search::Visitor::Relation#query Metasploit::Model::Search::Query#klass' do
+      context 'with Metasploit::Credential::Core' do
+        include_context 'Mdm::Workspace'
+
+        #
+        # Shared Examples
+        #
+
+        shared_examples 'Metasploit::Credential::Private' do |options={}|
+          options.assert_valid_keys(:name, :factory)
+
+          subclass_factory = options.fetch(:factory)
+          subclass_name = options.fetch(:name)
+
+          context subclass_name do
+            let(:private_factory) {
+              subclass_factory
+            }
+
+            it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                                  association: :private,
+                                  attribute: :data
+
+            context 'with all operators' do
+              let(:formatted) {
+                %Q{
+                  logins.access_level:"#{matching_login_access_level}"
+                  logins.status:"#{matching_login_status}"
+                  private.data:"#{matching_private_data}"
+                  public.username:"#{matching_public_username}"
+                  realm.key:"#{matching_realm_key}"
+                  realm.value:"#{matching_realm_value}"
+                }
+              }
+
+              it 'finds only matching record' do
+                expect(visit).to match_array([matching_record])
+              end
+            end
+          end
+        end
+
+        #
+        # lets
+        #
+
+        let(:klass) {
+          Metasploit::Credential::Core
+        }
+
+        let(:matching_login_access_level) {
+          'Administrator'
+        }
+
+        let(:matching_login_status) {
+          Metasploit::Model::Login::Status::LOCKED_OUT
+        }
+
+        let(:matching_private) {
+          FactoryGirl.create(
+              private_factory,
+              matching_private_attributes
+          )
+        }
+
+        let(:matching_private_attributes) {
+          {}
+        }
+
+        let(:matching_private_data) {
+          matching_private.data
+        }
+
+        let(:matching_public) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: matching_public_username
+          )
+        }
+
+        let(:matching_public_username) {
+          'root'
+        }
+
+        let(:matching_realm) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              key: matching_realm_key,
+              value: matching_realm_value
+          )
+        }
+
+        let(:matching_realm_key) {
+          Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE
+        }
+
+        let(:matching_realm_value) {
+          'postgres'
+        }
+
+        let(:non_matching_login_access_level) {
+          'normal'
+        }
+
+        let(:non_matching_login_status) {
+          Metasploit::Model::Login::Status::SUCCESSFUL
+        }
+
+        let(:non_matching_private) {
+          FactoryGirl.create(
+              private_factory,
+              non_matching_private_attributes
+          )
+        }
+
+        let(:non_matching_private_attributes) {
+          {}
+        }
+
+        let(:non_matching_public) {
+          FactoryGirl.create(
+              :metasploit_credential_public,
+              username: non_matching_public_username
+          )
+        }
+
+        let(:non_matching_public_username) {
+          'guest'
+        }
+
+        let(:non_matching_realm) {
+          FactoryGirl.create(
+              :metasploit_credential_realm,
+              key: non_matching_realm_key,
+              value: non_matching_realm_value
+          )
+        }
+
+        let(:non_matching_realm_key) {
+          Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN
+        }
+
+        let(:non_matching_realm_value) {
+          'DOMAIN'
+        }
+
+        let(:private_factory) {
+          [
+              :metasploit_credential_nonreplayable_hash,
+              :metasploit_credential_ntlm_hash,
+              :metasploit_credential_password,
+              :metasploit_credential_ssh_key
+          ].sample
+        }
+
+        #
+        # let!s
+        #
+
+        let!(:matching_login) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: matching_login_access_level,
+              core: matching_record,
+              status: matching_login_status
+          )
+        }
+
+        let!(:matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_core,
+              private: matching_private,
+              public: matching_public,
+              realm: matching_realm
+          )
+        }
+
+        let!(:non_matching_login) {
+          FactoryGirl.create(
+              :metasploit_credential_login,
+              access_level: non_matching_login_access_level,
+              core: non_matching_record,
+              status: non_matching_login_status
+          )
+        }
+
+        let!(:non_matching_record) {
+          FactoryGirl.create(
+              :metasploit_credential_core,
+              private: non_matching_private,
+              public: non_matching_public,
+              realm: non_matching_realm
+          )
+        }
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :logins,
+                              attribute: :access_level
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :logins,
+                              attribute: :status
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :public,
+                              attribute: :username
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :realm,
+                              attribute: :key
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :realm,
+                              attribute: :value
+
+        context 'wth Metasploit::Credential::PasswordHash' do
+
+          #
+          # lets
+          #
+
+          let(:matching_private_attributes) {
+            {
+                password_data: '123456789'
+            }
+          }
+
+          let(:non_matching_private_attributes) {
+            {
+                password_data: 'password'
+            }
+          }
+
+          it_should_behave_like 'Metasploit::Credential::Private',
+                                factory: :metasploit_credential_nonreplayable_hash,
+                                name: 'Metasploit::Credential::NonreplayableHash'
+
+
+          it_should_behave_like 'Metasploit::Credential::Private',
+                                factory: :metasploit_credential_ntlm_hash,
+                                name: 'Metasploit::Credential::NTLMHash'
+        end
+
+        it_should_behave_like 'Metasploit::Credential::Private',
+                              factory: :metasploit_credential_password,
+                              name: 'Metasploit::Credential::Password' do
+          let(:matching_attributes) {
+            {
+                data: '123456789'
+            }
+          }
+
+          let(:non_matching_attributes) {
+            {
+                # needs to not be a substring alias of matching_attributes[:password_data]
+                data: 'password'
+            }
+          }
+        end
+
+        it_should_behave_like 'Metasploit::Credential::Private',
+                              factory: :metasploit_credential_ssh_key,
+                              name: 'Metasploit::Credental::SSHKey'
+      end
+
       context 'with Metasploit::Credential::Login' do
         include_context 'Mdm::Workspace'
 
