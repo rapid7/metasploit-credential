@@ -95,5 +95,14 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
     @key_set ||= Set.new Metasploit::Model::Realm::Key::ALL
   end
 
+  #
+  # Instance Methods
+  #
+
+  # @return [String]
+  def to_s
+    value.to_s
+  end
+
   Metasploit::Concern.run(self)
 end
