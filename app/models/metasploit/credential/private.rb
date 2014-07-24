@@ -91,5 +91,16 @@ class Metasploit::Credential::Private < ActiveRecord::Base
                 scope: :type
             }
 
+  #
+  # Instance Methods
+  #
+
+  # A string suitable for displaying to the user
+  #
+  # @return [String]
+  def to_s
+    data.to_s
+  end
+
   Metasploit::Concern.run(self)
 end
