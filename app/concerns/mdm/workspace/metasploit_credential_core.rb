@@ -15,5 +15,11 @@ module Mdm::Workspace::MetasploitCredentialCore
              class_name: 'Metasploit::Credential::Core',
              dependent: :destroy,
              inverse_of: :workspace
+
+    has_many :login_credentials,
+             source: :logins,
+             class_name: 'Metasploit::Credential::Login',
+             through: :core_credentials
+
   end
 end
