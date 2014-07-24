@@ -57,5 +57,16 @@ class Metasploit::Credential::Public < ActiveRecord::Base
             presence: true,
             uniqueness: true
 
+  #
+  # Instance Methods
+  #
+
+  # A string suitable for displaying to the user
+  #
+  # @return [String]
+  def to_s
+    username.to_s
+  end
+
   Metasploit::Concern.run(self)
 end
