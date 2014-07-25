@@ -146,6 +146,12 @@ class Metasploit::Credential::Login < ActiveRecord::Base
     joins(service: :host).includes(core: [:public, :private], service: :host).where(host_workspace_column.eq(workspace.id))
   }
 
+
+  scope :by_host_id, ->(host_id) {
+    host_id_column = Mdm::Host.arel_table[:id]
+    joins(service: :host).includes(core: [:public,:private], service: :host).where(host_id_column.eq(host_id))
+  }
+
   #
   # Class Methods
   #
@@ -180,6 +186,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
         ))
     ).group_by(&:username)
   end
+
 
   # The valid values for search {#status}.
   #
