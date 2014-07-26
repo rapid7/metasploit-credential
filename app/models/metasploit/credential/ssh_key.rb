@@ -64,6 +64,14 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
     end
   end
 
+  # The {#data key data}'s fingerprint, suitable for displaying to the
+  # user.
+  #
+  # @return [String]
+  def to_s
+    data ? openssl_pkey_pkey.fingerprint : ''
+  end
+
   private
 
   # Converts the private key file data in {#data} to an `OpenSSL::PKey::PKey` subclass instance.
