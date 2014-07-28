@@ -33,10 +33,16 @@ class Metasploit::Credential::Migrator
     end
   end
 
+  # Returns true if {#workspaces} contains `Mdm::Cred` objects
+  # @return [Boolean]
+  def creds_exist?
+    workspaces.map(&:creds).flatten.present?
+  end
+
   # Perform the migration
   # @return [void]
   def migrate!
-    if creds_exist
+    if creds_exist?
       Metasploit::Credential::Core.transaction do
         origin.save # we are going to use the one we instantiated earlier, since there is work to be done
         workspaces.each do |workspace|
