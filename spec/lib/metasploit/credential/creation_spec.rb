@@ -541,7 +541,7 @@ describe Metasploit::Credential::Creation do
               realm_value: untried_login.core.realm.try(:value),
               status: Metasploit::Model::Login::Status::INCORRECT
           }
-          expect{ test_object.invalidate_login(opts) }.to_not change{other_login.reload.status}.from(Metasploit::Model::Login::Status::UNTRIED).to(Metasploit::Model::Login::Status::INCORRECT)
+          expect{ test_object.invalidate_login(opts) }.to_not change{other_login.reload.status}
         end
       end
     end
