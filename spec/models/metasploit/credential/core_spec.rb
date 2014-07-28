@@ -43,6 +43,98 @@ describe Metasploit::Credential::Core do
         it { should have_db_index(:public_id) }
         it { should have_db_index(:realm_id) }
         it { should have_db_index(:workspace_id) }
+
+        context 'partial' do
+          #
+          # lets
+          #
+
+          let(:metasploit_credential_origin) {
+            FactoryGirl.create(:metasploit_credential_origin_manual)
+          }
+
+          let(:workspace) {
+            FactoryGirl.create(:mdm_workspace)
+          }
+
+          let(:second_metasploit_credential_core) {
+            FactoryGirl.build(
+                :metasploit_credential_core,
+                origin: metasploit_credential_origin,
+                private: private,
+                public: public,
+                workspace: workspace
+            )
+          }
+
+          #
+          # let!s
+          #
+
+          let!(:first_metasploit_credential_core) {
+            FactoryGirl.create(
+                :metasploit_credential_core,
+                origin: metasploit_credential_origin,
+                private: private,
+                public: public,
+                workspace: workspace
+            )
+          }
+
+          context '#private_id' do
+            context 'with nil' do
+              let(:private) {
+                nil
+              }
+
+              context '#public_id' do
+                context 'without nil' do
+                  let(:public) {
+                    FactoryGirl.create(:metasploit_credential_public)
+                  }
+
+                  it 'does not allow duplicates' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.to raise_error(ActiveRecord::RecordNotUnique)
+                  end
+                end
+              end
+            end
+
+            context 'without nil' do
+              let(:private) do
+                FactoryGirl.create(:metasploit_credential_password)
+              end
+
+              context '#public_id' do
+                context 'with nil' do
+                  let(:public) {
+                    nil
+                  }
+
+                  it 'does not allow duplicates' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.to raise_error(ActiveRecord::RecordNotUnique)
+                  end
+                end
+
+                context 'without nil' do
+                  let(:public) {
+                    FactoryGirl.create(:metasploit_credential_public)
+                  }
+
+                  it 'does not allow duplicates' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.to raise_error(ActiveRecord::RecordNotUnique)
+                  end
+                end
+              end
+            end
+          end
+        end
       end
     end
   end
