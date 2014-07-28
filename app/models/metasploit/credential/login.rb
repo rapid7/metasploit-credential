@@ -36,6 +36,18 @@ class Metasploit::Credential::Login < ActiveRecord::Base
              inverse_of: :logins
 
   #
+  # through: :service
+  #
+
+  # @!attribute host
+  #   The host on which {#service} runs.
+  #
+  #   @return [Mdm::Host]
+  has_one :host,
+          class_name: 'Mdm::Host',
+          through: :service
+
+  #
   # Attributes
   #
 
