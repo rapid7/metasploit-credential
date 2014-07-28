@@ -173,6 +173,8 @@ describe Metasploit::Credential::Login do
     context 'associations' do
       it_should_behave_like 'search_association',
                             :host
+      it_should_behave_like 'search_association',
+                            :service
     end
 
     context 'attributes' do

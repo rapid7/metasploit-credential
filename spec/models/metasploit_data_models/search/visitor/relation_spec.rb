@@ -286,6 +286,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
       context 'with Metasploit::Credential::Login' do
         include_context 'Mdm::Workspace'
+        include_context 'Rex::Text'
 
         #
         # lets
@@ -340,8 +341,28 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         let(:matching_service) {
           FactoryGirl.create(
               :mdm_service,
-              host: matching_host
+              host: matching_host,
+              info: matching_service_info,
+              name: matching_service_name,
+              port: matching_service_port,
+              proto: matching_service_proto
           )
+        }
+
+        let(:matching_service_info) {
+          'mdm_service_info_a'
+        }
+
+        let(:matching_service_name) {
+          'mdm_service_name_a'
+        }
+
+        let(:matching_service_port) {
+          1
+        }
+
+        let(:matching_service_proto) {
+          'tcp'
         }
 
         let(:matching_status) {
@@ -393,8 +414,28 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         let(:non_matching_service) {
           FactoryGirl.create(
               :mdm_service,
-              host: non_matching_host
+              host: non_matching_host,
+              info: non_matching_service_info,
+              name: non_matching_service_name,
+              port: non_matching_service_port,
+              proto: non_matching_service_proto
           )
+        }
+
+        let(:non_matching_service_info) {
+          'mdm_service_info_b'
+        }
+
+        let(:non_matching_service_name) {
+          'mdm_service_name_b'
+        }
+
+        let(:non_matching_service_port) {
+          2
+        }
+
+        let(:non_matching_service_proto) {
+          'udp'
         }
 
         #
@@ -526,6 +567,18 @@ describe MetasploitDataModels::Search::Visitor::Relation do
                               association: :host,
                               attribute: :os_sp
 
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :service,
+                              attribute: :info
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :service,
+                              attribute: :name
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :service,
+                              attribute: :proto
+
         context 'with all operators' do
           let(:formatted) {
             %Q{
@@ -539,6 +592,10 @@ describe MetasploitDataModels::Search::Visitor::Relation do
               host.os_flavor:#{matching_host_os_flavor}
               host.os_name:#{matching_host_os_name}
               host.os_sp:#{matching_host_os_sp}
+              service.info:#{matching_service_info}
+              service.name:#{matching_service_name}
+              service.port:#{matching_service_port}
+              service.proto:#{matching_service_proto}
             }
           }
 

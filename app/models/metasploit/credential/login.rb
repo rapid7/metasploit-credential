@@ -113,6 +113,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
 
   search_association :host
+  search_association :service
 
   #
   # Search Attributes
