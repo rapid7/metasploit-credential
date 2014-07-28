@@ -511,6 +511,39 @@ describe Metasploit::Credential::Creation do
         }
         expect{ test_object.invalidate_login(opts) }.to change{untried_login.reload.last_attempted_at}
       end
+
+      context 'when a login exists on the same service for a different credential' do
+        let(:other_origin) {
+          FactoryGirl.create(:metasploit_credential_origin_manual)
+        }
+        let(:other_core) {
+          FactoryGirl.create(:metasploit_credential_core,
+            workspace: untried_login.core.workspace,
+            origin: other_origin
+          )
+        }
+        let(:other_login) {
+          FactoryGirl.create(:metasploit_credential_login,
+            status: Metasploit::Model::Login::Status::UNTRIED,
+            service: untried_login.service,
+            core: other_core
+          )
+        }
+
+        it 'updates the status on the correct login' do
+          opts = {
+              address: untried_login.service.host.address,
+              port: untried_login.service.port,
+              protocol: untried_login.service.proto,
+              public: untried_login.core.public.username,
+              private: untried_login.core.private.data,
+              realm_key: untried_login.core.realm.try(:key),
+              realm_value: untried_login.core.realm.try(:value),
+              status: Metasploit::Model::Login::Status::INCORRECT
+          }
+          expect{ test_object.invalidate_login(opts) }.to_not change{other_login.reload.status}
+        end
+      end
     end
   end
 
