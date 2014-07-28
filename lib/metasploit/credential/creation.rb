@@ -113,11 +113,11 @@ module Metasploit
         if opts.has_key?(:username)
           core_opts[:public] = create_credential_public(opts)
         end
-        
+
         if opts.has_key?(:task_id)
           core_opts[:task_id] = opts[:task_id]
         end
-        
+
         create_credential_core(core_opts)
       end
 
@@ -176,11 +176,11 @@ module Metasploit
 
         service_object = create_credential_service(opts)
         login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
-        
+
         if opts[:task_id]
           login_object.tasks << Mdm::Task.find(opts[:task_id])
         end
-        
+
         login_object.access_level      = access_level if access_level
         login_object.last_attempted_at = last_attempted_at if last_attempted_at
         login_object.status            = status
@@ -425,29 +425,15 @@ module Metasploit
         status      = opts.fetch(:status)
 
 
-        begin
-          pub_obj = Metasploit::Credential::Public.where(username: public).first.id
-        rescue NoMethodError
-          pub_obj = nil
-        end
-
-        begin
-          priv_obj = Metasploit::Credential::Private.where(data: private).first.id
-        rescue NoMethodError
-          priv_obj = nil
-        end
-
-        begin
-          realm_obj = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first.id
-        rescue NoMethodError
-          realm_obj = nil
-        end
+        pub_obj = Metasploit::Credential::Public.where(username: public).first.try(:id)
+        priv_obj = Metasploit::Credential::Private.where(data: private).first.try(:id)
+        realm_obj = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first.try(:id)
 
         core = Metasploit::Credential::Core.where(public_id: pub_obj, private_id: priv_obj, realm_id: realm_obj).first
 
         # Do nothing else if we have no matching core. Otherwise look for a Login.
         if core.present?
-          login = Metasploit::Credential::Login.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
+          login = core.logins.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
 
           if login.present?
             login.status = status

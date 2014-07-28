@@ -2,6 +2,7 @@
 # Standard Library
 #
 
+require 'csv'
 require 'pathname'
 
 # {Metasploit::Credential::Importer::Multi} allows a single class to pass off a file to the correct importer as
@@ -60,11 +61,19 @@ class Metasploit::Credential::Importer::Multi
     end
   end
 
-  # True if the file has a ".csv" extension
+  # True if the file has a comma in the first place there should be one.
+  # Further validation for well-formedness is available in {Metasploit::Credential::Importer::Core}
   #
   # @return [Boolean]
   def csv?
-    ::Pathname.new(input.path).extname == '.csv'
+    test_header_byte_length = Metasploit::Credential::Importer::Core::VALID_SHORT_CSV_HEADERS.first.size + 1
+    test_bytes              =  input.read(test_header_byte_length)
+    if test_bytes.present? && test_bytes.include?(',')
+      input.rewind
+      true
+    else
+      false
+    end
   end
 
   private

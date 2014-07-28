@@ -381,7 +381,7 @@ describe Metasploit::Credential::Creation do
   end
 
   context '#create_credential' do
-    
+
     it 'associates the new Metasploit::Credential::Core with a task if passed' do
       opts = {
           origin_type: :manual,
@@ -394,17 +394,17 @@ describe Metasploit::Credential::Creation do
       core = test_object.create_credential(opts)
       core.tasks.should include(task)
     end
-    
+
   end
-  
+
   context '#create_credential_core' do
     let(:origin)    { FactoryGirl.create(:metasploit_credential_origin_service) }
     let(:public)    { FactoryGirl.create(:metasploit_credential_public)}
     let(:private)   { FactoryGirl.create(:metasploit_credential_password)}
-    let(:realm)     { FactoryGirl.create(:metasploit_credential_realm)} 
+    let(:realm)     { FactoryGirl.create(:metasploit_credential_realm)}
     let(:workspace) { origin.service.host.workspace }
     let(:task)      { FactoryGirl.create(:mdm_task, workspace: workspace) }
-    
+
     it 'raises a KeyError if any required option is missing' do
       opts = {}
       expect{ test_object.create_credential_core(opts)}.to raise_error KeyError
@@ -445,7 +445,7 @@ describe Metasploit::Credential::Creation do
     let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
     let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
     let(:credential_core) { FactoryGirl.create(:metasploit_credential_core_manual, workspace: workspace) }
-    
+
     it 'creates a Metasploit::Credential::Login' do
       login_data = {
         address: service.host.address,
@@ -473,9 +473,9 @@ describe Metasploit::Credential::Creation do
       }
       login = test_object.create_credential_login(login_data)
       login.tasks.should include(task)
-      
+
     end
-    
+
   end
 
   context '#invalidate_login' do
@@ -510,7 +510,40 @@ describe Metasploit::Credential::Creation do
         }
         expect{ test_object.invalidate_login(opts) }.to change{untried_login.reload.last_attempted_at}
       end
+
+      context 'when a login exists on the same service for a different credential' do
+        let(:other_origin) {
+          FactoryGirl.create(:metasploit_credential_origin_manual)
+        }
+        let(:other_core) {
+          FactoryGirl.create(:metasploit_credential_core,
+            workspace: untried_login.core.workspace,
+            origin: other_origin
+          )
+        }
+        let(:other_login) {
+          FactoryGirl.create(:metasploit_credential_login,
+            status: Metasploit::Model::Login::Status::UNTRIED,
+            service: untried_login.service,
+            core: other_core
+          )
+        }
+
+        it 'updates the status on the correct login' do
+          opts = {
+              address: untried_login.service.host.address,
+              port: untried_login.service.port,
+              protocol: untried_login.service.proto,
+              public: untried_login.core.public.username,
+              private: untried_login.core.private.data,
+              realm_key: untried_login.core.realm.try(:key),
+              realm_value: untried_login.core.realm.try(:value),
+              status: Metasploit::Model::Login::Status::INCORRECT
+          }
+          expect{ test_object.invalidate_login(opts) }.to_not change{other_login.reload.status}
+        end
+      end
     end
   end
-  
+
 end

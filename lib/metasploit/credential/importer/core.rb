@@ -54,25 +54,6 @@ class Metasploit::Credential::Importer::Core
   # Instance Methods
   #
 
-  # Creates a {Metasploit::Credential::Core} object from the data in a CSV row
-  # @param [Hash] args
-  # @option args [Metasploit::Credential::Public] :public the public cred to associate
-  # @option args [Metasploit::Credential::Private] :private the private cred to associate
-  # @option args [Metasploit::Credential::Realm] :realm the realm to associate
-  #
-  # @return [Boolean]
-  def create_core(args={})
-    core           = Metasploit::Credential::Core.new
-    core.workspace = workspace
-    core.origin    = origin
-    core.private   = args.fetch(:private)
-    core.public    = args.fetch(:public)
-    core.realm     = args.fetch(:realm) if args[:realm].present?
-
-    core.save!
-    core
-  end
-
   # An instance of `CSV` from whence cometh the sweet sweet credential input
   #
   # @return [CSV]
@@ -144,12 +125,15 @@ class Metasploit::Credential::Importer::Core
           end
         end
 
-        new_core = create_core( public: public_object_for_row, private: private_object_for_row, realm: realm_object_for_row)
+        core = create_credential_core(origin:origin, workspace_id: workspace.id,
+                                                     public: public_object_for_row,
+                                                     private: private_object_for_row,
+                                                     realm: realm_object_for_row )
 
         # Make Logins with attendant Host/Service information if we are doing that
         if host_address.present? && service_port.present? && service_protocol.present?
           login_opts = {
-            core: new_core,
+            core: core,
             status: Metasploit::Model::Login::Status::UNTRIED,  # don't trust creds on import
             address: host_address,
             port: service_port,
@@ -174,7 +158,9 @@ class Metasploit::Credential::Importer::Core
 
         public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
         private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
-        create_core( public: public_object_for_row, private: private_object_for_row)
+        create_credential_core(origin:origin, workspace_id: workspace.id,
+                                      public: public_object_for_row,
+                                      private: private_object_for_row)
       end
     end
   end
