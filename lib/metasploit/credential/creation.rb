@@ -426,29 +426,15 @@ module Metasploit
         status      = opts.fetch(:status)
 
 
-        begin
-          pub_obj = Metasploit::Credential::Public.where(username: public).first.id
-        rescue NoMethodError
-          pub_obj = nil
-        end
-
-        begin
-          priv_obj = Metasploit::Credential::Private.where(data: private).first.id
-        rescue NoMethodError
-          priv_obj = nil
-        end
-
-        begin
-          realm_obj = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first.id
-        rescue NoMethodError
-          realm_obj = nil
-        end
+        pub_obj = Metasploit::Credential::Public.where(username: public).first.try(:id)
+        priv_obj = Metasploit::Credential::Private.where(data: private).first.try(:id)
+        realm_obj = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first.try(:id)
 
         core = Metasploit::Credential::Core.where(public_id: pub_obj, private_id: priv_obj, realm_id: realm_obj).first
 
         # Do nothing else if we have no matching core. Otherwise look for a Login.
         if core.present?
-          login = Metasploit::Credential::Login.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
+          login = core.logins.joins(service: :host).where(services: { port: port, proto: protocol } ).where( hosts: {address: address}).readonly(false).first
 
           if login.present?
             login.status = status
