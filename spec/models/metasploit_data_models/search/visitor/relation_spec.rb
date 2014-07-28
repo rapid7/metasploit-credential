@@ -299,12 +299,102 @@ describe MetasploitDataModels::Search::Visitor::Relation do
           'admin'
         }
 
+        let(:matching_credential_core) {
+          FactoryGirl.create(
+              :metasploit_credential_core
+          )
+        }
+
+        let(:matching_host) {
+          FactoryGirl.create(
+              :mdm_host,
+              address: matching_host_address,
+              name: matching_host_name,
+              os_flavor: matching_host_os_flavor,
+              os_name: matching_host_os_name,
+              os_sp: matching_host_os_sp,
+              workspace: matching_credential_core.workspace
+          )
+        }
+
+        let(:matching_host_address) {
+          '1.2.3.4'
+        }
+
+        let(:matching_host_name) {
+          'mdm_host_name_a'
+        }
+
+        let(:matching_host_os_flavor) {
+          'mdm_host_os_flavor_a'
+        }
+
+        let(:matching_host_os_name) {
+          'mdm_host_os_name_a'
+        }
+
+        let(:matching_host_os_sp) {
+          'mdm_host_os_sp_a'
+        }
+
+        let(:matching_service) {
+          FactoryGirl.create(
+              :mdm_service,
+              host: matching_host
+          )
+        }
+
         let(:matching_status) {
           matching_record.status
         }
 
         let(:non_matching_access_level) {
           'normal'
+        }
+
+        let(:non_matching_credential_core) {
+          FactoryGirl.create(
+              :metasploit_credential_core
+          )
+        }
+
+        let(:non_matching_host) {
+          FactoryGirl.create(
+              :mdm_host,
+              address: non_matching_host_address,
+              name: non_matching_host_name,
+              os_flavor: non_matching_host_os_flavor,
+              os_name: non_matching_host_os_name,
+              os_sp: non_matching_host_os_sp,
+              workspace: non_matching_credential_core.workspace
+          )
+        }
+
+        let(:non_matching_host_address) {
+          '5.6.7.8'
+        }
+
+        let(:non_matching_host_name) {
+          'mdm_host_name_b'
+        }
+
+        let(:non_matching_host_os_flavor) {
+          'mdm_host_os_flavor_b'
+        }
+
+        let(:non_matching_host_os_name) {
+          'mdm_host_os_name_b'
+        }
+
+        let(:non_matching_host_os_sp) {
+          'mdm_host_os_sp_b'
+        }
+
+        let(:non_matching_service) {
+          FactoryGirl.create(
+              :mdm_service,
+              host: non_matching_host
+          )
         }
 
         #
@@ -314,25 +404,142 @@ describe MetasploitDataModels::Search::Visitor::Relation do
         let!(:matching_record) {
           FactoryGirl.create(
               :metasploit_credential_login,
-              access_level: matching_access_level
+              access_level: matching_access_level,
+              core: matching_credential_core,
+              service: matching_service
           )
         }
 
         let!(:non_matching_record) {
           FactoryGirl.create(
               :metasploit_credential_login,
-              access_level: non_matching_access_level
+              access_level: non_matching_access_level,
+              core: non_matching_credential_core,
+              service: non_matching_service
           )
         }
 
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               attribute: :access_level
+
         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
                               attribute: :status
 
+
+        context 'with host.address operator' do
+          let(:formatted) do
+            "host.address:#{formatted_address}"
+          end
+
+          context 'with CIDR' do
+            let(:formatted_address) {
+              '1.3.4.5/8'
+            }
+
+            it 'should find only matching record' do
+              expect(visit).to match_array([matching_record])
+            end
+          end
+
+          context 'with Range' do
+            let(:formatted_address) {
+              '1.1.1.1-5.6.7.7'
+            }
+
+            it 'should find only matching record' do
+              expect(visit).to match_array([matching_record])
+            end
+          end
+
+          context 'with single' do
+            let(:formatted_address) {
+              '1.2.3.4'
+            }
+
+            it 'should find only matching record' do
+              expect(visit).to match_array([matching_record])
+            end
+          end
+            end
+
+        context 'with host.os' do
+          let(:matching_host_os_flavor) {
+            'XP'
+          }
+
+          let(:matching_host_os_name) {
+            'Microsoft Windows'
+          }
+
+          let(:matching_host_os_sp) {
+            'SP1'
+          }
+
+          context 'with a combination of Mdm::Host#os_name and Mdm:Host#os_sp' do
+            let(:formatted) {
+              %Q{host.os:"win xp"}
+            }
+
+            it 'finds matching record' do
+              expect(visit).to match_array [matching_record]
+            end
+          end
+
+          context 'with a combination of Mdm::Host#os_flavor and Mdm::Host#os_sp' do
+            let(:formatted) {
+              %Q{host.os:"xp sp1"}
+            }
+
+            it 'finds matching record' do
+              expect(visit).to match_array [matching_record]
+            end
+          end
+
+          context 'with multiple records matching one word' do
+            let(:formatted) {
+              %Q{host.os:"win xp"}
+            }
+
+            let(:non_matching_host_os_name) {
+              'Microsoft Windows'
+            }
+
+            it 'finds only matching record by other words refining search' do
+              expect(visit).to match_array [matching_record]
+            end
+          end
+        end
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :host,
+                              attribute: :name
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :host,
+                              attribute: :os_flavor
+
+        it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :host,
+                              attribute: :os_name
+
+         it_should_behave_like 'MetasploitDataModels::Search::Visitor::Relation#visit matching record',
+                              association: :host,
+                              attribute: :os_sp
+
         context 'with all operators' do
           let(:formatted) {
-            %Q{access_level:"#{matching_access_level}" status:"#{matching_status}"}
+            %Q{
+              access_level:"#{matching_access_level}"
+              status:"#{matching_status}"
+              host.address:1.3.4.5/8
+              host.address:1.1.1.1-5.6.7.7
+              host.address:1.2.3.4
+              host.name:#{matching_host_name}
+              host.os:"#{matching_host_os_name} #{matching_host_os_flavor} #{matching_host_os_sp}"
+              host.os_flavor:#{matching_host_os_flavor}
+              host.os_name:#{matching_host_os_name}
+              host.os_sp:#{matching_host_os_sp}
+            }
           }
 
           it 'returns only matching record' do

@@ -103,7 +103,19 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   attr_accessible :status
 
   #
+  #
   # Search
+  #
+  #
+
+  #
+  # Search Associations
+  #
+
+  search_association :host
+
+  #
+  # Search Attributes
   #
 
   search_attribute :access_level,

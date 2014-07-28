@@ -166,11 +166,16 @@ describe Metasploit::Credential::Login do
   end
 
   context 'search' do
-    context 'attributes' do
-      let(:base_class) {
-        described_class
-      }
+    let(:base_class) {
+      described_class
+    }
 
+    context 'associations' do
+      it_should_behave_like 'search_association',
+                            :host
+    end
+
+    context 'attributes' do
       it_should_behave_like 'search_attribute',
                             :access_level,
                             type: :string
