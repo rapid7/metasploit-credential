@@ -8,8 +8,6 @@ module Metasploit
       MINOR = 7
       # The patch number, scoped to the {MINOR} version number.
       PATCH = 17
-      # The pre-release version, scoped to the {PATCH} version number.
-      PRERELEASE = 'login-search-associations'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
