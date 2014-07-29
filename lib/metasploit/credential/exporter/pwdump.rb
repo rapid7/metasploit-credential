@@ -56,6 +56,9 @@ class Metasploit::Credential::Exporter::Pwdump
   # The string inserted when either the public or private half of a credential is blank
   BLANK_CRED_STRING = '<BLANK>'
 
+  # Used to check for this file type when importing/parsing
+  FILE_ID_STRING = "# Metasploit PWDump Export"
+
   # Where the MSF pwdump template lives
   TEMPLATE_PATH = File.expand_path(File.join(File.dirname(__FILE__), "pwdump_template.erb"))
 
