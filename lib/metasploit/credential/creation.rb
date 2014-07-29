@@ -90,7 +90,12 @@ module Metasploit
       #     )
       def create_credential(opts={})
         return nil unless active_db?
-        origin = create_credential_origin(opts)
+
+        if opts[:origin]
+          origin = opts[:origin]
+        else
+          origin = create_credential_origin(opts)
+        end
 
         core_opts = {
             origin: origin,
@@ -162,7 +167,7 @@ module Metasploit
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no active database connection
       # @return [Metasploit::Credential::Login]
-      def create_credential_login(opts)
+      def create_credential_login(opts={})
         return nil unless active_db?
         access_level       = opts.fetch(:access_level, nil)
         core               = opts.fetch(:core)
@@ -239,21 +244,15 @@ module Metasploit
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Import} objects.
       #
-      # @option opts [Fixnum,nil] :task_id The ID of the `Mdm::Task` to link this Origin to
       # @option opts [String] :filename The filename of the file that was imported
       # @raise [KeyError] if a required option is missing
       # @return [NilClass] if there is no connected database
       # @return [Metasploit::Credential::Origin::Manual] The created {Metasploit::Credential::Origin::Import} object
       def create_credential_origin_import(opts={})
         return nil unless active_db?
-        # Required
-        conditions = {
-          filename: opts.fetch(:filename)
-        }
-        # Optional
-        conditions[:task_id] = opts[:task_id] if opts.has_key?(:task_id)
+        filename = opts.fetch(:filename)
 
-        Metasploit::Credential::Origin::Import.where(conditions).first_or_create
+        Metasploit::Credential::Origin::Import.where(filename: filename).first_or_create
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.

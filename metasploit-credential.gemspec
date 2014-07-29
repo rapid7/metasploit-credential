@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '~> 0.19'
+  s.add_runtime_dependency 'metasploit_data_models', '~> 0.19.4'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model','>= 0.25.6'
+  s.add_runtime_dependency 'metasploit-model','~> 0.26.1'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys

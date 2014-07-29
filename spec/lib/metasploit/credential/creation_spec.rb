@@ -22,7 +22,6 @@ describe Metasploit::Credential::Creation do
     it 'creates a Metasploit::Credential::Origin object' do
       opts = {
           filename: "test_import.xml",
-          task_id: task.id
       }
       expect { test_object.create_credential_origin_import(opts)}.to change{Metasploit::Credential::Origin::Import.count}.by(1)
     end
@@ -43,9 +42,9 @@ describe Metasploit::Credential::Creation do
       end
     end
 
-    context 'when missing an option' do
+    context 'when missing a required option' do
       it 'throws a KeyError' do
-        opts = { }
+        opts = {}
         expect{ test_object.create_credential_origin_import(opts)}.to raise_error KeyError
       end
     end

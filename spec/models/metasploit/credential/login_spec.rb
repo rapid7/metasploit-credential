@@ -5,6 +5,7 @@ describe Metasploit::Credential::Login do
 
   context 'associations' do
     it { should belong_to(:core).class_name('Metasploit::Credential::Core') }
+    it { should have_one(:host).class_name('Mdm::Host') }
     it { should belong_to(:service).class_name('Mdm::Service')}
   end
 
@@ -165,11 +166,18 @@ describe Metasploit::Credential::Login do
   end
 
   context 'search' do
-    context 'attributes' do
-      let(:base_class) {
-        described_class
-      }
+    let(:base_class) {
+      described_class
+    }
 
+    context 'associations' do
+      it_should_behave_like 'search_association',
+                            :host
+      it_should_behave_like 'search_association',
+                            :service
+    end
+
+    context 'attributes' do
       it_should_behave_like 'search_attribute',
                             :access_level,
                             type: :string
