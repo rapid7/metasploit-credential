@@ -113,6 +113,24 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   validates :origin,
             presence: true
+  validates :private_id,
+            uniqueness: {
+                scope: [
+                    :workspace_id,
+                    :public_id,
+                ]
+            },
+            if: 'private.present? && public.present?'
+  validates :private_id,
+            uniqueness: {
+                scope: :workspace_id
+            },
+            if: 'private.present? && public.nil?'
+  validates :public_id,
+            uniqueness: {
+                scope: :workspace_id
+            },
+            if: 'private.nil? && public.present?'
   validates :workspace,
             presence: true
 
