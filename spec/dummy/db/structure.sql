@@ -3371,6 +3371,13 @@ CREATE INDEX originating_credential_cores ON metasploit_credential_origin_cracke
 
 
 --
+-- Name: unique_complete_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_complete_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, private_id, public_id) WHERE ((private_id IS NOT NULL) AND (public_id IS NOT NULL));
+
+
+--
 -- Name: unique_metasploit_credential_origin_services; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -3382,6 +3389,20 @@ CREATE UNIQUE INDEX unique_metasploit_credential_origin_services ON metasploit_c
 --
 
 CREATE UNIQUE INDEX unique_metasploit_credential_origin_sessions ON metasploit_credential_origin_sessions USING btree (session_id, post_reference_name);
+
+
+--
+-- Name: unique_private_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_private_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, private_id) WHERE ((private_id IS NOT NULL) AND (public_id IS NULL));
+
+
+--
+-- Name: unique_public_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_public_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, public_id) WHERE ((private_id IS NULL) AND (public_id IS NOT NULL));
 
 
 --
@@ -3616,6 +3637,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140702184622');
 INSERT INTO schema_migrations (version) VALUES ('20140703144541');
 
 INSERT INTO schema_migrations (version) VALUES ('20140722174919');
+
+INSERT INTO schema_migrations (version) VALUES ('20140728191933');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
