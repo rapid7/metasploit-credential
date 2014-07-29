@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 7
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 16
+      PATCH = 17
       # The pre-release version, scoped to the {PATCH} version number.
       PRERELEASE = 'login-search-associations'
 
