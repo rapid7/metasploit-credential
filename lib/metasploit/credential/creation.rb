@@ -135,18 +135,27 @@ module Metasploit
         origin       = opts.fetch(:origin)
         workspace_id = opts.fetch(:workspace_id)
 
-        private_id = opts[:private].try(:id)
-        public_id  = opts[:public].try(:id)
-        realm_id   = opts[:realm].try(:id)
+        private_id   = opts[:private].try(:id)
+        public_id    = opts[:public].try(:id)
+        realm_id     = opts[:realm].try(:id)
 
-        core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
-        if core.origin_id.nil?
-          core.origin = origin
+        tries = 3
+        begin
+          core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
+          if core.origin_id.nil?
+            core.origin = origin
+          end
+          if opts[:task_id]
+            core.tasks << Mdm::Task.find(opts[:task_id])
+          end
+          core.save!
+        rescue ActiveRecord::RecordNotUnique
+          tries -= 1
+          if tries > 0
+            retry
+          end
         end
-        if opts[:task_id]
-          core.tasks << Mdm::Task.find(opts[:task_id])
-        end
-        core.save!
+
         core
       end
 
