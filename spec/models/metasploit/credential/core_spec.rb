@@ -1,5 +1,59 @@
 require 'spec_helper'
 
+# Test plan for unique indexes and uniqueness validators
+#
+#    Index        |  First Metasploit::Credential::Core  |           |           |           |  Second Metasploit::Credential::Core  |             |             |             |  Collision  |
+#    -------------|--------------------------------------|-----------|-----------|-----------|---------------------------------------|-------------|-------------|-------------|-------------|
+#                 |  Workspace                           |  Realm    |  Public   |  Private  |  Workspace                            |  Realm      |  Public     |  Private    |             |
+#    private      |  non-nil                             |  nil      |  nil      |  non-nil  |  same                                 |  nil        |  nil        |  same       |  TRUE       |
+#    private      |  non-nil                             |  nil      |  nil      |  non-nil  |  same                                 |  nil        |  nil        |  different  |  FALSE      |
+#    private      |  non-nil                             |  nil      |  nil      |  non-nil  |  different                            |  nil        |  nil        |  same       |  FALSE      |
+#    private      |  non-nil                             |  nil      |  nil      |  non-nil  |  different                            |  nil        |  nil        |  different  |  FALSE      |
+#    public       |  non-nil                             |  nil      |  non-nil  |  nil      |  same                                 |  nil        |  same       |  nil        |  TRUE       |
+#    public       |  non-nil                             |  nil      |  non-nil  |  nil      |  same                                 |  nil        |  different  |  nil        |  FALSE      |
+#    public       |  non-nil                             |  nil      |  non-nil  |  nil      |  different                            |  nil        |  same       |  nil        |  FALSE      |
+#    public       |  non-nil                             |  nil      |  non-nil  |  nil      |  different                            |  nil        |  different  |  nil        |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  same                                 |  nil        |  same       |  same       |  TRUE       |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  same                                 |  nil        |  same       |  different  |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  same                                 |  nil        |  different  |  same       |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  same                                 |  nil        |  different  |  different  |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  different                            |  nil        |  same       |  same       |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  different                            |  nil        |  same       |  different  |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  different                            |  nil        |  different  |  same       |  FALSE      |
+#    realmless    |  non-nil                             |  nil      |  non-nil  |  non-nil  |  different                            |  nil        |  different  |  different  |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  same                                 |  same       |  nil        |  same       |  TRUE       |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  same                                 |  same       |  nil        |  different  |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  same                                 |  different  |  nil        |  same       |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  same                                 |  different  |  nil        |  different  |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  different                            |  same       |  nil        |  same       |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  different                            |  same       |  nil        |  different  |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  different                            |  different  |  nil        |  same       |  FALSE      |
+#    publicless   |  non-nil                             |  non-nil  |  nil      |  non-nil  |  different                            |  different  |  nil        |  different  |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  same                                 |  same       |  same       |  nil        |  TRUE       |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  same                                 |  same       |  different  |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  same                                 |  different  |  same       |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  same                                 |  different  |  different  |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  different                            |  same       |  same       |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  different                            |  same       |  different  |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  different                            |  different  |  same       |  nil        |  FALSE      |
+#    privateless  |  non-nil                             |  non-nil  |  non-nil  |  nil      |  different                            |  different  |  different  |  nil        |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  same       |  same       |  same       |  TRUE       |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  same       |  same       |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  same       |  different  |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  same       |  different  |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  different  |  same       |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  different  |  same       |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  different  |  different  |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  same                                 |  different  |  different  |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  same       |  same       |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  same       |  same       |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  same       |  different  |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  same       |  different  |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  same       |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  same       |  different  |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  different  |  same       |  FALSE      |
+#    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  different  |  different  |  FALSE      |
+#
 describe Metasploit::Credential::Core do
   include_context 'Mdm::Workspace'
 
@@ -38,32 +92,63 @@ describe Metasploit::Credential::Core do
 
     context 'indices' do
       context 'foreign keys' do
-        it { should have_db_index([:origin_type, :origin_id]) }
-        it { should have_db_index(:private_id) }
-        it { should have_db_index(:public_id) }
-        it { should have_db_index(:realm_id) }
-        it { should have_db_index(:workspace_id) }
+        #
+        # Context Methods
+        #
 
-        context 'partial' do
+        # Returns correlation with the given `name` from options.
+        #
+        # @return [:different, :same]
+        # @raise [ArgumentError] if `options[name]` is not `:different` or `:same`
+        # @raise [KeyError] if `options` does not contain key `name`
+        def self.correlation!(options, name)
+          correlation = options.fetch(name)
+
+          unless [:different, :same].include? correlation
+            raise ArgumentError, "#{name} must be :different or :same"
+          end
+
+          correlation
+        end
+
+        #
+        # Shared Contexts
+        #
+
+        shared_context 'two metasploit_credential_cores' do
           #
           # lets
           #
 
-          let(:metasploit_credential_origin) {
-            FactoryGirl.create(:metasploit_credential_origin_manual)
+          let(:first_private) {
+            FactoryGirl.create(:metasploit_credential_private)
           }
 
-          let(:workspace) {
+          let(:first_public) {
+            FactoryGirl.create(:metasploit_credential_public)
+          }
+
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
+          let(:first_workspace) {
             FactoryGirl.create(:mdm_workspace)
+          }
+
+          let(:origin) {
+            # use an origin where the workspace does not need to correlate
+            FactoryGirl.create(:metasploit_credential_origin_manual)
           }
 
           let(:second_metasploit_credential_core) {
             FactoryGirl.build(
                 :metasploit_credential_core,
-                origin: metasploit_credential_origin,
-                private: private,
-                public: public,
-                workspace: workspace
+                origin: origin,
+                private: second_private,
+                public: second_public,
+                realm: second_realm,
+                workspace: second_workspace
             )
           }
 
@@ -74,67 +159,694 @@ describe Metasploit::Credential::Core do
           let!(:first_metasploit_credential_core) {
             FactoryGirl.create(
                 :metasploit_credential_core,
-                origin: metasploit_credential_origin,
-                private: private,
-                public: public,
-                workspace: workspace
+                origin: origin,
+                private: first_private,
+                public: first_public,
+                realm: first_realm,
+                workspace: first_workspace
             )
           }
+        end
 
-          context '#private_id' do
-            context 'with nil' do
-              let(:private) {
-                nil
+        #
+        # Shared Examples
+        #
+
+        shared_examples_for 'unique_private_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :private, :workspace)
+
+          #
+          # lets
+          #
+
+          let(:first_public) {
+            nil
+          }
+
+          let(:first_realm) {
+            nil
+          }
+
+          let(:second_public) {
+            nil
+          }
+
+          let(:second_realm) {
+            nil
+          }
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
+              end
+            }
+
+            private_correlation = correlation!(options, :private)
+
+            context "with #{private_correlation} private" do
+              let(:second_private) {
+                if private_correlation == :same
+                  first_private
+                else
+                  FactoryGirl.create(:metasploit_credential_private)
+                end
               }
 
-              context '#public_id' do
-                context 'without nil' do
-                  let(:public) {
-                    FactoryGirl.create(:metasploit_credential_public)
-                  }
-
-                  it 'does not allow duplicates' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique)
-                  end
+              if options.fetch(:collision)
+                it 'raises ActiveRecord::RecordNotUnique' do
+                  expect {
+                    second_metasploit_credential_core.save(validate: false)
+                  }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                      expect(error.message).to include(
+                                                   'duplicate key value violates unique constraint "unique_private_metasploit_credential_cores"'
+                                               )
+                    }
+                end
+              else
+                it 'does not raise ActiveRecord::RecordNotUnique' do
+                  expect {
+                    second_metasploit_credential_core.save(validate: false)
+                  }.not_to raise_error
                 end
               end
             end
+          end
+        end
 
-            context 'without nil' do
-              let(:private) do
-                FactoryGirl.create(:metasploit_credential_password)
+        shared_examples_for 'unique_public_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :public, :workspace)
+
+          #
+          # lets
+          #
+
+          let(:first_private) {
+            nil
+          }
+
+          let(:first_realm) {
+            nil
+          }
+
+          let(:second_private) {
+            nil
+          }
+
+          let(:second_realm) {
+            nil
+          }
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
               end
+            }
 
-              context '#public_id' do
-                context 'with nil' do
-                  let(:public) {
-                    nil
-                  }
+            public_correlation = correlation!(options, :public)
 
-                  it 'does not allow duplicates' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique)
-                  end
+            context "with #{public_correlation} public" do
+              let(:second_public) {
+                if public_correlation == :same
+                  first_public
+                else
+                  FactoryGirl.create(:metasploit_credential_public)
                 end
+              }
 
-                context 'without nil' do
-                  let(:public) {
-                    FactoryGirl.create(:metasploit_credential_public)
-                  }
+              if options.fetch(:collision)
+                it 'raises ActiveRecord::RecordNotUnique' do
+                  expect {
+                    second_metasploit_credential_core.save(validate: false)
+                  }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                      expect(error.message).to include(
+                                                   'duplicate key value violates unique constraint "unique_public_metasploit_credential_cores"'
+                                               )
+                    }
+                end
+              else
+                it 'does not raise ActiveRecord::RecordNotUnique' do
+                  expect {
+                    second_metasploit_credential_core.save(validate: false)
+                  }.not_to raise_error
+                end
+              end
+            end
+          end
+        end
 
-                  it 'does not allow duplicates' do
+        shared_examples_for 'unique_realmless_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :private, :public, :workspace)
+
+          let(:first_realm) {
+            nil
+          }
+
+          let(:second_realm) {
+            nil
+          }
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
+              end
+            }
+
+            public_correlation = correlation!(options, :public)
+
+            context "with #{public_correlation} public" do
+              let(:second_public) {
+                if public_correlation == :same
+                  first_public
+                else
+                  FactoryGirl.create(:metasploit_credential_public)
+                end
+              }
+
+              private_correlation = correlation!(options, :private)
+
+              context "with #{private_correlation} private" do
+                let(:second_private) {
+                  if private_correlation == :same
+                    first_private
+                  else
+                    FactoryGirl.create(:metasploit_credential_private)
+                  end
+                }
+
+                if options.fetch(:collision)
+                  it 'raises ActiveRecord::RecordNotUnique' do
                     expect {
                       second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique)
+                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                      expect(error.message).to include(
+                                                   'duplicate key value violates unique constraint "unique_realmless_metasploit_credential_cores"'
+                                               )
+                    }
+                  end
+                else
+                  it 'does not raise ActiveRecord::RecordNotUnique' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.not_to raise_error
                   end
                 end
               end
             end
           end
         end
+
+        shared_examples_for 'unique_publicless_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :private, :realm, :workspace)
+
+          let(:first_public) {
+            nil
+          }
+
+          let(:second_public) {
+            nil
+          }
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
+              end
+            }
+
+            realm_correlation = correlation!(options, :realm)
+
+            context "with #{realm_correlation} realm" do
+              let(:second_realm) {
+                if realm_correlation == :same
+                  first_realm
+                else
+                  FactoryGirl.create(:metasploit_credential_realm)
+                end
+              }
+
+              private_correlation = correlation!(options, :private)
+
+              context "with #{private_correlation} private" do
+                let(:second_private) {
+                  if private_correlation == :same
+                    first_private
+                  else
+                    FactoryGirl.create(:metasploit_credential_private)
+                  end
+                }
+
+                if options.fetch(:collision)
+                  it 'raises ActiveRecord::RecordNotUnique' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                      expect(error.message).to include(
+                                                   'duplicate key value violates unique constraint "unique_publicless_metasploit_credential_cores"'
+                                               )
+                    }
+                  end
+                else
+                  it 'does not raise ActiveRecord::RecordNotUnique' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.not_to raise_error
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        shared_examples_for 'unique_privateless_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :public, :realm, :workspace)
+
+          let(:first_private) {
+            nil
+          }
+
+          let(:second_private) {
+            nil
+          }
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
+              end
+            }
+
+            realm_correlation = correlation!(options, :realm)
+
+            context "with #{realm_correlation} realm" do
+              let(:second_realm) {
+                if realm_correlation == :same
+                  first_realm
+                else
+                  FactoryGirl.create(:metasploit_credential_realm)
+                end
+              }
+
+              public_correlation = correlation!(options, :public)
+
+              context "with #{public_correlation} public" do
+                let(:second_public) {
+                  if public_correlation == :same
+                    first_public
+                  else
+                    FactoryGirl.create(:metasploit_credential_public)
+                  end
+                }
+
+                if options.fetch(:collision)
+                  it 'raises ActiveRecord::RecordNotUnique' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                      expect(error.message).to include(
+                                                   'duplicate key value violates unique constraint "unique_privateless_metasploit_credential_cores"'
+                                               )
+                    }
+                  end
+                else
+                  it 'does not raise ActiveRecord::RecordNotUnique' do
+                    expect {
+                      second_metasploit_credential_core.save(validate: false)
+                    }.not_to raise_error
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        shared_examples 'unique_complete_metasploit_credential_cores' do |options={}|
+          include_context 'two metasploit_credential_cores'
+
+          options.assert_valid_keys(:collision, :private, :public, :realm, :workspace)
+
+          workspace_correlation = correlation!(options, :workspace)
+
+          context "with #{workspace_correlation} workspace" do
+            let(:second_workspace) {
+              if workspace_correlation == :same
+                first_workspace
+              else
+                FactoryGirl.create(:mdm_workspace)
+              end
+            }
+
+            realm_correlation = correlation!(options, :realm)
+
+            context "with #{realm_correlation} realm" do
+              let(:second_realm) {
+                if realm_correlation == :same
+                  first_realm
+                else
+                  FactoryGirl.create(:metasploit_credential_realm)
+                end
+              }
+
+              public_correlation = correlation!(options, :public)
+
+              context "with #{public_correlation} public" do
+                let(:second_public) {
+                  if public_correlation == :same
+                    first_public
+                  else
+                    FactoryGirl.create(:metasploit_credential_public)
+                  end
+                }
+
+                private_correlation = correlation!(options, :private)
+
+                context "with #{private_correlation} private" do
+                  let(:second_private) {
+                    if private_correlation == :same
+                      first_private
+                    else
+                      FactoryGirl.create(:metasploit_credential_private)
+                    end
+                  }
+
+                  if options.fetch(:collision)
+                    it 'raises ActiveRecord::RecordNotUnique' do
+                      expect {
+                        second_metasploit_credential_core.save(validate: false)
+                      }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                        expect(error.message).to include(
+                                                     'duplicate key value violates unique constraint "unique_complete_metasploit_credential_cores"'
+                                                 )
+                      }
+                    end
+                  else
+                    it 'does not raise ActiveRecord::RecordNotUnique' do
+                      expect {
+                        second_metasploit_credential_core.save(validate: false)
+                      }.not_to raise_error
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        #
+        # Examples
+        #
+
+        it { should have_db_index([:origin_type, :origin_id]) }
+        it { should have_db_index(:private_id) }
+        it { should have_db_index(:public_id) }
+        it { should have_db_index(:realm_id) }
+        it { should have_db_index(:workspace_id) }
+
+        it_should_behave_like 'unique_private_metasploit_credential_cores',
+                              workspace: :same,
+                              private: :same,
+                              collision: true
+        it_should_behave_like 'unique_private_metasploit_credential_cores',
+                              workspace: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_private_metasploit_credential_cores',
+                              workspace: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_private_metasploit_credential_cores',
+                              workspace: :different,
+                              private: :different,
+                              collision: false
+
+        it_should_behave_like 'unique_public_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :same,
+                              collision: true
+        it_should_behave_like 'unique_public_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :different,
+                              collision: false
+        it_should_behave_like 'unique_public_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :same,
+                              collision: false
+        it_should_behave_like 'unique_public_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :different,
+                              collision: false
+
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :same,
+                              private: :same,
+                              collision: true
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :same,
+                              public: :different,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :same,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_realmless_metasploit_credential_cores',
+                              workspace: :different,
+                              public: :different,
+                              private: :different,
+                              collision: false
+
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              private: :same,
+                              collision: true
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_publicless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              private: :different,
+                              collision: false
+
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :same,
+                              collision: true
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :different,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :same,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :different,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :same,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :different,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :same,
+                              collision: false
+        it_should_behave_like 'unique_privateless_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :different,
+                              collision: false
+
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :same,
+                              private: :same,
+                              collision: true
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :same,
+                              public: :different,
+                              private: :different,
+                              collision: false
+         it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :same,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :same,
+                              realm: :different,
+                              public: :different,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :same,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :same,
+                              public: :different,
+                              private: :different,
+                              collision: false
+         it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :same,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :same,
+                              private: :different,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :different,
+                              private: :same,
+                              collision: false
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
+                              workspace: :different,
+                              realm: :different,
+                              public: :different,
+                              private: :different,
+                              collision: false
       end
     end
   end
