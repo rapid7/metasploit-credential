@@ -152,6 +152,22 @@ describe Metasploit::Credential::Core do
             )
           }
 
+          let(:second_private) {
+            FactoryGirl.create(:metasploit_credential_private)
+          }
+
+          let(:second_public) {
+            FactoryGirl.create(:metasploit_credential_public)
+          }
+
+          let(:second_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
+          let(:second_workspace) {
+            FactoryGirl.create(:mdm_workspace)
+          }
+
           #
           # let!s
           #
@@ -222,24 +238,20 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             private_correlation = correlation!(options, :private)
 
             context "with #{private_correlation} private" do
-              let(:second_private) {
-                if private_correlation == :same
+              if private_correlation == :same
+                let(:second_private) {
                   first_private
-                else
-                  FactoryGirl.create(:metasploit_credential_private)
-                end
-              }
+                }
+              end
 
               it_should_behave_like 'potential collision',
                                     collision: options.fetch(:collision),
@@ -276,24 +288,20 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             public_correlation = correlation!(options, :public)
 
             context "with #{public_correlation} public" do
-              let(:second_public) {
-                if public_correlation == :same
+              if public_correlation == :same
+                let(:second_public) {
                   first_public
-                else
-                  FactoryGirl.create(:metasploit_credential_public)
-                end
-              }
+                }
+              end
 
               it_should_behave_like 'potential collision',
                                     collision: options.fetch(:collision),
@@ -318,39 +326,33 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             public_correlation = correlation!(options, :public)
 
             context "with #{public_correlation} public" do
-              let(:second_public) {
-                if public_correlation == :same
+              if public_correlation == :same
+                let(:second_public) {
                   first_public
-                else
-                  FactoryGirl.create(:metasploit_credential_public)
-                end
-              }
+                }
+              end
 
               private_correlation = correlation!(options, :private)
 
               context "with #{private_correlation} private" do
-                let(:second_private) {
-                  if private_correlation == :same
+                if private_correlation == :same
+                  let(:second_private) {
                     first_private
-                  else
-                    FactoryGirl.create(:metasploit_credential_private)
-                  end
-                }
+                  }
+                end
 
-              it_should_behave_like 'potential collision',
-                                    collision: options.fetch(:collision),
-                                    index: 'unique_realmless_metasploit_credential_cores'
+                it_should_behave_like 'potential collision',
+                                      collision: options.fetch(:collision),
+                                      index: 'unique_realmless_metasploit_credential_cores'
               end
             end
           end
@@ -372,35 +374,29 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             realm_correlation = correlation!(options, :realm)
 
             context "with #{realm_correlation} realm" do
-              let(:second_realm) {
-                if realm_correlation == :same
+              if realm_correlation == :same
+                let(:second_realm) {
                   first_realm
-                else
-                  FactoryGirl.create(:metasploit_credential_realm)
-                end
-              }
+                }
+              end
 
               private_correlation = correlation!(options, :private)
 
               context "with #{private_correlation} private" do
-                let(:second_private) {
-                  if private_correlation == :same
+                if private_correlation == :same
+                  let(:second_private) {
                     first_private
-                  else
-                    FactoryGirl.create(:metasploit_credential_private)
-                  end
-                }
+                  }
+                end
 
                 it_should_behave_like 'potential collision',
                                       collision: options.fetch(:collision),
@@ -426,36 +422,29 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             realm_correlation = correlation!(options, :realm)
 
             context "with #{realm_correlation} realm" do
-              let(:second_realm) {
-                if realm_correlation == :same
+              if realm_correlation == :same
+                let(:second_realm) {
                   first_realm
-                else
-                  FactoryGirl.create(:metasploit_credential_realm)
-                end
-              }
+                }
+              end
 
               public_correlation = correlation!(options, :public)
 
               context "with #{public_correlation} public" do
-                let(:second_public) {
-                  if public_correlation == :same
+                if public_correlation == :same
+                  let(:second_public) {
                     first_public
-                  else
-                    FactoryGirl.create(:metasploit_credential_public)
-                  end
-                }
-
+                  }
+                end
 
                 it_should_behave_like 'potential collision',
                                       collision: options.fetch(:collision),
@@ -473,35 +462,29 @@ describe Metasploit::Credential::Core do
           workspace_correlation = correlation!(options, :workspace)
 
           context "with #{workspace_correlation} workspace" do
-            let(:second_workspace) {
-              if workspace_correlation == :same
+            if workspace_correlation == :same
+              let(:second_workspace) {
                 first_workspace
-              else
-                FactoryGirl.create(:mdm_workspace)
-              end
-            }
+              }
+            end
 
             realm_correlation = correlation!(options, :realm)
 
             context "with #{realm_correlation} realm" do
-              let(:second_realm) {
-                if realm_correlation == :same
+              if realm_correlation == :same
+                let(:second_realm) {
                   first_realm
-                else
-                  FactoryGirl.create(:metasploit_credential_realm)
-                end
-              }
+                }
+              end
 
               public_correlation = correlation!(options, :public)
 
               context "with #{public_correlation} public" do
-                let(:second_public) {
-                  if public_correlation == :same
+                if public_correlation == :same
+                  let(:second_public) {
                     first_public
-                  else
-                    FactoryGirl.create(:metasploit_credential_public)
-                  end
-                }
+                  }
+                end
 
                 private_correlation = correlation!(options, :private)
 
