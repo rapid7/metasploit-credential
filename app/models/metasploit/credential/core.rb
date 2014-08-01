@@ -113,24 +113,63 @@ class Metasploit::Credential::Core < ActiveRecord::Base
 
   validates :origin,
             presence: true
+  # replicates 'unique_private_metasploit_credential_cores' index
   validates :private_id,
             uniqueness: {
+                message: 'is already taken for credential cores with only a private credential',
                 scope: [
-                    :workspace_id,
-                    :public_id,
+                    :workspace_id
                 ]
             },
-            if: 'private.present? && public.present?'
-  validates :private_id,
-            uniqueness: {
-                scope: :workspace_id
-            },
-            if: 'private.present? && public.nil?'
+            if: '!realm.present? && !public.present? && private.present?'
+  # replicates 'unique_public_metasploit_credential_cores' index
   validates :public_id,
             uniqueness: {
+                message: 'is already taken for credential cores with only a private credential',
                 scope: :workspace_id
             },
-            if: 'private.nil? && public.present?'
+            if: '!realm.present? && public.present? && !private.present?'
+  # replicates 'unique_realmless_metasploit_credential_cores' index
+  validates :private_id,
+            uniqueness: {
+                message: 'is already taken for credential cores without a credential realm',
+                scope: [
+                    :workspace_id,
+                    :public_id
+                ]
+            },
+            if: '!realm.present? && public.present? && private.present?'
+  # replicates 'unique_publicless_metasploit_credential_cores' index
+  validates :private_id,
+            uniqueness: {
+                message: 'is already taken for credential cores without a public credential',
+                scope: [
+                    :workspace_id,
+                    :realm_id
+                ]
+            },
+            if: 'realm.present? && !public.present? && private.present?'
+  # replicates 'unique_privateless_metasploit_credential_cores' index
+  validates :public_id,
+            uniqueness: {
+                message: 'is already taken for credential cores without a private credential',
+                scope: [
+                    :workspace_id,
+                    :realm_id
+                ]
+            },
+            if: 'realm.present? && public.present? && !private.present?'
+  # replicates 'unique_complete_metasploit_credential_cores' index
+  validates :private_id,
+            uniqueness: {
+                message: 'is already taken for complete credential cores',
+                scope: [
+                    :workspace_id,
+                    :realm_id,
+                    :public_id
+                ]
+            },
+            if: 'realm.present? && public.present? && private.present?'
   validates :workspace,
             presence: true
 

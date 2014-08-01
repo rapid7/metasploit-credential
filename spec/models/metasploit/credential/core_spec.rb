@@ -61,6 +61,125 @@ describe Metasploit::Credential::Core do
     described_class.new
   end
 
+  #
+  # Context Methods
+  #
+
+  # Returns correlation with the given `name` from options.
+  #
+  # @param options [Hash{Symbol => :different, :same}]
+  # @param name [Symbol] name of correlation option in `options`.
+  # @return [:different, :same]
+  # @raise [ArgumentError] if `options[name]` is not `:different` or `:same`
+  # @raise [KeyError] if `options` does not contain key `name`
+  def self.correlation!(options, name)
+    correlation = options.fetch(name)
+
+    unless [:different, :same].include? correlation
+      raise ArgumentError, "#{name} must be :different or :same"
+    end
+
+    correlation
+  end
+
+  # Declares a `context` with correlation on `name` and body of `block`
+  #
+  # @param options [Hash{Symbol => :different, :same}]
+  # @param name [Symbol] name of correlation option in `options`.
+  # @yield Block that functions as body of `context`
+  # @return [void]
+  # @raise (see correlation!)
+  def self.context_with_correlation(options, name, &block)
+    correlation = correlation!(options, name)
+
+    context "with #{correlation} #{name}" do
+      if correlation == :same
+        let("second_#{name}") {
+          send("first_#{name}")
+        }
+      end
+
+      instance_eval(&block)
+    end
+  end
+
+  #
+  # Shared Contexts
+  #
+
+  shared_context 'two metasploit_credential_cores' do
+    #
+    # lets
+    #
+
+    let(:first_private) {
+      FactoryGirl.create(:metasploit_credential_private)
+    }
+
+    let(:first_public) {
+      FactoryGirl.create(:metasploit_credential_public)
+    }
+
+    let(:first_realm) {
+      FactoryGirl.create(:metasploit_credential_realm)
+    }
+
+    let(:first_workspace) {
+      FactoryGirl.create(:mdm_workspace)
+    }
+
+    let(:origin) {
+      # use an origin where the workspace does not need to correlate
+      FactoryGirl.create(:metasploit_credential_origin_manual)
+    }
+
+    let(:second_metasploit_credential_core) {
+      FactoryGirl.build(
+          :metasploit_credential_core,
+          origin: origin,
+          private: second_private,
+          public: second_public,
+          realm: second_realm,
+          workspace: second_workspace
+      )
+    }
+
+    let(:second_private) {
+      FactoryGirl.create(:metasploit_credential_private)
+    }
+
+    let(:second_public) {
+      FactoryGirl.create(:metasploit_credential_public)
+    }
+
+    let(:second_realm) {
+      FactoryGirl.create(:metasploit_credential_realm)
+    }
+
+    let(:second_workspace) {
+      FactoryGirl.create(:mdm_workspace)
+    }
+
+    #
+    # let!s
+    #
+
+    let!(:first_metasploit_credential_core) {
+      FactoryGirl.create(
+          :metasploit_credential_core,
+          origin: origin,
+          private: first_private,
+          public: first_public,
+          realm: first_realm,
+          workspace: first_workspace
+      )
+    }
+  end
+
+  #
+  # Examples
+  #
+
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
@@ -92,121 +211,6 @@ describe Metasploit::Credential::Core do
 
     context 'indices' do
       context 'foreign keys' do
-        #
-        # Context Methods
-        #
-
-        # Returns correlation with the given `name` from options.
-        #
-        # @param options [Hash{Symbol => :different, :same}]
-        # @param name [Symbol] name of correlation option in `options`.
-        # @return [:different, :same]
-        # @raise [ArgumentError] if `options[name]` is not `:different` or `:same`
-        # @raise [KeyError] if `options` does not contain key `name`
-        def self.correlation!(options, name)
-          correlation = options.fetch(name)
-
-          unless [:different, :same].include? correlation
-            raise ArgumentError, "#{name} must be :different or :same"
-          end
-
-          correlation
-        end
-
-        # Declares a `context` with correlation on `name` and body of `block`
-        #
-        # @param options [Hash{Symbol => :different, :same}]
-        # @param name [Symbol] name of correlation option in `options`.
-        # @yield Block that functions as body of `context`
-        # @return [void]
-        # @raise (see correlation!)
-        def self.context_with_correlation(options, name, &block)
-          correlation = correlation!(options, name)
-
-          context "with #{correlation} #{name}" do
-            if correlation == :same
-              let("second_#{name}") {
-                send("first_#{name}")
-              }
-            end
-
-            instance_eval(&block)
-          end
-        end
-
-        #
-        # Shared Contexts
-        #
-
-        shared_context 'two metasploit_credential_cores' do
-          #
-          # lets
-          #
-
-          let(:first_private) {
-            FactoryGirl.create(:metasploit_credential_private)
-          }
-
-          let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_public)
-          }
-
-          let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
-          }
-
-          let(:first_workspace) {
-            FactoryGirl.create(:mdm_workspace)
-          }
-
-          let(:origin) {
-            # use an origin where the workspace does not need to correlate
-            FactoryGirl.create(:metasploit_credential_origin_manual)
-          }
-
-          let(:second_metasploit_credential_core) {
-            FactoryGirl.build(
-                :metasploit_credential_core,
-                origin: origin,
-                private: second_private,
-                public: second_public,
-                realm: second_realm,
-                workspace: second_workspace
-            )
-          }
-
-          let(:second_private) {
-            FactoryGirl.create(:metasploit_credential_private)
-          }
-
-          let(:second_public) {
-            FactoryGirl.create(:metasploit_credential_public)
-          }
-
-          let(:second_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
-          }
-
-          let(:second_workspace) {
-            FactoryGirl.create(:mdm_workspace)
-          }
-
-          #
-          # let!s
-          #
-
-          let!(:first_metasploit_credential_core) {
-            FactoryGirl.create(
-                :metasploit_credential_core,
-                origin: origin,
-                private: first_private,
-                public: first_public,
-                realm: first_realm,
-                workspace: first_workspace
-            )
-          }
-        end
-
         #
         # Shared Examples
         #
@@ -582,7 +586,7 @@ describe Metasploit::Credential::Core do
                               public: :different,
                               private: :different,
                               collision: false
-         it_should_behave_like 'unique_complete_metasploit_credential_cores',
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
                               workspace: :same,
                               realm: :different,
                               public: :same,
@@ -630,7 +634,7 @@ describe Metasploit::Credential::Core do
                               public: :different,
                               private: :different,
                               collision: false
-         it_should_behave_like 'unique_complete_metasploit_credential_cores',
+        it_should_behave_like 'unique_complete_metasploit_credential_cores',
                               workspace: :different,
                               realm: :different,
                               public: :same,
@@ -1001,100 +1005,455 @@ describe Metasploit::Credential::Core do
 
     context 'of uniqueness' do
       #
-      # lets
+      # Shared Examples
       #
 
-      let(:metasploit_credential_origin) {
-        FactoryGirl.create(:metasploit_credential_origin_manual)
-      }
+      shared_examples_for 'potential collision' do |options={}|
+        options.assert_valid_keys(:attribute, :collision, :message)
 
-      let(:workspace) {
-        FactoryGirl.create(:mdm_workspace)
-      }
+        subject {
+          second_metasploit_credential_core
+        }
 
-      let(:second_metasploit_credential_core) {
-        FactoryGirl.build(
-            :metasploit_credential_core,
-            origin: metasploit_credential_origin,
-            private: private,
-            public: public,
-            workspace: workspace
-        )
-      }
+        #
+        # Callbacks
+        #
 
-      let(:taken_error) {
-        I18n.translate!('activerecord.errors.messages.taken')
-      }
+        if options.fetch(:collision)
+          it 'add validation error' do
+            second_metasploit_credential_core.valid?
 
-      #
-      # let!s
-      #
 
-      let!(:first_metasploit_credential_core) {
-        FactoryGirl.create(
-            :metasploit_credential_core,
-            origin: metasploit_credential_origin,
-            private: private,
-            public: public,
-            workspace: workspace
-        )
-      }
-
-      #
-      # Callbacks
-      #
-
-      before(:each) do
-        second_metasploit_credential_core.valid?
+            expect(
+                second_metasploit_credential_core.errors[options.fetch(:attribute)]
+            ).to include options.fetch(:message)
+          end
+        else
+          it { should be_valid }
+        end
       end
 
-      context '#private_id' do
-        context 'with nil' do
-          let(:private) {
-            nil
-          }
+      shared_examples_for 'on (workspace_id, private_id) without realm_id without public_id' do |options={}|
+        include_context 'two metasploit_credential_cores'
 
-          context '#public_id' do
-            context 'without nil' do
-              let(:public) {
-                FactoryGirl.create(:metasploit_credential_public)
-              }
+        options.assert_valid_keys(:collision, :private, :workspace)
 
-              it 'does not allow duplicates on #public_id' do
-                expect(second_metasploit_credential_core.errors[:public_id]).to include(taken_error)
+        #
+        # lets
+        #
+
+        let(:first_public) {
+          nil
+        }
+
+        let(:first_realm) {
+          nil
+        }
+
+        let(:second_public) {
+          nil
+        }
+
+        let(:second_realm) {
+          nil
+        }
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :private) do
+            it_should_behave_like 'potential collision',
+                                  attribute: :private_id,
+                                  collision: options.fetch(:collision),
+                                  message: 'is already taken for credential cores with only a private credential'
+          end
+        end
+      end
+
+      shared_examples_for 'on (workspace_id, public_id) without realm_id without private_id' do |options={}|
+        include_context 'two metasploit_credential_cores'
+
+        options.assert_valid_keys(:collision, :public, :workspace)
+
+        #
+        # lets
+        #
+
+        let(:first_private) {
+          nil
+        }
+
+        let(:first_realm) {
+          nil
+        }
+
+        let(:second_private) {
+          nil
+        }
+
+        let(:second_realm) {
+          nil
+        }
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :public) do
+            it_should_behave_like 'potential collision',
+                                  attribute: :public_id,
+                                  collision: options.fetch(:collision),
+                                  message: 'is already taken for credential cores with only a private credential'
+          end
+        end
+      end
+
+      shared_examples_for 'on (workspace_id, public_id, private_id) without realm_id' do |options={}|
+        include_context 'two metasploit_credential_cores'
+
+        options.assert_valid_keys(:collision, :private, :public, :workspace)
+
+        let(:first_realm) {
+          nil
+        }
+
+        let(:second_realm) {
+          nil
+        }
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :public) do
+            context_with_correlation(options, :private) do
+              it_should_behave_like 'potential collision',
+                                    attribute: :private_id,
+                                    collision: options.fetch(:collision),
+                                    message: 'is already taken for credential cores without a credential realm'
+            end
+          end
+        end
+      end
+
+      shared_examples_for 'on (workspace_id, realm_id, private_id) without public_id' do |options={}|
+        include_context 'two metasploit_credential_cores'
+
+        options.assert_valid_keys(:collision, :private, :realm, :workspace)
+
+        let(:first_public) {
+          nil
+        }
+
+        let(:second_public) {
+          nil
+        }
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :realm) do
+            context_with_correlation(options, :private) do
+              it_should_behave_like 'potential collision',
+                                    attribute: :private_id,
+                                    collision: options.fetch(:collision),
+                                    message: 'is already taken for credential cores without a public credential'
+            end
+          end
+        end
+      end
+
+      shared_examples_for 'on (workspace_id, realm_id, public_id) without private_id' do |options={}|
+        include_context 'two metasploit_credential_cores'
+
+        options.assert_valid_keys(:collision, :public, :realm, :workspace)
+
+        let(:first_private) {
+          nil
+        }
+
+        let(:second_private) {
+          nil
+        }
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :realm) do
+            context_with_correlation(options, :public) do
+              it_should_behave_like 'potential collision',
+                                    attribute: :public_id,
+                                    collision: options.fetch(:collision),
+                                    message: 'is already taken for credential cores without a private credential'
+            end
+          end
+        end
+      end
+
+      shared_examples 'on (workspace_id, realm_id, public_id, private_id)' do |options={}|
+        include_context 'two metasploit_credential_cores'
+
+        options.assert_valid_keys(:collision, :private, :public, :realm, :workspace)
+
+        context_with_correlation(options, :workspace) do
+          context_with_correlation(options, :realm) do
+            context_with_correlation(options, :public) do
+              context_with_correlation(options, :private) do
+                it_should_behave_like 'potential collision',
+                                      attribute: :private_id,
+                                      collision: options.fetch(:collision),
+                                      message: 'is already taken for complete credential cores'
               end
             end
           end
         end
-
-        context 'without nil' do
-          let(:private) do
-            FactoryGirl.create(:metasploit_credential_password)
-          end
-
-          context '#public_id' do
-            context 'with nil' do
-              let(:public) {
-                nil
-              }
-
-              it 'does not allow duplicates on #private_id' do
-                expect(second_metasploit_credential_core.errors[:private_id]).to include(taken_error)
-              end
-            end
-
-            context 'without nil' do
-              let(:public) {
-                FactoryGirl.create(:metasploit_credential_public)
-              }
-
-              it 'does not allow duplicates on #private_id' do
-                expect(second_metasploit_credential_core.errors[:private_id]).to include(taken_error)
-              end
-            end
-          end
-        end
       end
+
+      #
+      # Examples
+      #
+
+      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+                            workspace: :same,
+                            private: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+                            workspace: :same,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+                            workspace: :different,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+                            workspace: :different,
+                            private: :different,
+                            collision: false
+
+      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+                            workspace: :same,
+                            public: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+                            workspace: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+                            workspace: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+                            workspace: :different,
+                            public: :different,
+                            collision: false
+
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :same,
+                            public: :same,
+                            private: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :same,
+                            public: :same,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :same,
+                            public: :different,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :same,
+                            public: :different,
+                            private: :different,
+                            collision: false
+       it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :different,
+                            public: :same,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :different,
+                            public: :same,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :different,
+                            public: :different,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+                            workspace: :different,
+                            public: :different,
+                            private: :different,
+                            collision: false
+
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :same,
+                            realm: :same,
+                            private: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :same,
+                            realm: :same,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :same,
+                            realm: :different,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :same,
+                            realm: :different,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :different,
+                            realm: :same,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :different,
+                            realm: :same,
+                            private: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :different,
+                            realm: :different,
+                            private: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+                            workspace: :different,
+                            realm: :different,
+                            private: :different,
+                            collision: false
+
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :same,
+                            realm: :same,
+                            public: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :same,
+                            realm: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :same,
+                            realm: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :same,
+                            realm: :different,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :different,
+                            realm: :same,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :different,
+                            realm: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :different,
+                            realm: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+                            workspace: :different,
+                            realm: :different,
+                            public: :different,
+                            collision: false
+
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :same,
+                            private: :same,
+                            public: :same,
+                            collision: true
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :same,
+                            private: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :same,
+                            private: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :same,
+                            private: :different,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :different,
+                            private: :same,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :different,
+                            private: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :different,
+                            private: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :same,
+                            realm: :different,
+                            private: :different,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :same,
+                            private: :same,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :same,
+                            private: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :same,
+                            private: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :same,
+                            private: :different,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :different,
+                            private: :same,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :different,
+                            private: :same,
+                            public: :different,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :different,
+                            private: :different,
+                            public: :same,
+                            collision: false
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id)',
+                            workspace: :different,
+                            realm: :different,
+                            private: :different,
+                            public: :different,
+                            collision: false
     end
 
     context '#consistent_workspaces' do
