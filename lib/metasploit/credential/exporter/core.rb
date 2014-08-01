@@ -78,8 +78,10 @@ class Metasploit::Credential::Exporter::Core
   # The munged data that will be iterated over for export
   # @return [Array]
   def data
-    return export_data if whitelist_ids.blank?
-    export_data.select{ |datum| whitelist_ids.include? datum.id }
+    if whitelist_ids.present?
+      export_data[:core] = export_data[:core].select{ |datum| whitelist_ids.include? datum.id }
+    end
+    export_data
   end
 
   # Perform the export, creating the CSV and the zip file
@@ -89,17 +91,13 @@ class Metasploit::Credential::Exporter::Core
     render_zip
   end
 
-  # Returns an `Enumerable` full of either {Metasploit::Credential::Login} or {Metasploit::Credential::Core} objects
-  # depending on {#mode}
+  # Returns an `Enumerable` full of {Metasploit::Credential::Login} and {Metasploit::Credential::Core} objects
   # @return [ActiveRecord::Relation]
   def export_data
     unless instance_variable_defined? :@export_data
-      @export_data = case mode
-        when LOGIN_MODE
-          Metasploit::Credential::Login.in_workspace_including_hosts_and_services(workspace)
-        when CORE_MODE
-          Metasploit::Credential::Core.workspace_id(workspace.id)
-      end
+      @export_data = {}
+      @export_data[:login] = Metasploit::Credential::Login.in_workspace_including_hosts_and_services(workspace)
+      @export_data[:core]  = Metasploit::Credential::Core.workspace_id(workspace.id)
     end
     @export_data
   end
@@ -108,17 +106,6 @@ class Metasploit::Credential::Exporter::Core
     @mode = args[:mode].present? ? args.fetch(:mode) : DEFAULT_MODE
     fail "Invalid mode" unless ALLOWED_MODES.include?(mode)
     super args
-  end
-
-  # Returns the CSV header line, which is dependent on mode
-  # @return [Array<Symbol>]
-  def header_line
-    case mode
-      when LOGIN_MODE
-        Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
-      when CORE_MODE
-        Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
-    end
   end
 
   # Returns a platform-agnostic filesystem path where the key data will be saved as a file
@@ -195,18 +182,20 @@ class Metasploit::Credential::Exporter::Core
   # @return [CSV]
   def render_manifest_output_and_keys
     CSV.open(output, 'wb') do |csv|
-      csv << header_line
-      data.each do |datum|
-        line = self.send("line_for_#{mode}", datum)
+      csv << Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
+      data.each do |type_key, creds|
+        creds.each do |datum|
+          line = self.send("line_for_#{type_key}", datum)
 
-        # Special-case any SSHKeys in the import
-        if line[:private_type] == Metasploit::Credential::SSHKey.name
-          key_path = path_for_key(datum)
-          write_key_file(key_path, line[:private_data])
-          line[:private_data] = File.basename(key_path)
+          # Special-case any SSHKeys in the import
+          if line[:private_type] == Metasploit::Credential::SSHKey.name
+            key_path = path_for_key(datum)
+            write_key_file(key_path, line[:private_data])
+            line[:private_data] = File.basename(key_path)
+          end
+
+          csv << line.values
         end
-
-        csv << line.values
       end
     end
   end
