@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 8
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 3
+      PATCH = 5
 
       PRERELEASE = 'always-export-logins'
 
