@@ -83,6 +83,23 @@ describe Metasploit::Credential::Creation do
     end
   end
 
+  context "#create_credential_service" do
+    let(:opts) do
+      {
+        address: '192.168.172.3',
+        port: 445,
+        service_name: 'smb',
+        protocol: 'tcp',
+        workspace_id: workspace.id
+      }
+    end
+
+    it 'should create an Mdm::Service in state "open"' do
+      service = test_object.create_credential_service opts
+      service.state.should == "open"
+    end
+  end
+
   context '#create_credential_origin_service' do
     it 'creates a Metasploit::Credential::Origin object' do
       opts = {
