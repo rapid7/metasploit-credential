@@ -172,6 +172,28 @@ describe Metasploit::Credential::Core do
         # Shared Examples
         #
 
+        shared_examples_for 'potential collision' do |options={}|
+          options.assert_valid_keys(:collision, :index)
+
+          if options.fetch(:collision)
+            it 'raises ActiveRecord::RecordNotUnique' do
+              expect {
+                second_metasploit_credential_core.save(validate: false)
+              }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
+                expect(error.message).to include(
+                                             "duplicate key value violates unique constraint \"#{options.fetch(:index)}\""
+                                         )
+              }
+            end
+          else
+            it 'does not raise ActiveRecord::RecordNotUnique' do
+              expect {
+                second_metasploit_credential_core.save(validate: false)
+              }.not_to raise_error
+            end
+          end
+        end
+
         shared_examples_for 'unique_private_metasploit_credential_cores' do |options={}|
           include_context 'two metasploit_credential_cores'
 
@@ -219,23 +241,9 @@ describe Metasploit::Credential::Core do
                 end
               }
 
-              if options.fetch(:collision)
-                it 'raises ActiveRecord::RecordNotUnique' do
-                  expect {
-                    second_metasploit_credential_core.save(validate: false)
-                  }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                      expect(error.message).to include(
-                                                   'duplicate key value violates unique constraint "unique_private_metasploit_credential_cores"'
-                                               )
-                    }
-                end
-              else
-                it 'does not raise ActiveRecord::RecordNotUnique' do
-                  expect {
-                    second_metasploit_credential_core.save(validate: false)
-                  }.not_to raise_error
-                end
-              end
+              it_should_behave_like 'potential collision',
+                                    collision: options.fetch(:collision),
+                                    index: 'unique_private_metasploit_credential_cores'
             end
           end
         end
@@ -287,23 +295,9 @@ describe Metasploit::Credential::Core do
                 end
               }
 
-              if options.fetch(:collision)
-                it 'raises ActiveRecord::RecordNotUnique' do
-                  expect {
-                    second_metasploit_credential_core.save(validate: false)
-                  }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                      expect(error.message).to include(
-                                                   'duplicate key value violates unique constraint "unique_public_metasploit_credential_cores"'
-                                               )
-                    }
-                end
-              else
-                it 'does not raise ActiveRecord::RecordNotUnique' do
-                  expect {
-                    second_metasploit_credential_core.save(validate: false)
-                  }.not_to raise_error
-                end
-              end
+              it_should_behave_like 'potential collision',
+                                    collision: options.fetch(:collision),
+                                    index: 'unique_public_metasploit_credential_cores'
             end
           end
         end
@@ -354,23 +348,9 @@ describe Metasploit::Credential::Core do
                   end
                 }
 
-                if options.fetch(:collision)
-                  it 'raises ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                      expect(error.message).to include(
-                                                   'duplicate key value violates unique constraint "unique_realmless_metasploit_credential_cores"'
-                                               )
-                    }
-                  end
-                else
-                  it 'does not raise ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.not_to raise_error
-                  end
-                end
+              it_should_behave_like 'potential collision',
+                                    collision: options.fetch(:collision),
+                                    index: 'unique_realmless_metasploit_credential_cores'
               end
             end
           end
@@ -422,23 +402,9 @@ describe Metasploit::Credential::Core do
                   end
                 }
 
-                if options.fetch(:collision)
-                  it 'raises ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                      expect(error.message).to include(
-                                                   'duplicate key value violates unique constraint "unique_publicless_metasploit_credential_cores"'
-                                               )
-                    }
-                  end
-                else
-                  it 'does not raise ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.not_to raise_error
-                  end
-                end
+                it_should_behave_like 'potential collision',
+                                      collision: options.fetch(:collision),
+                                      index: 'unique_publicless_metasploit_credential_cores'
               end
             end
           end
@@ -490,23 +456,10 @@ describe Metasploit::Credential::Core do
                   end
                 }
 
-                if options.fetch(:collision)
-                  it 'raises ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                      expect(error.message).to include(
-                                                   'duplicate key value violates unique constraint "unique_privateless_metasploit_credential_cores"'
-                                               )
-                    }
-                  end
-                else
-                  it 'does not raise ActiveRecord::RecordNotUnique' do
-                    expect {
-                      second_metasploit_credential_core.save(validate: false)
-                    }.not_to raise_error
-                  end
-                end
+
+                it_should_behave_like 'potential collision',
+                                      collision: options.fetch(:collision),
+                                      index: 'unique_privateless_metasploit_credential_cores'
               end
             end
           end
@@ -561,23 +514,9 @@ describe Metasploit::Credential::Core do
                     end
                   }
 
-                  if options.fetch(:collision)
-                    it 'raises ActiveRecord::RecordNotUnique' do
-                      expect {
-                        second_metasploit_credential_core.save(validate: false)
-                      }.to raise_error(ActiveRecord::RecordNotUnique) { |error|
-                        expect(error.message).to include(
-                                                     'duplicate key value violates unique constraint "unique_complete_metasploit_credential_cores"'
-                                                 )
-                      }
-                    end
-                  else
-                    it 'does not raise ActiveRecord::RecordNotUnique' do
-                      expect {
-                        second_metasploit_credential_core.save(validate: false)
-                      }.not_to raise_error
-                    end
-                  end
+                  it_should_behave_like 'potential collision',
+                                        collision: options.fetch(:collision),
+                                        index: 'unique_complete_metasploit_credential_cores'
                 end
               end
             end
