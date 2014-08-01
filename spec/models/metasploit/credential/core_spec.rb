@@ -98,6 +98,8 @@ describe Metasploit::Credential::Core do
 
         # Returns correlation with the given `name` from options.
         #
+        # @param options [Hash{Symbol => :different, :same}]
+        # @param name [Symbol] name of correlation option in `options`.
         # @return [:different, :same]
         # @raise [ArgumentError] if `options[name]` is not `:different` or `:same`
         # @raise [KeyError] if `options` does not contain key `name`
@@ -109,6 +111,27 @@ describe Metasploit::Credential::Core do
           end
 
           correlation
+        end
+
+        # Declares a `context` with correlation on `name` and body of `block`
+        #
+        # @param options [Hash{Symbol => :different, :same}]
+        # @param name [Symbol] name of correlation option in `options`.
+        # @yield Block that functions as body of `context`
+        # @return [void]
+        # @raise (see correlation!)
+        def self.context_with_correlation(options, name, &block)
+          correlation = correlation!(options, name)
+
+          context "with #{correlation} #{name}" do
+            if correlation == :same
+              let("second_#{name}") {
+                send("first_#{name}")
+              }
+            end
+
+            instance_eval(&block)
+          end
         end
 
         #
@@ -235,24 +258,8 @@ describe Metasploit::Credential::Core do
             nil
           }
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            private_correlation = correlation!(options, :private)
-
-            context "with #{private_correlation} private" do
-              if private_correlation == :same
-                let(:second_private) {
-                  first_private
-                }
-              end
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :private) do
               it_should_behave_like 'potential collision',
                                     collision: options.fetch(:collision),
                                     index: 'unique_private_metasploit_credential_cores'
@@ -285,24 +292,8 @@ describe Metasploit::Credential::Core do
             nil
           }
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            public_correlation = correlation!(options, :public)
-
-            context "with #{public_correlation} public" do
-              if public_correlation == :same
-                let(:second_public) {
-                  first_public
-                }
-              end
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :public) do
               it_should_behave_like 'potential collision',
                                     collision: options.fetch(:collision),
                                     index: 'unique_public_metasploit_credential_cores'
@@ -323,33 +314,9 @@ describe Metasploit::Credential::Core do
             nil
           }
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            public_correlation = correlation!(options, :public)
-
-            context "with #{public_correlation} public" do
-              if public_correlation == :same
-                let(:second_public) {
-                  first_public
-                }
-              end
-
-              private_correlation = correlation!(options, :private)
-
-              context "with #{private_correlation} private" do
-                if private_correlation == :same
-                  let(:second_private) {
-                    first_private
-                  }
-                end
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :public) do
+              context_with_correlation(options, :private) do
                 it_should_behave_like 'potential collision',
                                       collision: options.fetch(:collision),
                                       index: 'unique_realmless_metasploit_credential_cores'
@@ -371,33 +338,9 @@ describe Metasploit::Credential::Core do
             nil
           }
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            realm_correlation = correlation!(options, :realm)
-
-            context "with #{realm_correlation} realm" do
-              if realm_correlation == :same
-                let(:second_realm) {
-                  first_realm
-                }
-              end
-
-              private_correlation = correlation!(options, :private)
-
-              context "with #{private_correlation} private" do
-                if private_correlation == :same
-                  let(:second_private) {
-                    first_private
-                  }
-                end
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :realm) do
+              context_with_correlation(options, :private) do
                 it_should_behave_like 'potential collision',
                                       collision: options.fetch(:collision),
                                       index: 'unique_publicless_metasploit_credential_cores'
@@ -419,33 +362,9 @@ describe Metasploit::Credential::Core do
             nil
           }
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            realm_correlation = correlation!(options, :realm)
-
-            context "with #{realm_correlation} realm" do
-              if realm_correlation == :same
-                let(:second_realm) {
-                  first_realm
-                }
-              end
-
-              public_correlation = correlation!(options, :public)
-
-              context "with #{public_correlation} public" do
-                if public_correlation == :same
-                  let(:second_public) {
-                    first_public
-                  }
-                end
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :realm) do
+              context_with_correlation(options, :public) do
                 it_should_behave_like 'potential collision',
                                       collision: options.fetch(:collision),
                                       index: 'unique_privateless_metasploit_credential_cores'
@@ -459,44 +378,10 @@ describe Metasploit::Credential::Core do
 
           options.assert_valid_keys(:collision, :private, :public, :realm, :workspace)
 
-          workspace_correlation = correlation!(options, :workspace)
-
-          context "with #{workspace_correlation} workspace" do
-            if workspace_correlation == :same
-              let(:second_workspace) {
-                first_workspace
-              }
-            end
-
-            realm_correlation = correlation!(options, :realm)
-
-            context "with #{realm_correlation} realm" do
-              if realm_correlation == :same
-                let(:second_realm) {
-                  first_realm
-                }
-              end
-
-              public_correlation = correlation!(options, :public)
-
-              context "with #{public_correlation} public" do
-                if public_correlation == :same
-                  let(:second_public) {
-                    first_public
-                  }
-                end
-
-                private_correlation = correlation!(options, :private)
-
-                context "with #{private_correlation} private" do
-                  let(:second_private) {
-                    if private_correlation == :same
-                      first_private
-                    else
-                      FactoryGirl.create(:metasploit_credential_private)
-                    end
-                  }
-
+          context_with_correlation(options, :workspace) do
+            context_with_correlation(options, :realm) do
+              context_with_correlation(options, :public) do
+                context_with_correlation(options, :private) do
                   it_should_behave_like 'potential collision',
                                         collision: options.fetch(:collision),
                                         index: 'unique_complete_metasploit_credential_cores'
