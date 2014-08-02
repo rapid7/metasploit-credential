@@ -128,10 +128,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # replicates 'unique_public_metasploit_credential_cores' index
   validates :public_id,
             uniqueness: {
-                message: 'is already taken for credential cores with only a private credential',
+                message: 'is already taken for credential cores with only a public credential',
                 scope: [
                     :workspace_id,
-                    # realm_id and private_id need ot be included in scope so validator uses IS NULL.
+                    # realm_id and private_id need to be included in scope so validator uses IS NULL.
                     :realm_id,
                     :private_id
                 ]
