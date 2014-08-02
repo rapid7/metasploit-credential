@@ -91,6 +91,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 `Metasploit::Credential` is tested using [RSpec](https://github.com/rspec/rspec)
 
+### Dependencies
+
+Remove your `Gemfile.lock` so you test with the latest compatible dependencies as will be done on
+[travis-ci](https://travis-ci.org/rapid7/metasploit-credential)
+
+    rm Gemfile.lock
+    bundle install
+
 ### Database Setup
 
 To run the specs, access to the database is required, so setup the `database.yml`, create the database, and run the
