@@ -1033,7 +1033,7 @@ describe Metasploit::Credential::Core do
         end
       end
 
-      shared_examples_for 'on (workspace_id, private_id) without realm_id without public_id' do |options={}|
+      shared_examples_for 'on (workspace_id, realm_id, public_id, private_id) without realm_id without public_id' do |options={}|
         include_context 'two metasploit_credential_cores'
 
         options.assert_valid_keys(:collision, :private, :workspace)
@@ -1068,7 +1068,7 @@ describe Metasploit::Credential::Core do
         end
       end
 
-      shared_examples_for 'on (workspace_id, public_id) without realm_id without private_id' do |options={}|
+      shared_examples_for 'on (workspace_id, realm_id, private_id, public_id) without realm_id without private_id' do |options={}|
         include_context 'two metasploit_credential_cores'
 
         options.assert_valid_keys(:collision, :public, :workspace)
@@ -1103,7 +1103,7 @@ describe Metasploit::Credential::Core do
         end
       end
 
-      shared_examples_for 'on (workspace_id, public_id, private_id) without realm_id' do |options={}|
+      shared_examples_for 'on (workspace_id, realm_id, public_id, private_id) without realm_id' do |options={}|
         include_context 'two metasploit_credential_cores'
 
         options.assert_valid_keys(:collision, :private, :public, :workspace)
@@ -1128,7 +1128,7 @@ describe Metasploit::Credential::Core do
         end
       end
 
-      shared_examples_for 'on (workspace_id, realm_id, private_id) without public_id' do |options={}|
+      shared_examples_for 'on (workspace_id, realm_id, public_, private_id) without public_id' do |options={}|
         include_context 'two metasploit_credential_cores'
 
         options.assert_valid_keys(:collision, :private, :realm, :workspace)
@@ -1153,7 +1153,7 @@ describe Metasploit::Credential::Core do
         end
       end
 
-      shared_examples_for 'on (workspace_id, realm_id, public_id) without private_id' do |options={}|
+      shared_examples_for 'on (workspace_id, realm_id, public_id, private_id) without private_id' do |options={}|
         include_context 'two metasploit_credential_cores'
 
         options.assert_valid_keys(:collision, :public, :realm, :workspace)
@@ -1201,158 +1201,158 @@ describe Metasploit::Credential::Core do
       # Examples
       #
 
-      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id without public_id',
                             workspace: :same,
                             private: :same,
                             collision: true
-      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id without public_id',
                             workspace: :same,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id without public_id',
                             workspace: :different,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, private_id) without realm_id without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id without public_id',
                             workspace: :different,
                             private: :different,
                             collision: false
 
-      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, private_id, public_id) without realm_id without private_id',
                             workspace: :same,
                             public: :same,
                             collision: true
-      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, private_id, public_id) without realm_id without private_id',
                             workspace: :same,
                             public: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, private_id, public_id) without realm_id without private_id',
                             workspace: :different,
                             public: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id) without realm_id without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, private_id, public_id) without realm_id without private_id',
                             workspace: :different,
                             public: :different,
                             collision: false
 
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :same,
                             public: :same,
                             private: :same,
                             collision: true
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :same,
                             public: :same,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :same,
                             public: :different,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :same,
                             public: :different,
                             private: :different,
                             collision: false
-       it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+       it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :different,
                             public: :same,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :different,
                             public: :same,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :different,
                             public: :different,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, public_id, private_id) without realm_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without realm_id',
                             workspace: :different,
                             public: :different,
                             private: :different,
                             collision: false
 
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :same,
                             realm: :same,
                             private: :same,
                             collision: true
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :same,
                             realm: :same,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :same,
                             realm: :different,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :same,
                             realm: :different,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :different,
                             realm: :same,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :different,
                             realm: :same,
                             private: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :different,
                             realm: :different,
                             private: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, private_id) without public_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_, private_id) without public_id',
                             workspace: :different,
                             realm: :different,
                             private: :different,
                             collision: false
 
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :same,
                             realm: :same,
                             public: :same,
                             collision: true
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :same,
                             realm: :same,
                             public: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :same,
                             realm: :different,
                             public: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :same,
                             realm: :different,
                             public: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :different,
                             realm: :same,
                             public: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :different,
                             realm: :same,
                             public: :different,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :different,
                             realm: :different,
                             public: :same,
                             collision: false
-      it_should_behave_like 'on (workspace_id, realm_id, public_id) without private_id',
+      it_should_behave_like 'on (workspace_id, realm_id, public_id, private_id) without private_id',
                             workspace: :different,
                             realm: :different,
                             public: :different,

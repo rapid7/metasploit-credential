@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 8
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 5
+      PATCH = 6
       # The pre-release version, scoped to the {MINOR} version number.
       PRERELEASE = 'realm-uniqueness'
 

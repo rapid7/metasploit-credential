@@ -118,7 +118,10 @@ class Metasploit::Credential::Core < ActiveRecord::Base
             uniqueness: {
                 message: 'is already taken for credential cores with only a private credential',
                 scope: [
-                    :workspace_id
+                    :workspace_id,
+                    # realm_id and public_id need to be included in scope so validator uses IS NULL.
+                    :realm_id,
+                    :public_id
                 ]
             },
             if: '!realm.present? && !public.present? && private.present?'
@@ -126,7 +129,12 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   validates :public_id,
             uniqueness: {
                 message: 'is already taken for credential cores with only a private credential',
-                scope: :workspace_id
+                scope: [
+                    :workspace_id,
+                    # realm_id and private_id need ot be included in scope so validator uses IS NULL.
+                    :realm_id,
+                    :private_id
+                ]
             },
             if: '!realm.present? && public.present? && !private.present?'
   # replicates 'unique_realmless_metasploit_credential_cores' index
@@ -135,6 +143,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 message: 'is already taken for credential cores without a credential realm',
                 scope: [
                     :workspace_id,
+                    # realm_id needs to be included in scope so validator uses IS NULL.
+                    :realm_id,
                     :public_id
                 ]
             },
@@ -145,7 +155,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 message: 'is already taken for credential cores without a public credential',
                 scope: [
                     :workspace_id,
-                    :realm_id
+                    :realm_id,
+                    # public_id needs to be included in scope so validator uses IS NULL.
+                    :public_id
                 ]
             },
             if: 'realm.present? && !public.present? && private.present?'
@@ -155,7 +167,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 message: 'is already taken for credential cores without a private credential',
                 scope: [
                     :workspace_id,
-                    :realm_id
+                    :realm_id,
+                    # private_id needs to be included in scope so validator uses IS NULL.
+                    :private_id
                 ]
             },
             if: 'realm.present? && public.present? && !private.present?'
