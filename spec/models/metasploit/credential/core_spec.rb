@@ -1098,7 +1098,7 @@ describe Metasploit::Credential::Core do
             it_should_behave_like 'potential collision',
                                   attribute: :public_id,
                                   collision: options.fetch(:collision),
-                                  message: 'is already taken for credential cores with only a private credential'
+                                  message: 'is already taken for credential cores with only a public credential'
           end
         end
       end
