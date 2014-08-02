@@ -86,3 +86,21 @@ Or install it yourself as:
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Testing
+
+`Metasploit::Credential` is tested using [RSpec](https://github.com/rspec/rspec)
+
+### Database Setup
+
+To run the specs, access to the database is required, so setup the `database.yml`, create the database, and run the
+migrations:
+
+    cp spec/dummy/config/database.yml.example spec/dummy/config/database.yml
+    # fill in passwords
+    edit spec/dummy/config/database.yml
+    rake db:create db:migrate
+
+### Running
+
+    rake spec
