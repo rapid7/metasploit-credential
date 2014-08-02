@@ -3374,7 +3374,7 @@ CREATE INDEX originating_credential_cores ON metasploit_credential_origin_cracke
 -- Name: unique_complete_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX unique_complete_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, private_id, public_id) WHERE ((private_id IS NOT NULL) AND (public_id IS NOT NULL));
+CREATE UNIQUE INDEX unique_complete_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, realm_id, public_id, private_id) WHERE (((realm_id IS NOT NULL) AND (public_id IS NOT NULL)) AND (private_id IS NOT NULL));
 
 
 --
@@ -3395,14 +3395,35 @@ CREATE UNIQUE INDEX unique_metasploit_credential_origin_sessions ON metasploit_c
 -- Name: unique_private_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX unique_private_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, private_id) WHERE ((private_id IS NOT NULL) AND (public_id IS NULL));
+CREATE UNIQUE INDEX unique_private_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, private_id) WHERE (((realm_id IS NULL) AND (public_id IS NULL)) AND (private_id IS NOT NULL));
+
+
+--
+-- Name: unique_privateless_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_privateless_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, realm_id, public_id) WHERE (((realm_id IS NOT NULL) AND (public_id IS NOT NULL)) AND (private_id IS NULL));
 
 
 --
 -- Name: unique_public_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX unique_public_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, public_id) WHERE ((private_id IS NULL) AND (public_id IS NOT NULL));
+CREATE UNIQUE INDEX unique_public_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, public_id) WHERE (((realm_id IS NULL) AND (public_id IS NOT NULL)) AND (private_id IS NULL));
+
+
+--
+-- Name: unique_publicless_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_publicless_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, realm_id, private_id) WHERE (((realm_id IS NOT NULL) AND (public_id IS NULL)) AND (private_id IS NOT NULL));
+
+
+--
+-- Name: unique_realmless_metasploit_credential_cores; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_realmless_metasploit_credential_cores ON metasploit_credential_cores USING btree (workspace_id, public_id, private_id) WHERE (((realm_id IS NULL) AND (public_id IS NOT NULL)) AND (private_id IS NOT NULL));
 
 
 --
@@ -3639,6 +3660,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140703144541');
 INSERT INTO schema_migrations (version) VALUES ('20140722174919');
 
 INSERT INTO schema_migrations (version) VALUES ('20140728191933');
+
+INSERT INTO schema_migrations (version) VALUES ('20140801150537');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
