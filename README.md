@@ -50,7 +50,7 @@ at the docs for `Metasploit::Credential`
 
    open doc/Metasploit/Credential.html
 
-# Installation
+## Installation
 
 Add this line to your application's `Gemfile`:
 
@@ -64,7 +64,7 @@ Or install it yourself as:
 
     $ gem install metasploit-credential
 
-## `Net::SSH`
+### `Net::SSH`
 
 `Metasploit::Credential::SSHKey` depends on `'net/ssh'`, but `metasploit-credential` does not declare the `net-ssh` gem
 as a runtime dependency because [`metasploit-framework`](https://github.com/rapid7/metasploit-framework) includes
