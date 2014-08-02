@@ -1454,6 +1454,184 @@ describe Metasploit::Credential::Core do
                             private: :different,
                             public: :different,
                             collision: false
+
+      #
+      # Cross-uniqueness validation tests
+      #
+
+      context 'across validations' do
+        include_context 'two metasploit_credential_cores'
+
+        subject {
+          second_metasploit_credential_core
+        }
+
+        let(:second_private) {
+          first_private
+        }
+
+        let(:second_public) {
+          first_public
+        }
+
+        let(:second_realm) {
+          first_realm
+        }
+
+        let(:second_workspace) {
+          first_workspace
+        }
+
+        context 'with workspace with realm with public with private' do
+          context 'with same workspace without realm without public with same private' do
+            let(:second_public) {
+              nil
+            }
+
+            let(:second_realm) {
+              nil
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with same workspace without realm with same public without private' do
+            let(:second_private) {
+              nil
+            }
+
+            let(:second_realm) {
+              nil
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with same workspace with same realm without public with same private' do
+            let(:second_public) {
+              nil
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with same workspace with same realm with same public without private' do
+            let(:second_private) {
+              nil
+            }
+
+            let(:second_realm) {
+              nil
+            }
+
+            it { should be_valid }
+          end
+        end
+
+        context 'with workspace without realm without public with private' do
+          let(:first_public) {
+            nil
+          }
+
+          let(:first_realm) {
+            nil
+          }
+
+          context 'with same workspace without realm with public without private' do
+            let(:second_public) {
+              FactoryGirl.create(:metasploit_credential_public)
+            }
+
+            let(:second_private) {
+              nil
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with same workspace without realm with public with same private' do
+            let(:second_public) {
+              FactoryGirl.create(:metasploit_credential_public)
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with same workspace with realm without public with same private' do
+            let(:second_realm) {
+              FactoryGirl.create(:metasploit_credential_realm)
+            }
+
+            it { should be_valid }
+          end
+        end
+
+        context 'with workspace without realm with public without private' do
+          let(:first_private) {
+            nil
+          }
+
+          let(:first_realm) {
+            nil
+          }
+
+          context 'with workspace without realm with same public with private' do
+            let(:second_private) {
+              FactoryGirl.create(:metasploit_credential_private)
+            }
+
+            it { should be_valid }
+          end
+
+          context 'with workspace with realm without public with private' do
+            let(:second_private) {
+              FactoryGirl.create(:metasploit_credential_private)
+            }
+
+            let(:second_realm) {
+              FactoryGirl.create(:metasploit_credential_realm)
+            }
+
+            it { should be_valid}
+          end
+        end
+
+        context 'with workspace without realm with public with private' do
+          let(:first_realm) {
+            nil
+          }
+
+          context 'with same workspace with realm without public with same private' do
+            let(:second_public) {
+              nil
+            }
+
+            let(:second_realm) {
+              FactoryGirl.create(:metasploit_credential_realm)
+            }
+
+            it { should be_valid }
+          end
+        end
+
+        context 'with workspace with realm without public with private' do
+          let(:first_public) {
+            nil
+          }
+
+          context 'with same workspace with same realm with public without private' do
+            let(:second_private) {
+              nil
+            }
+
+            let(:second_public) {
+              FactoryGirl.create(:metasploit_credential_public)
+            }
+
+            it { should be_valid }
+          end
+        end
+      end
     end
 
     context '#consistent_workspaces' do
