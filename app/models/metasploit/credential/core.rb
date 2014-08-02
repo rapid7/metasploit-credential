@@ -120,8 +120,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 scope: [
                     :workspace_id,
                     # realm_id and public_id need to be included in scope so validator uses IS NULL.
-                    #:realm_id,
-                    #:public_id
+                    :realm_id,
+                    :public_id
                 ]
             },
             if: '!realm.present? && !public.present? && private.present?'
@@ -132,8 +132,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 scope: [
                     :workspace_id,
                     # realm_id and private_id need ot be included in scope so validator uses IS NULL.
-                    #:realm_id,
-                    #:private_id
+                    :realm_id,
+                    :private_id
                 ]
             },
             if: '!realm.present? && public.present? && !private.present?'
@@ -144,7 +144,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                 scope: [
                     :workspace_id,
                     # realm_id needs to be included in scope so validator uses IS NULL.
-                    #:realm_id,
+                    :realm_id,
                     :public_id
                 ]
             },
@@ -157,7 +157,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                     :workspace_id,
                     :realm_id,
                     # public_id needs to be included in scope so validator uses IS NULL.
-                    #:public_id
+                    :public_id
                 ]
             },
             if: 'realm.present? && !public.present? && private.present?'
@@ -169,7 +169,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
                     :workspace_id,
                     :realm_id,
                     # private_id needs to be included in scope so validator uses IS NULL.
-                    #:private_id
+                    :private_id
                 ]
             },
             if: 'realm.present? && public.present? && !private.present?'
