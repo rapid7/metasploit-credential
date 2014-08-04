@@ -40,20 +40,6 @@ describe Metasploit::Credential::Exporter::Core do
     end
   end
 
-  describe "#header_line" do
-    describe "in LOGIN_MODE" do
-      it 'should have the proper headers' do
-        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
-      end
-    end
-
-    describe "in CORE_MODE" do
-      it 'should have the proper headers' do
-        core_exporter.header_line.should == Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS
-      end
-    end
-  end
-
   describe "#key_path" do
     let(:key_path_basename_string){ "#{core.public.username}-#{core.private.id}" }
 
@@ -433,7 +419,7 @@ describe Metasploit::Credential::Exporter::Core do
           end
 
           it 'should contain a key for each SSH private in the export' do
-            @key_entries.size.should == core_exporter.data.select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size
+            @key_entries.size.should == core_exporter.data[:core].select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size
           end
 
           it 'should contain key files named with Public#username and Private#id for each Core that uses an SSHKey' do
