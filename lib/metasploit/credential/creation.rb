@@ -28,17 +28,20 @@ module Metasploit
         password = opts.fetch(:password)
         core_id  = opts.fetch(:core_id)
 
-        private  = Metasploit::Credential::Password.where(data: password).first_or_create!
-        public   = Metasploit::Credential::Public.where(username: username).first_or_create!
-        old_core = Metasploit::Credential::Core.find(core_id)
-        core     = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
-
-        if core.origin_id.nil?
-          origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
-          core.origin = origin
+        retry_transaction do
+          private  = Metasploit::Credential::Password.where(data: password).first_or_create!
+          public   = Metasploit::Credential::Public.where(username: username).first_or_create!
+          old_core = Metasploit::Credential::Core.find(core_id)
         end
-        core.save!
 
+        retry_transaction do
+          core     = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
+          if core.origin_id.nil?
+            origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
+            core.origin = origin
+          end
+          core.save!
+        end
 
         old_core.logins.each do |login|
           service_id = login.service_id
@@ -139,8 +142,8 @@ module Metasploit
         public_id    = opts[:public].try(:id)
         realm_id     = opts[:realm].try(:id)
 
-        tries = 3
-        begin
+        core = nil
+        retry_transaction do
           core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
           if core.origin_id.nil?
             core.origin = origin
@@ -149,11 +152,6 @@ module Metasploit
             core.tasks << Mdm::Task.find(opts[:task_id])
           end
           core.save!
-        rescue ActiveRecord::RecordNotUnique
-          tries -= 1
-          if tries > 0
-            retry
-          end
         end
 
         core
@@ -183,17 +181,21 @@ module Metasploit
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
         status             = opts.fetch(:status)
 
-        service_object = create_credential_service(opts)
-        login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
+        login_object = nil
+        retry_transaction do
+          service_object = create_credential_service(opts)
+          login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
 
-        if opts[:task_id]
-          login_object.tasks << Mdm::Task.find(opts[:task_id])
+          if opts[:task_id]
+            login_object.tasks << Mdm::Task.find(opts[:task_id])
+          end
+
+          login_object.access_level      = access_level if access_level
+          login_object.last_attempted_at = last_attempted_at if last_attempted_at
+          login_object.status            = status
+          login_object.save!
         end
 
-        login_object.access_level      = access_level if access_level
-        login_object.last_attempted_at = last_attempted_at if last_attempted_at
-        login_object.status            = status
-        login_object.save!
         login_object
       end
 
@@ -238,7 +240,7 @@ module Metasploit
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::CrackedPassword} objects.
-      # These are the oorigins that show that a password Credential was obtained by cracking a hash Credential
+      # These are the origins that show that a password Credential was obtained by cracking a hash Credential
       # that previously existed in the database.
       #
       # @option opts [Fixnum] :originating_core_id The ID of the originating Credential core.
@@ -248,7 +250,9 @@ module Metasploit
         return nil unless active_db?
         originating_core_id = opts.fetch(:originating_core_id)
 
-        Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: originating_core_id ).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: originating_core_id ).first_or_create!
+        end
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Import} objects.
@@ -261,7 +265,9 @@ module Metasploit
         return nil unless active_db?
         filename = opts.fetch(:filename)
 
-        Metasploit::Credential::Origin::Import.where(filename: filename).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Origin::Import.where(filename: filename).first_or_create!
+        end
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Manual} objects.
@@ -274,7 +280,9 @@ module Metasploit
         return nil unless active_db?
         user_id = opts.fetch(:user_id)
 
-        Metasploit::Credential::Origin::Manual.where(user_id: user_id).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Origin::Manual.where(user_id: user_id).first_or_create!
+        end
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Service} objects.
@@ -295,7 +303,10 @@ module Metasploit
 
         service_object = create_credential_service(opts)
 
-        Metasploit::Credential::Origin::Service.where(service_id: service_object.id, module_full_name: module_fullname).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Origin::Service.where(service_id: service_object.id, module_full_name: module_fullname).first_or_create!
+        end
+
       end
 
       # This method is responsible for creating {Metasploit::Credential::Origin::Session} objects.
@@ -310,7 +321,9 @@ module Metasploit
         session_id           = opts.fetch(:session_id)
         post_reference_name  = opts.fetch(:post_reference_name)
 
-        Metasploit::Credential::Origin::Session.where(session_id: session_id, post_reference_name: post_reference_name).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Origin::Session.where(session_id: session_id, post_reference_name: post_reference_name).first_or_create!
+        end
       end
 
       # This method is responsible for the creation of {Metasploit::Credential::Private} objects.
@@ -331,23 +344,27 @@ module Metasploit
         private_data = opts.fetch(:private_data)
         private_type = opts.fetch(:private_type)
 
-        case private_type
-          when :password
-            private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
-          when :ssh_key
-            private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
-          when :ntlm_hash
-            private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
-            private_object.jtr_format = 'nt,lm'
-          when :nonreplayable_hash
-            private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
-            if opts[:jtr_format].present?
-              private_object.jtr_format = opts[:jtr_format]
-            end
-          else
-            raise ArgumentError, "Invalid Private type: #{private_type}"
+        private_object = nil
+
+        retry_transaction do
+          case private_type
+            when :password
+              private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
+            when :ssh_key
+              private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
+            when :ntlm_hash
+              private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
+              private_object.jtr_format = 'nt,lm'
+            when :nonreplayable_hash
+              private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
+              if opts[:jtr_format].present?
+                private_object.jtr_format = opts[:jtr_format]
+              end
+            else
+              raise ArgumentError, "Invalid Private type: #{private_type}"
+          end
+          private_object.save!
         end
-        private_object.save!
         private_object
       end
 
@@ -361,7 +378,9 @@ module Metasploit
         return nil unless active_db?
         username = opts.fetch(:username)
 
-        Metasploit::Credential::Public.where(username: username).first_or_create
+        retry_transaction do
+          Metasploit::Credential::Public.where(username: username).first_or_create!
+        end
       end
 
       # This method is responsible for creating the {Metasploit::Credential::Realm} objects
@@ -377,7 +396,9 @@ module Metasploit
         realm_key   = opts.fetch(:realm_key)
         realm_value = opts.fetch(:realm_value)
 
-        Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create!
+        retry_transaction do
+          Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create!
+        end
       end
 
 
@@ -453,6 +474,24 @@ module Metasploit
 
         end
 
+      end
+
+
+      private
+
+      # This method wraps a block in a retry if we get a RecordNotUnique validation error.
+      # This helps guard against race conditions.
+      def retry_transaction(&block)
+        tries = 3
+        begin
+          yield
+        rescue
+          ActiveRecord::RecordNotUnique
+          tries -= 1
+          if tries > 0
+            retry
+          end
+        end
       end
 
     end
