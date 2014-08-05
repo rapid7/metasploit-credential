@@ -499,32 +499,23 @@ describe Metasploit::Credential::Creation do
 
     context 'when an untried login exists' do
       let(:untried_login) { FactoryGirl.create(:metasploit_credential_login, status: Metasploit::Model::Login::Status::UNTRIED)}
-
+      
+      let(:opts) {{ 
+        address: untried_login.service.host.address,
+        port: untried_login.service.port,
+        protocol: untried_login.service.proto,
+        username: untried_login.core.public.username,
+        private_data: untried_login.core.private.data,
+        realm_key: untried_login.core.realm.try(:key),
+        realm_value: untried_login.core.realm.try(:value),
+        status: Metasploit::Model::Login::Status::INCORRECT
+        }}
+      
       it 'sets the supplied status on that login' do
-        opts = {
-            address: untried_login.service.host.address,
-            port: untried_login.service.port,
-            protocol: untried_login.service.proto,
-            public: untried_login.core.public.username,
-            private: untried_login.core.private.data,
-            realm_key: untried_login.core.realm.try(:key),
-            realm_value: untried_login.core.realm.try(:value),
-            status: Metasploit::Model::Login::Status::INCORRECT
-        }
         expect{ test_object.invalidate_login(opts) }.to change{untried_login.reload.status}.from(Metasploit::Model::Login::Status::UNTRIED).to(Metasploit::Model::Login::Status::INCORRECT)
       end
 
       it 'changes the last_attempted_at timestamp' do
-        opts = {
-            address: untried_login.service.host.address,
-            port: untried_login.service.port,
-            protocol: untried_login.service.proto,
-            public: untried_login.core.public.username,
-            private: untried_login.core.private.data,
-            realm_key: untried_login.core.realm.try(:key),
-            realm_value: untried_login.core.realm.try(:value),
-            status: Metasploit::Model::Login::Status::INCORRECT
-        }
         expect{ test_object.invalidate_login(opts) }.to change{untried_login.reload.last_attempted_at}
       end
 
@@ -547,16 +538,6 @@ describe Metasploit::Credential::Creation do
         }
 
         it 'updates the status on the correct login' do
-          opts = {
-              address: untried_login.service.host.address,
-              port: untried_login.service.port,
-              protocol: untried_login.service.proto,
-              public: untried_login.core.public.username,
-              private: untried_login.core.private.data,
-              realm_key: untried_login.core.realm.try(:key),
-              realm_value: untried_login.core.realm.try(:value),
-              status: Metasploit::Model::Login::Status::INCORRECT
-          }
           expect{ test_object.invalidate_login(opts) }.to_not change{other_login.reload.status}
         end
       end
