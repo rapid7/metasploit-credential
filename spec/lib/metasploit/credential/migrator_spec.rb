@@ -148,6 +148,24 @@ describe Metasploit::Credential::Migrator do
           end
         end
 
+        context "when Cred#pass is just total garbage" do
+          let(:cred) do
+            FactoryGirl.create(:mdm_cred,
+                               service: service,
+                               ptype: 'ssh_key',
+                               pass: '#YOLOSWAG'
+            )
+          end
+
+          before(:each) do
+            migrator.convert_creds_in_workspace(cred.service.host.workspace)
+          end
+
+          it 'should not create a new SSHKey in the database' do
+            Metasploit::Credential::SSHKey.count.should be_zero
+          end
+        end
+
       end
 
       describe "when an Mdm::Cred is a password" do
