@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 describe Metasploit::Credential::Migrator do
   include_context 'Mdm::Workspace'
@@ -102,22 +103,69 @@ describe Metasploit::Credential::Migrator do
 
       describe "when an Mdm::Cred is an SSH key" do
         let(:ssh_key_content){ FactoryGirl.build(:metasploit_credential_ssh_key).data }
-        let(:cred) do
-          FactoryGirl.create(:mdm_cred,
+
+        context "when Cred#pass points to a file system path" do
+
+          let(:path_to_ssh_key) do
+            t = Tempfile.new('ssh')
+            t.write(ssh_key_content)
+            t.close
+            t.path
+          end
+
+          let(:cred) do
+            FactoryGirl.create(:mdm_cred,
                              service: service,
                              ptype: 'ssh_key',
-                             pass: '/path/to/ssh_key'
-          )
+                             pass: path_to_ssh_key
+            )
+          end
+
+          before(:each) do
+            migrator.convert_creds_in_workspace(cred.service.host.workspace)
+          end
+
+          it 'should create a new SSHKey in the database' do
+            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+          end
         end
 
-        before(:each) do
-          migrator.stub(:key_data_from_file).and_return ssh_key_content
-          migrator.convert_creds_in_workspace(cred.service.host.workspace)
+        context "when Cred#pass just straight up contains the private key" do
+          let(:cred) do
+            FactoryGirl.create(:mdm_cred,
+                               service: service,
+                               ptype: 'ssh_key',
+                               pass: ssh_key_content
+            )
+          end
+
+          before(:each) do
+            migrator.convert_creds_in_workspace(cred.service.host.workspace)
+          end
+
+          it 'should create a new SSHKey in the database' do
+            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+          end
         end
 
-        it 'should create a new SSHKey in the database' do
-          Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+        context "when Cred#pass is just total garbage" do
+          let(:cred) do
+            FactoryGirl.create(:mdm_cred,
+                               service: service,
+                               ptype: 'ssh_key',
+                               pass: '#YOLOSWAG'
+            )
+          end
+
+          before(:each) do
+            migrator.convert_creds_in_workspace(cred.service.host.workspace)
+          end
+
+          it 'should not create a new SSHKey in the database' do
+            Metasploit::Credential::SSHKey.count.should be_zero
+          end
         end
+
       end
 
       describe "when an Mdm::Cred is a password" do
