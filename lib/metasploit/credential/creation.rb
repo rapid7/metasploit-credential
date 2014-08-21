@@ -449,10 +449,10 @@ module Metasploit
         address     = opts.fetch(:address)
         port        = opts.fetch(:port)
         protocol    = opts.fetch(:protocol)
-        public      = opts.fetch(:public)
-        private     = opts.fetch(:private)
-        realm_key   = opts.fetch(:realm_key)
-        realm_value = opts.fetch(:realm_value)
+        public      = opts.fetch(:username, nil)
+        private     = opts.fetch(:private_data, nil)
+        realm_key   = opts.fetch(:realm_key, nil)
+        realm_value = opts.fetch(:realm_value, nil)
         status      = opts.fetch(:status)
 
 
