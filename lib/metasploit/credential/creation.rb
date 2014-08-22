@@ -422,6 +422,17 @@ module Metasploit
         protocol         = opts.fetch(:protocol)
         workspace_id     = opts.fetch(:workspace_id)
 
+        # Deal with an edge case where a session stealing credentials from a
+        # host sees them as attached to the session's localhost. This is a bit
+        # ghetto in that it violates the seperation between framework and this
+        # gem, but it simplifies modules and removes the need for error-prone
+        # copy-pasted code on the framework side.
+        if self.respond_to?(:session) && session.respond_to?(:session_host)
+          if IPAddr.new('127.0.0.0/8').include?(address) || IPAddr.new('::1/128').include?(address)
+            address = session.session_host
+          end
+        end
+
         host_object    = Mdm::Host.where(address: address, workspace_id: workspace_id).first_or_create
         service_object = Mdm::Service.where(host_id: host_object.id, port: port, proto: protocol).first_or_initialize
 
