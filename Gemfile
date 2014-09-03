@@ -5,6 +5,10 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'metasploit-concern', :github => 'rapid7/metasploit-concern', :branch => 'staging/rails-4.0'
+gem 'metasploit_data_models', :github => 'rapid7/metasploit_data_models', :branch => 'staging/rails-4.0'
+gem 'metasploit-model', :github => 'rapid7/metasploit-model', :branch => 'staging/rails-4.0'
+
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
@@ -39,9 +43,9 @@ group :development, :test do
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
-  # restrict for compatibility with rest of metasploit ecosystem until it upgrades to Rails 4
-  # @todo MSP-9647
-  gem 'rails', '>= 3.2', '< 4.0.0'
+
+  gem 'rails', '>= 4.0.9', '< 4.1.0'
+  
   # TODO make compatible with rspec 3.0.0
   gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
