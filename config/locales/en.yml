@@ -37,6 +37,20 @@ en:
                 help: "The type of realm, such as Active Directory Domain or PostgreSQL Database."
               value:
                 help: "The name of the realm, such as the domain name or the database name."
+      metasploit/credential/private:
+        search:
+          operator:
+            names:
+              data:
+                help: "The private data, such as 'changeme1' or '855c3697d9979e78ac404c4ba2c66533'."
+              type:
+                help: "The type of the private, such as Nonreplayable Hash or Plaintext."
+      metasploit/credential/public:
+        search:
+          operator:
+            names:
+              username:
+                help: "A username like 'root'."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"

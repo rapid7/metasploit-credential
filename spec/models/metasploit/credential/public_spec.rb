@@ -37,4 +37,17 @@ describe Metasploit::Credential::Public do
       it { should validate_uniqueness_of :username }
     end
   end
+
+  context 'search' do
+    let(:base_class) {
+      described_class
+    }
+
+    context 'attributes' do
+      it_should_behave_like 'search_attribute',
+                            :username,
+                            type: :string
+    end
+  end
+
 end

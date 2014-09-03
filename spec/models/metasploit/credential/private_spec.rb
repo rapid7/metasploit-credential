@@ -125,4 +125,20 @@ describe Metasploit::Credential::Private do
       end
     end
   end
+
+  context 'search' do
+    let(:base_class) {
+      described_class
+    }
+
+    context 'attributes' do
+      it_should_behave_like 'search_attribute',
+                            :type,
+                            type: :string
+      it_should_behave_like 'search_attribute',
+                            :data,
+                            type: :string
+    end
+  end
+
 end
