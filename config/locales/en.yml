@@ -26,31 +26,31 @@ en:
           operator:
             names:
               access_level:
-                help: "The level of access granted to the service by core credential, such as 'root' or 'Administrator'."
+                help: "Finds credentials with a specified level of access, such as 'root' or 'Administrator'."
               status:
-                help: "The status of this login: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'"
+                help: "Finds credentials that have a specific login status. You can search for any of the following statuses: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'."
       metasploit/credential/realm:
         search:
           operator:
             names:
               key:
-                help: "The type of realm, such as Active Directory Domain or PostgreSQL Database."
+                help: "Searches for credentials that have the specified realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', or 'Oracle System Identifier' and must be enclosed in quotation marks."
               value:
-                help: "The name of the realm, such as the domain name or the database name."
+                help: "Searches for credentials that have a database or domain name that contains the specified value."
       metasploit/credential/private:
         search:
           operator:
             names:
               data:
-                help: "The private data, such as 'changeme1' or '855c3697d9979e78ac404c4ba2c66533'."
+                help: "Finds privates that contain the specified value."
               type:
-                help: "The type of the private, such as Nonreplayable Hash or Plaintext."
+                help: "Searches for privates that have a specific type. The search value must be 'Password', 'NTLM hash', 'SSH key', or 'Hash' and must be enclosed in quotation marks."
       metasploit/credential/public:
         search:
           operator:
             names:
               username:
-                help: "A username like 'root'."
+                help: "Searches for publics that contain the specified value."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
