@@ -26,31 +26,31 @@ en:
           operator:
             names:
               access_level:
-                help: "Finds credentials with a specified level of access, such as 'root' or 'Administrator'."
+                help: "Filters the results by login status, such as 'root' or 'Administrator'."
               status:
-                help: "Finds credentials that have a specific login status. You can search for any of the following statuses: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'."
+                help: "Filters the results by login status. You can search for any of the following statuses: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'."
       metasploit/credential/realm:
         search:
           operator:
             names:
               key:
-                help: "Searches for credentials that have the specified realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', or 'Oracle System Identifier' and must be enclosed in quotation marks."
+                help: "Filters the results by realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', 'Oracle System Identifier', and it must be enclosed in quotation marks. "
               value:
-                help: "Searches for credentials that have a database or domain name that contains the specified value."
+                help: "Filters the results by database or domain names that contain the specified value."
       metasploit/credential/private:
         search:
           operator:
             names:
               data:
-                help: "Finds privates that contain the specified value."
+                help: "Filters the results by privates that contain the specified value."
               type:
-                help: "Searches for privates that have a specific type. The search value must be 'Password', 'NTLM hash', 'SSH key', or 'Hash' and must be enclosed in quotation marks."
+                help: "Filters the results by private type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Hash', and it must be enclosed in quotation marks."
       metasploit/credential/public:
         search:
           operator:
             names:
               username:
-                help: "Searches for publics that contain the specified value."
+                help: "Filters the results by publics that contain the specified value."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
