@@ -34,7 +34,7 @@ en:
           operator:
             names:
               key:
-                help: "Filters the results by realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', 'Oracle System Identifier', and it must be enclosed in quotation marks. "
+                help: "Filters the results by realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', 'Oracle System Identifier'."
               value:
                 help: "Filters the results by database or domain names that contain the specified value."
       metasploit/credential/private:
@@ -42,15 +42,15 @@ en:
           operator:
             names:
               data:
-                help: "Filters the results by privates that contain the specified value."
+                help: "Filters the results by private credentials that contain the specified value."
               type:
-                help: "Filters the results by private type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Hash', and it must be enclosed in quotation marks."
+                help: "Filters the results by private credential type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Hash'."
       metasploit/credential/public:
         search:
           operator:
             names:
               username:
-                help: "Filters the results by publics that contain the specified value."
+                help: "Filters the results by public credentials that contain the specified username."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
