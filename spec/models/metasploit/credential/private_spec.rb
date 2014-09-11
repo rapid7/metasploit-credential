@@ -125,4 +125,27 @@ describe Metasploit::Credential::Private do
       end
     end
   end
+
+  context 'search' do
+    let(:base_class) {
+      described_class
+    }
+
+    context 'attributes' do
+      it_should_behave_like 'search_attribute',
+                            :type,
+                            type: :string
+
+      it_should_behave_like 'search_with',
+                            Metasploit::Credential::Search::Operator::Type,
+                            name: :type,
+                            class_names: %w{
+                              Metasploit::Credential::NonreplayableHash
+                              Metasploit::Credential::NTLMHash
+                              Metasploit::Credential::Password
+                              Metasploit::Credential::SSHKey
+                            }
+    end
+  end
+
 end
