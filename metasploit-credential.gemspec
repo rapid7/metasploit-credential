@@ -18,11 +18,11 @@ Gem::Specification.new do |s|
   s.test_files = s.files.grep(/spec/)
 
   # patching inverse association in Mdm models.
-  s.add_runtime_dependency 'metasploit-concern', '~> 0.1.0'
+  s.add_runtime_dependency 'metasploit-concern', '0.2.0.pre.dep.pre.railties'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '~> 0.19.4'
+  s.add_runtime_dependency 'metasploit_data_models', '0.20.0.pre.dep.pre.railties'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model','~> 0.26.1'
+  s.add_runtime_dependency 'metasploit-model','~> 0.27.0.pre.dep.pre.railties'
   s.add_runtime_dependency 'railties', '< 4.0.0'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
