@@ -28,6 +28,10 @@ module Metasploit
         password = opts.fetch(:password)
         core_id  = opts.fetch(:core_id)
 
+        private  = nil
+        public   = nil
+        old_core = nil
+
         retry_transaction do
           private  = Metasploit::Credential::Password.where(data: password).first_or_create!
           public   = Metasploit::Credential::Public.where(username: username).first_or_create!
@@ -485,8 +489,7 @@ module Metasploit
         tries = 3
         begin
           yield
-        rescue
-          ActiveRecord::RecordNotUnique
+        rescue ActiveRecord::RecordNotUnique
           tries -= 1
           if tries > 0
             retry
