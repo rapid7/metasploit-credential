@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'metasploit_data_models', '~> 0.19.4'
   # Metasploit::Model::Search
   s.add_runtime_dependency 'metasploit-model','~> 0.26.1'
+  s.add_runtime_dependency 'railties', '< 4.0.0'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys
