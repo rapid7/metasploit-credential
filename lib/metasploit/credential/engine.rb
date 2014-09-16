@@ -18,18 +18,18 @@ module Metasploit
       config.paths.add 'lib', autoload: true
 
       initializer 'metasploit_credential.prepend_factory_path',
-        # factory paths from the final Rails.application
-        after: 'factory_girl.set_factory_paths',
-        # before metasploit_data_models because it prepends
-        before: 'metasploit_data_models.prepend_factory_path' do
-          if defined? FactoryGirl
-            relative_definition_file_path = config.generators.options[:factory_girl][:dir]
-            definition_file_path = root.join(relative_definition_file_path)
+                  # factory paths from the final Rails.application
+                  after: 'factory_girl.set_factory_paths',
+                  # before metasploit_data_models because it prepends
+                  before: 'metasploit_data_models.prepend_factory_path' do
+        if defined? FactoryGirl
+          relative_definition_file_path = config.generators.options[:factory_girl][:dir]
+          definition_file_path = root.join(relative_definition_file_path)
 
-            # unshift so that projects that use metasploit-credential can modify metasploit_credential_* factories
-            FactoryGirl.definition_file_paths.unshift definition_file_path
-          end
+          # unshift so that projects that use metasploit-credential can modify metasploit_credential_* factories
+          FactoryGirl.definition_file_paths.unshift definition_file_path
         end
+      end
     end
   end
 end
