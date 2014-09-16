@@ -47,7 +47,7 @@ describe Metasploit::Credential::Migrator do
       let(:cred1){ FactoryGirl.create(:mdm_cred, service: service1)}
       let(:cred2){ FactoryGirl.create(:mdm_cred, service: service2)}
       let(:cred3){ FactoryGirl.create(:mdm_cred, service: service3)}
-      
+
       before(:each) do
         cred1; cred2; cred3
       end
