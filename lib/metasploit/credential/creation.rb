@@ -133,6 +133,7 @@ module Metasploit
       # @option opts [Metasploit::Credential::Origin] :origin The origin object to tie the core to
       # @option opts [Metasploit::Credential::Public] :public The {Metasploit::Credential::Public} component
       # @option opts [Metasploit::Credential::Private] :private The {Metasploit::Credential::Private} component
+      # @option opts [Metasploit::Credential::Realm] :realm The {Metasploit::Credential::Realm} component
       # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to tie the Core to
       # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Core to
       # @return [NilClass] if there is no active database connection
