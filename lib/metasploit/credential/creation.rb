@@ -28,6 +28,10 @@ module Metasploit
         password = opts.fetch(:password)
         core_id  = opts.fetch(:core_id)
 
+        private  = nil
+        public   = nil
+        old_core = nil
+
         retry_transaction do
           private  = Metasploit::Credential::Password.where(data: password).first_or_create!
           public   = Metasploit::Credential::Public.where(username: username).first_or_create!
@@ -129,6 +133,7 @@ module Metasploit
       # @option opts [Metasploit::Credential::Origin] :origin The origin object to tie the core to
       # @option opts [Metasploit::Credential::Public] :public The {Metasploit::Credential::Public} component
       # @option opts [Metasploit::Credential::Private] :private The {Metasploit::Credential::Private} component
+      # @option opts [Metasploit::Credential::Realm] :realm The {Metasploit::Credential::Realm} component
       # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to tie the Core to
       # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Core to
       # @return [NilClass] if there is no active database connection
@@ -485,8 +490,7 @@ module Metasploit
         tries = 3
         begin
           yield
-        rescue
-          ActiveRecord::RecordNotUnique
+        rescue ActiveRecord::RecordNotUnique
           tries -= 1
           if tries > 0
             retry
