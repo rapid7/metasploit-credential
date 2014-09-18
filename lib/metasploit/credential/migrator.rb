@@ -58,23 +58,31 @@ class Metasploit::Credential::Migrator
   def convert_creds_in_workspace(workspace)
     workspace.creds.each do |cred|
       service = cred.service
-      core = create_credential(
-        origin: origin,
-        private_data: private_data_from_cred(cred),
-        private_type: cred_type_to_credential_class(cred.ptype),
-        username: cred.user,
-        workspace_id: workspace.id
-      )
+      begin
+        core = create_credential(
+          origin: origin,
+          private_data: private_data_from_cred(cred),
+          private_type: cred_type_to_credential_class(cred.ptype),
+          username: cred.user,
+          workspace_id: workspace.id
+        )
+      rescue ActiveRecord::RecordInvalid => e
+        logger = Metasploit::Credential::Core.logger
 
-      create_credential_login(
-        address: service.host.address,
-        core: core,
-        port: service.port,
-        protocol: service.proto,
-        service_name: service.name,
-        status: Metasploit::Model::Login::Status::UNTRIED,
-        workspace_id: workspace.id
-      )
+        logger.error("#{__method__} - Failed to migrate: #{cred.user}, Mdm::Cred id #{cred.id}")
+        logger.error("#{__method__} -    validation errors: #{e}")
+        logger.error("#{__method__} -    failing record: #{e.record.inspect}")
+      else
+        create_credential_login(
+          address: service.host.address,
+          core: core,
+          port: service.port,
+          protocol: service.proto,
+          service_name: service.name,
+          status: Metasploit::Model::Login::Status::UNTRIED,
+          workspace_id: workspace.id
+        )
+      end
     end
   end
 
