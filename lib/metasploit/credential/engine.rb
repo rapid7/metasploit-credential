@@ -1,7 +1,7 @@
 require 'rails'
+
 module Metasploit
   module Credential
-
     # Rails engine for Metasploit::Credential.  Will automatically be used if `Rails` is defined when
     # 'metasploit/credential' is required, as should be the case in any normal Rails application Gemfile where
     # gem 'rails' is the first gem in the Gemfile.
