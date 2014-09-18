@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 10
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 0
+      PATCH = 1
       PRERELEASE = 'dep-railties'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
