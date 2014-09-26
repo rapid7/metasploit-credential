@@ -26,17 +26,31 @@ en:
           operator:
             names:
               access_level:
-                help: "The level of access granted to the service by core credential, such as 'root' or 'Administrator'."
+                help: "Filters the results by login status, such as 'root' or 'Administrator'."
               status:
-                help: "The status of this login: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'"
+                help: "Filters the results by login status. You can search for any of the following statuses: 'Denied Access', 'Disabled', 'Incorrect', 'Locked Out', 'No Auth Required', 'Successful', 'Unable to Connect', or 'Untried'."
       metasploit/credential/realm:
         search:
           operator:
             names:
               key:
-                help: "The type of realm, such as Active Directory Domain or PostgreSQL Database."
+                help: "Filters the results by realm type. The search value must be 'Active Directory Domain', 'PostgreSQL Database', 'DB2 Database', 'Oracle System Identifier'."
               value:
-                help: "The name of the realm, such as the domain name or the database name."
+                help: "Filters the results by database or domain names that contain the specified value."
+      metasploit/credential/private:
+        search:
+          operator:
+            names:
+              data:
+                help: "Filters the results by private credentials that contain the specified value."
+              type:
+                help: "Filters the results by private credential type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Hash'."
+      metasploit/credential/public:
+        search:
+          operator:
+            names:
+              username:
+                help: "Filters the results by public credentials that contain the specified username."
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
