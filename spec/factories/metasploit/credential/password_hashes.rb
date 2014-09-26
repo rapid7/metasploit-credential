@@ -9,7 +9,7 @@ FactoryGirl.define do
     end
 
     data {
-      BCrypt::Password.create(password_data).hash
+      BCrypt::Password.create(password_data).hash.to_s
     }
   end
 end
