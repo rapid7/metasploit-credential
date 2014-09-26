@@ -125,7 +125,7 @@ describe Metasploit::Credential::Realm do
         #
 
         let(:error) do
-          I18n.translate!('activerecord.errors.messages.taken')
+          I18n.translate!('errors.messages.taken')
         end
 
         let(:new_realm) do

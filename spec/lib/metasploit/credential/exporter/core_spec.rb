@@ -334,8 +334,7 @@ describe Metasploit::Credential::Exporter::Core do
         end
 
         it 'should contain the associated Mdm::Host#address for all Login objects' do
-          @login_host_addresses.should include(login1.service.host.address)
-          @login_host_addresses.should include(login2.service.host.address)
+          @login_host_addresses.should include(login1.service.host.address.to_s, login2.service.host.address.to_s)
         end
 
         it 'should contain the associated Mdm::Service#port (stringified) for all Login objects' do
