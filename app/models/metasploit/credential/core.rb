@@ -16,9 +16,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,
+                          -> { uniq },
                           class_name: "Mdm::Task",
-                          join_table: "credential_cores_tasks",
-                          uniq: true
+                          join_table: "credential_cores_tasks"
 
   # @!attribute logins
   #   The {Metasploit::Credential::Login logins} using this core credential to log into a service.
