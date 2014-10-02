@@ -15,16 +15,6 @@ describe Metasploit::Credential::Username do
     end
   end
 
-  context 'factories' do
-    context 'metasploit_credential_public' do
-      subject(:metasploit_credential_public) do
-        FactoryGirl.build(:metasploit_credential_public)
-      end
-
-      it { should be_valid }
-    end
-  end
-
   context 'mass assignment security' do
     it { should_not allow_mass_assignment_of(:created_at) }
     it { should_not allow_mass_assignment_of(:updated_at) }
@@ -38,16 +28,5 @@ describe Metasploit::Credential::Username do
     end
   end
 
-  context 'search' do
-    let(:base_class) {
-      described_class
-    }
-
-    context 'attributes' do
-      it_should_behave_like 'search_attribute',
-                            :username,
-                            type: :string
-    end
-  end
 
 end

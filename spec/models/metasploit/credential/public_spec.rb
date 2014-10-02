@@ -40,6 +40,13 @@ describe Metasploit::Credential::Public do
       it_should_behave_like 'search_attribute',
                             :username,
                             type: :string
+
+      it_should_behave_like 'search_with',
+                            Metasploit::Credential::Search::Operator::Type,
+                            name: :type,
+                            class_names: %w{
+                              Metasploit::Credential::Username
+                            }
     end
   end
 
