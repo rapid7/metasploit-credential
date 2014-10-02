@@ -126,7 +126,9 @@ class Metasploit::Credential::Importer::Core
 
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
-          if private_class == Metasploit::Credential::SSHKey
+          if private_data.strip == BLANK_TOKEN
+            private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
+          elsif private_class == Metasploit::Credential::SSHKey
             private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
           else
             private_object_for_row = private_class.where(data: private_data).first_or_create
@@ -164,7 +166,8 @@ class Metasploit::Credential::Importer::Core
       csv_object.each do |row|
         next if row.header_row?
 
-        username = row['username']
+        username     = row['username']
+        private_data = row['private_data']
 
         if username.strip == BLANK_TOKEN
           public_object_for_row  = Metasploit::Credential::BlankUsername.first_or_create
@@ -172,7 +175,12 @@ class Metasploit::Credential::Importer::Core
           public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
         end
 
-        private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+        if private_data.strip == BLANK_TOKEN
+          private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
+        else
+          private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+        end
+
         create_credential_core(origin:origin, workspace_id: workspace.id,
                                       public: public_object_for_row,
                                       private: private_object_for_row)
