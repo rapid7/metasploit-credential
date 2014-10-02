@@ -23,6 +23,8 @@ class Metasploit::Credential::Importer::Core
   # Valid headers for a "short" CSV containing only data for {Metasploit::Credential::Public} and {Metasploit::Credential::Private} objects
   VALID_SHORT_CSV_HEADERS = [:username,  :private_data]
 
+  BLANK_TOKEN = "<BLANK>"
+
   #
   # Attributes
   #
@@ -115,7 +117,7 @@ class Metasploit::Credential::Importer::Core
         end
 
         realm_object_for_row   = realms[realm_value]
-        public_object_for_row  = Metasploit::Credential::Public.where(username: username).first_or_create
+        public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
           if private_class == Metasploit::Credential::SSHKey
@@ -156,7 +158,7 @@ class Metasploit::Credential::Importer::Core
       csv_object.each do |row|
         next if row.header_row?
 
-        public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
+        public_object_for_row  = Metasploit::Credential::Username.where(username: row['username']).first_or_create
         private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
         create_credential_core(origin:origin, workspace_id: workspace.id,
                                       public: public_object_for_row,

@@ -227,7 +227,7 @@ describe Metasploit::Credential::Importer::Core do
         let(:stored_public){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first['username'] }
 
         before(:each) do
-          Metasploit::Credential::Public.create!(username: stored_public)
+          Metasploit::Credential::Username.create!(username: stored_public)
           core_csv_importer.csv_object.rewind
         end
 
