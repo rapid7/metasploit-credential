@@ -354,21 +354,25 @@ module Metasploit
         private_object = nil
 
         retry_transaction do
-          case private_type
-            when :password
-              private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
-            when :ssh_key
-              private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
-            when :ntlm_hash
-              private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
-              private_object.jtr_format = 'nt,lm'
-            when :nonreplayable_hash
-              private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
-              if opts[:jtr_format].present?
-                private_object.jtr_format = opts[:jtr_format]
-              end
-            else
-              raise ArgumentError, "Invalid Private type: #{private_type}"
+          if private_data.blank?
+            private_object = Metasploit::Credential::BlankPassword.first_or_create
+          else
+            case private_type
+              when :password
+                private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
+              when :ssh_key
+                private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
+              when :ntlm_hash
+                private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
+                private_object.jtr_format = 'nt,lm'
+              when :nonreplayable_hash
+                private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
+                if opts[:jtr_format].present?
+                  private_object.jtr_format = opts[:jtr_format]
+                end
+              else
+                raise ArgumentError, "Invalid Private type: #{private_type}"
+            end
           end
           private_object.save!
         end
