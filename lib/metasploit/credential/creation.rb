@@ -38,6 +38,8 @@ module Metasploit
           old_core = Metasploit::Credential::Core.find(core_id)
         end
 
+        core = nil
+
         retry_transaction do
           core     = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
           if core.origin_id.nil?

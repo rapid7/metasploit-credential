@@ -7,9 +7,9 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 10
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 2
+      PATCH = 3
 
-      PRERELEASE = 'bruteforce-models'
+      PRERELEASE = 'public-sti'
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.

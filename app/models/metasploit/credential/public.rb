@@ -48,14 +48,10 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   search_attribute :username,
                    type: :string
 
-
-  #
-  # Validations
-  #
-
-  validates :username,
-            presence: true,
-            uniqueness: true
+  search_with Metasploit::Credential::Search::Operator::Type,
+              class_names: %w{
+                Metasploit::Credential::Username
+              }
 
   #
   # Instance Methods

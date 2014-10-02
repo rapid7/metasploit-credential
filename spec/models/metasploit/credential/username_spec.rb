@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Public do
+describe Metasploit::Credential::Username do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'database' do
@@ -29,6 +29,13 @@ describe Metasploit::Credential::Public do
     it { should_not allow_mass_assignment_of(:created_at) }
     it { should_not allow_mass_assignment_of(:updated_at) }
     it { should allow_mass_assignment_of(:username) }
+  end
+
+  context 'validations' do
+    context 'username' do
+      it { should validate_presence_of :username }
+      it { should validate_uniqueness_of :username }
+    end
   end
 
   context 'search' do
