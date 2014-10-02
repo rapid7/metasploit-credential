@@ -46,6 +46,7 @@ describe Metasploit::Credential::Public do
                             name: :type,
                             class_names: %w{
                               Metasploit::Credential::Username
+                              Metasploit::Credential::BlankUsername
                             }
     end
   end

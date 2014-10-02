@@ -386,7 +386,11 @@ module Metasploit
         username = opts.fetch(:username)
 
         retry_transaction do
-          Metasploit::Credential::Public.where(username: username).first_or_create!
+          if username.blank?
+            Metasploit::Credential::BlankUsername.first_or_create!
+          else
+            Metasploit::Credential::Username.where(username: username).first_or_create!
+          end
         end
       end
 
