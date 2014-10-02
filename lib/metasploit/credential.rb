@@ -16,8 +16,6 @@ require 'zip'
 # Project
 #
 
-require 'metasploit/credential/engine'
-
 # Shared namespace for metasploit gems; used in {https://github.com/rapid7/metasploit-credential metasploit-credential},
 # {https://github.com/rapid7/metasploit-framework metasploit-framework}, and
 # {https://github.com/rapid7/metasploit-model metasploit-model}
