@@ -11,7 +11,8 @@ gemspec
 gem 'net-ssh'
 
 gem 'metasploit-concern', git: 'git@github.com:rapid7/metasploit-concern.git', branch: 'bug/MSP-11412/engine-requires'
-gem 'metasploit_data_models', path: '/Users/techpeace/rapid7/metasploit_data_models'
+gem 'metasploit_data_models', git: 'git@github.com:rapid7/metasploit_data_models.git', branch: 'bug/MSP-11412/engine-requires'
+gem 'metasploit-model', git: 'git@github.com:rapid7/metasploit-model.git', branch: 'bug/MSP-11412/engine-requires'
 
 group :development do
   # markdown formatting for yard
