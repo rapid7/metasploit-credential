@@ -117,7 +117,13 @@ class Metasploit::Credential::Importer::Core
         end
 
         realm_object_for_row   = realms[realm_value]
-        public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
+
+        if username.strip == BLANK_TOKEN
+          public_object_for_row  = Metasploit::Credential::BlankUsername.first_or_create
+        else
+          public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
+        end
+
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
           if private_class == Metasploit::Credential::SSHKey
@@ -158,7 +164,14 @@ class Metasploit::Credential::Importer::Core
       csv_object.each do |row|
         next if row.header_row?
 
-        public_object_for_row  = Metasploit::Credential::Username.where(username: row['username']).first_or_create
+        username = row['username']
+
+        if username.strip == BLANK_TOKEN
+          public_object_for_row  = Metasploit::Credential::BlankUsername.first_or_create
+        else
+          public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
+        end
+
         private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
         create_credential_core(origin:origin, workspace_id: workspace.id,
                                       public: public_object_for_row,

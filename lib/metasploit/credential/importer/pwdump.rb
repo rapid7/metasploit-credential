@@ -114,7 +114,13 @@ class Metasploit::Credential::Importer::Pwdump
           next
         end
 
-        public_obj  = Metasploit::Credential::Public.where(username: username).first_or_create
+        if username.strip == Metasploit::Credential::Importer::Core::BLANK_TOKEN
+          public_obj  = Metasploit::Credential::BlankUsername.first_or_create
+        else
+          public_obj  = Metasploit::Credential::Username.where(username: username).first_or_create
+        end
+
+
         private_obj = creds_class.where(data: private).first_or_create
 
         core   = create_credential_core(origin: origin, private: private_obj, public: public_obj, workspace_id: workspace.id)

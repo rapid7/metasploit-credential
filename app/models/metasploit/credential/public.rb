@@ -55,14 +55,6 @@ class Metasploit::Credential::Public < ActiveRecord::Base
               }
 
   #
-  # Validations
-  #
-
-  validates :username,
-            presence: true,
-            uniqueness: true
-
-  #
   # Instance Methods
   #
 
