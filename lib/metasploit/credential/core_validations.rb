@@ -96,7 +96,7 @@ module Metasploit
         #
         # @return [void]
         def minimum_presence
-          any_present = [:private, :public].any? { |attribute|
+          any_present = [:private, :public, :realm].any? { |attribute|
             send(attribute).present?
           }
 
