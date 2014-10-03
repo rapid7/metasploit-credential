@@ -10,10 +10,6 @@ gemspec
 # Metasploit::Credential::SSHKey validation and helper methods
 gem 'net-ssh'
 
-gem 'metasploit-concern', git: 'https://github.com/rapid7/metasploit-concern.git', branch: 'bug/MSP-11412/engine-requires'
-gem 'metasploit_data_models', git: 'https://github.com/rapid7/metasploit_data_models.git', branch: 'bug/MSP-11412/engine-requires'
-gem 'metasploit-model', git: 'https://github.com/rapid7/metasploit-model.git', branch: 'bug/MSP-11412/engine-requires'
-
 group :development do
   # markdown formatting for yard
   gem 'kramdown', platforms: :jruby
