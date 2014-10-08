@@ -23,6 +23,7 @@ class Metasploit::Credential::Importer::Core
   # Valid headers for a "short" CSV containing only data for {Metasploit::Credential::Public} and {Metasploit::Credential::Private} objects
   VALID_SHORT_CSV_HEADERS = [:username,  :private_data]
 
+  # This token represents an explict Blank entry. An empty field instead indicates that we do not know what this value is
   BLANK_TOKEN = "<BLANK>"
 
   #
@@ -118,11 +119,7 @@ class Metasploit::Credential::Importer::Core
 
         realm_object_for_row   = realms[realm_value]
 
-        if username.strip == BLANK_TOKEN
-          public_object_for_row  = Metasploit::Credential::BlankUsername.first_or_create
-        else
-          public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
-        end
+        public_object = create_credential_public(username: username)
 
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
@@ -136,7 +133,7 @@ class Metasploit::Credential::Importer::Core
         end
 
         core = create_credential_core(origin:origin, workspace_id: workspace.id,
-                                                     public: public_object_for_row,
+                                                     public: public_object,
                                                      private: private_object_for_row,
                                                      realm: realm_object_for_row )
 
@@ -169,11 +166,7 @@ class Metasploit::Credential::Importer::Core
         username     = row['username']
         private_data = row['private_data']
 
-        if username.strip == BLANK_TOKEN
-          public_object_for_row  = Metasploit::Credential::BlankUsername.first_or_create
-        else
-          public_object_for_row  = Metasploit::Credential::Username.where(username: username).first_or_create
-        end
+        public_object = create_credential_public(username: username)
 
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
@@ -182,7 +175,7 @@ class Metasploit::Credential::Importer::Core
         end
 
         create_credential_core(origin:origin, workspace_id: workspace.id,
-                                      public: public_object_for_row,
+                                      public: public_object,
                                       private: private_object_for_row)
       end
     end

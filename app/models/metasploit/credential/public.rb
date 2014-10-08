@@ -48,10 +48,14 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   search_attribute :username,
                    type: :string
 
+  #
+  # Search Withs
+  #
+
   search_with Metasploit::Credential::Search::Operator::Type,
               class_names: %w{
-                Metasploit::Credential::Username
                 Metasploit::Credential::BlankUsername
+                Metasploit::Credential::Username
               }
 
   #

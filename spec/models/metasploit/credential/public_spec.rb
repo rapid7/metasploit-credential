@@ -45,8 +45,8 @@ describe Metasploit::Credential::Public do
                             Metasploit::Credential::Search::Operator::Type,
                             name: :type,
                             class_names: %w{
-                              Metasploit::Credential::Username
                               Metasploit::Credential::BlankUsername
+                              Metasploit::Credential::Username
                             }
     end
   end

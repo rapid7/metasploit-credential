@@ -8,6 +8,8 @@ class AddTypetoPublic < ActiveRecord::Migration
       t.string :type, null: true
       Metasploit::Credential::Public.update_all(type: 'Metasploit::Credential::Username')
 
+      change_column :type, null: false
+
     end
   end
 
