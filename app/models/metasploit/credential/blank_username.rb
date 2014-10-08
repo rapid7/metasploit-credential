@@ -1,7 +1,7 @@
 # A public credential in the form of a Username.
 class Metasploit::Credential::BlankUsername < Metasploit::Credential::Public
 
-  after_initialize :blank_username
+  before_save :blank_username
 
   #
   # Validations
@@ -10,6 +10,9 @@ class Metasploit::Credential::BlankUsername < Metasploit::Credential::Public
   validates :username,
             uniqueness: true
 
+  # This method always makes sure the BlankUsername is set to an empty string.
+  #
+  # @return [void]
   def blank_username
     self.username ||= ''
   end
