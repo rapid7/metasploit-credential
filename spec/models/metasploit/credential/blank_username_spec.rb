@@ -8,6 +8,7 @@ describe Metasploit::Credential::BlankUsername do
       it_should_behave_like 'timestamp database columns'
 
       it { should have_db_column(:username).of_type(:string).with_options(null: false) }
+      it { should have_db_column(:type).of_type(:string).with_options(null: false) }
     end
 
     context 'indices' do

@@ -769,7 +769,7 @@ CREATE TABLE metasploit_credential_publics (
     username character varying(255) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    type character varying(255)
+    type character varying(255) NOT NULL
 );
 
 

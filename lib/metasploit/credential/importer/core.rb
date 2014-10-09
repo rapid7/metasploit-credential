@@ -119,8 +119,7 @@ class Metasploit::Credential::Importer::Core
 
         realm_object_for_row   = realms[realm_value]
 
-        public_object = create_credential_public(username: username)
-
+        public_object = create_public_from_field(username)
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
           if private_data.strip == BLANK_TOKEN
@@ -166,7 +165,7 @@ class Metasploit::Credential::Importer::Core
         username     = row['username']
         private_data = row['private_data']
 
-        public_object = create_credential_public(username: username)
+        public_object = create_public_from_field(username)
 
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
@@ -183,6 +182,17 @@ class Metasploit::Credential::Importer::Core
 
 
   private
+
+  # Takes the username field and checks to see if it should be Blank or else a Username object
+  #
+  # @param [String] :username the username field contents
+  # @return [Metasploit::Credential::Public] the Public created from the field
+  def create_public_from_field(username)
+    if username.strip == BLANK_TOKEN
+      username = " "
+    end
+    create_credential_public(username: username)
+  end
 
   # Returns true if the headers are correct, based on whether a private type has been chosen
   # @param csv_headers [Array] the headers in the CSV contained in {#input}
