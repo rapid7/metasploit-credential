@@ -59,6 +59,10 @@ Add this line to your application's `Gemfile`:
 And then execute:
 
     $ bundle
+    
+**This gem's `Rails::Engine` is not required automatically.** You'll need to also add the following to your `config/application.rb`:
+
+    require 'metasploit/credential/engine'
 
 Or install it yourself as:
 

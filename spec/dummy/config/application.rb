@@ -8,6 +8,10 @@ require "action_controller/railtie"
 
 Bundler.require(*Rails.groups)
 require "metasploit/credential"
+require "metasploit/credential/engine"
+require "metasploit/model/engine"
+require "metasploit/concern/engine"
+require "metasploit_data_models/engine"
 
 module Dummy
   class Application < Rails::Application
