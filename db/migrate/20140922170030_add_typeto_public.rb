@@ -6,7 +6,7 @@ class AddTypetoPublic < ActiveRecord::Migration
       #
 
       t.string :type, null: true
-      Metasploit::Credential::Public.update_all(type: 'Metasploit::Credential::Username')
+      execute "UPDATE metasploit_credential_publics SET type = 'Metasploit::Credential::Username'"
 
       change_column :metasploit_credential_publics, :type, :string, null: false
 
