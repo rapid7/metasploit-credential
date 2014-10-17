@@ -17,14 +17,14 @@ class Metasploit::Credential::Importer::Core
   # Constants
   #
 
+  # This token represents an explict Blank entry. An empty field instead indicates that we do not know what this value is
+  BLANK_TOKEN = "<BLANK>"
+
   # Valid headers for a CSV containing heterogenous {Metasploit::Credential::Private} types and values for {Metasploit::Credential::Realm}
   VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value, :host_address, :service_port, :service_name, :service_protocol]
 
   # Valid headers for a "short" CSV containing only data for {Metasploit::Credential::Public} and {Metasploit::Credential::Private} objects
   VALID_SHORT_CSV_HEADERS = [:username,  :private_data]
-
-  # This token represents an explict Blank entry. An empty field instead indicates that we do not know what this value is
-  BLANK_TOKEN = "<BLANK>"
 
   #
   # Attributes
