@@ -92,7 +92,7 @@ module Metasploit
 
         private
 
-        # Validates that at least one of {#private} or {#public} is present.
+        # Validates that at least one of {#private}, {#public}, or {#realm} is present.
         #
         # @return [void]
         def minimum_presence
