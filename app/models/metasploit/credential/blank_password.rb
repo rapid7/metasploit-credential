@@ -1,5 +1,8 @@
 # A blank password
 class Metasploit::Credential::BlankPassword < Metasploit::Credential::Password
+  #
+  # Callbacks
+  #
 
   before_save :blank_data
 
@@ -10,7 +13,11 @@ class Metasploit::Credential::BlankPassword < Metasploit::Credential::Password
   validates :data,
             uniqueness: true
 
-  # This method always makes sure the BlankPassword is set to an empty string.
+  #
+  # Instance Methods
+  #
+
+  # Always makes sure the {Metasploit::Credential::Password#data} is set to an empty string.
   #
   # @return [void]
   def blank_data

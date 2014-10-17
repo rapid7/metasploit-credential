@@ -42,6 +42,12 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   attr_accessible :username
 
   #
+  #
+  # Search
+  #
+  #
+
+  #
   # Search Attributes
   #
 
