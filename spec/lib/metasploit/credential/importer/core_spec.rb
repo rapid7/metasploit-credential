@@ -100,7 +100,7 @@ describe Metasploit::Credential::Importer::Core do
 
           before(:each) do
             core         = Metasploit::Credential::Core.new
-            core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+            core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
             core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
             core.realm   = FactoryGirl.create(:metasploit_credential_realm, key: preexisting_cred_data[:realm_key],
                                                                             value: preexisting_cred_data[:realm_value])
@@ -206,7 +206,7 @@ describe Metasploit::Credential::Importer::Core do
 
         before(:each) do
           core         = Metasploit::Credential::Core.new
-          core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+          core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
           core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
           core.origin  = FactoryGirl.create(:metasploit_credential_origin_import)
           core.workspace = workspace
