@@ -5,11 +5,9 @@ module Metasploit
       # The major version number.
       MAJOR = 0
       # The minor version number, scoped to the {MAJOR} version number.
-      MINOR = 12
+      MINOR = 13
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 1
-
-      PRERELEASE = 'public-sti'
+      PATCH = 0
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
