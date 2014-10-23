@@ -5,7 +5,8 @@ describe Metasploit::Credential::Exporter::Pwdump do
 
   subject(:exporter){ Metasploit::Credential::Exporter::Pwdump.new}
 
-  let(:core){ FactoryGirl.create :metasploit_credential_core }
+  let(:public) { FactoryGirl.create(:metasploit_credential_username)}
+  let(:core){ FactoryGirl.create :metasploit_credential_core, public: public }
   let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core) }
 
   describe "formatting" do

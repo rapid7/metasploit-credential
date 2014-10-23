@@ -70,8 +70,8 @@ describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_public
           end
 
-          it 'should create a new Metasploit::Credential::Public for each unique Public in the import' do
-            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(2)
+          it 'should create a new Metasploit::Credential::Username for each unique Public in the import' do
+            expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Username, :count).from(0).to(2)
           end
         end
 
@@ -100,7 +100,7 @@ describe Metasploit::Credential::Importer::Core do
 
           before(:each) do
             core         = Metasploit::Credential::Core.new
-            core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+            core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
             core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
             core.realm   = FactoryGirl.create(:metasploit_credential_realm, key: preexisting_cred_data[:realm_key],
                                                                             value: preexisting_cred_data[:realm_value])
@@ -184,8 +184,8 @@ describe Metasploit::Credential::Importer::Core do
       end
 
       describe "when the data in the CSV is all new" do
-        it 'should create new Metasploit::Credential::Public for that row' do
-          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(2)
+        it 'should create new Metasploit::Credential::Username for that row' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Username, :count).from(0).to(2)
         end
 
         it 'should create new Metasploit::Credential::Private for that row' do
@@ -206,7 +206,7 @@ describe Metasploit::Credential::Importer::Core do
 
         before(:each) do
           core         = Metasploit::Credential::Core.new
-          core.public  = FactoryGirl.create(:metasploit_credential_public, username: preexisting_cred_data[:username])
+          core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
           core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
           core.origin  = FactoryGirl.create(:metasploit_credential_origin_import)
           core.workspace = workspace
@@ -227,18 +227,18 @@ describe Metasploit::Credential::Importer::Core do
         let(:stored_public){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first['username'] }
 
         before(:each) do
-          Metasploit::Credential::Public.create!(username: stored_public)
+          Metasploit::Credential::Username.create!(username: stored_public)
           core_csv_importer.csv_object.rewind
         end
 
-        it 'should not create a new Metasploit::Credential::Public for that object' do
-          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(1).to(3)
+        it 'should not create a new Metasploit::Credential::Username for that object' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Username, :count).from(1).to(3)
         end
       end
 
       context "when it is not in the DB" do
-        it 'should create a new Metasploit::Credential::Public for each unique Public in the import' do
-          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Public, :count).from(0).to(3)
+        it 'should create a new Metasploit::Credential::Username for each unique Public in the import' do
+          expect{ core_csv_importer.import! }.to change(Metasploit::Credential::Username, :count).from(0).to(3)
         end
       end
     end

@@ -92,11 +92,11 @@ module Metasploit
 
         private
 
-        # Validates that at least one of {#private} or {#public} is present.
+        # Validates that at least one of {#private}, {#public}, or {#realm} is present.
         #
         # @return [void]
         def minimum_presence
-          any_present = [:private, :public].any? { |attribute|
+          any_present = [:private, :public, :realm].any? { |attribute|
             send(attribute).present?
           }
 

@@ -42,20 +42,27 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   attr_accessible :username
 
   #
+  #
+  # Search
+  #
+  #
+
+  #
   # Search Attributes
   #
 
   search_attribute :username,
                    type: :string
 
-
   #
-  # Validations
+  # Search Withs
   #
 
-  validates :username,
-            presence: true,
-            uniqueness: true
+  search_with Metasploit::Credential::Search::Operator::Type,
+              class_names: %w{
+                Metasploit::Credential::BlankUsername
+                Metasploit::Credential::Username
+              }
 
   #
   # Instance Methods

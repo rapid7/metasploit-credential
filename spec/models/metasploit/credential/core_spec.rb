@@ -827,7 +827,7 @@ describe Metasploit::Credential::Core do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should include(error) }
+            it { should_not include(error) }
           end
 
         end

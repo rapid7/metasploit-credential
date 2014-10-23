@@ -31,13 +31,6 @@ describe Metasploit::Credential::Public do
     it { should allow_mass_assignment_of(:username) }
   end
 
-  context 'validations' do
-    context 'username' do
-      it { should validate_presence_of :username }
-      it { should validate_uniqueness_of :username }
-    end
-  end
-
   context 'search' do
     let(:base_class) {
       described_class
@@ -47,6 +40,14 @@ describe Metasploit::Credential::Public do
       it_should_behave_like 'search_attribute',
                             :username,
                             type: :string
+
+      it_should_behave_like 'search_with',
+                            Metasploit::Credential::Search::Operator::Type,
+                            name: :type,
+                            class_names: %w{
+                              Metasploit::Credential::BlankUsername
+                              Metasploit::Credential::Username
+                            }
     end
   end
 
