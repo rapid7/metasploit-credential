@@ -18,6 +18,57 @@ describe Metasploit::Credential::Creation do
 
   subject(:test_object) { dummy_class.new }
 
+  context '#create_cracked_credential' do
+    let(:public) { FactoryGirl.create(:metasploit_credential_public) }
+    let(:hash) { FactoryGirl.create(:metasploit_credential_nonreplayable_hash) }
+    let(:origin) { FactoryGirl.create(:metasploit_credential_origin_manual) }
+    let(:password) { "omgwtfbbq" }
+
+    let!(:old_core) do
+      FactoryGirl.create(:metasploit_credential_core, public: public, private: hash, workspace: workspace, origin: origin)
+    end
+
+    it 'creates a Core' do
+      expect {
+        test_object.create_cracked_credential(
+            core_id: old_core,
+            username: public.username,
+            password: password
+        )
+      }.to change{Metasploit::Credential::Core.count}.by(1)
+      expect(Metasploit::Credential::Private.last).to be_a Metasploit::Credential::Password
+    end
+
+    context 'when previous core has logins' do
+      let(:host) { FactoryGirl.create(:mdm_host, workspace: workspace) }
+      let(:service) { FactoryGirl.create(:mdm_service, host: host) }
+
+      before do
+        FactoryGirl.create(:metasploit_credential_login,
+                           service: service,
+                           core: old_core,
+                           status: Metasploit::Model::Login::Status::UNTRIED
+                          )
+      end
+
+      it 'creates mirrored Logins' do
+        expect(old_core.logins.count).to eq(1)
+        expect {
+          test_object.create_cracked_credential(
+            core_id: old_core.id,
+            workspace_id: workspace.id,
+            username: public.username,
+            password: password
+          )
+        }.to change {
+          Metasploit::Credential::Login.count
+        }.by(1)
+      end
+
+    end
+
+  end
+
   context '#create_credential_origin_import' do
     it 'creates a Metasploit::Credential::Origin object' do
       opts = {
@@ -499,8 +550,8 @@ describe Metasploit::Credential::Creation do
 
     context 'when an untried login exists' do
       let(:untried_login) { FactoryGirl.create(:metasploit_credential_login, status: Metasploit::Model::Login::Status::UNTRIED)}
-      
-      let(:opts) {{ 
+
+      let(:opts) {{
         address: untried_login.service.host.address,
         port: untried_login.service.port,
         protocol: untried_login.service.proto,
@@ -510,7 +561,7 @@ describe Metasploit::Credential::Creation do
         realm_value: untried_login.core.realm.try(:value),
         status: Metasploit::Model::Login::Status::INCORRECT
         }}
-      
+
       it 'sets the supplied status on that login' do
         expect{ test_object.invalidate_login(opts) }.to change{untried_login.reload.status}.from(Metasploit::Model::Login::Status::UNTRIED).to(Metasploit::Model::Login::Status::INCORRECT)
       end
