@@ -38,6 +38,8 @@ module Metasploit
           old_core = Metasploit::Credential::Core.find(core_id)
         end
 
+        core = nil
+
         retry_transaction do
           core     = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
           if core.origin_id.nil?
@@ -352,21 +354,25 @@ module Metasploit
         private_object = nil
 
         retry_transaction do
-          case private_type
-            when :password
-              private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
-            when :ssh_key
-              private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
-            when :ntlm_hash
-              private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
-              private_object.jtr_format = 'nt,lm'
-            when :nonreplayable_hash
-              private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
-              if opts[:jtr_format].present?
-                private_object.jtr_format = opts[:jtr_format]
-              end
-            else
-              raise ArgumentError, "Invalid Private type: #{private_type}"
+          if private_data.blank?
+            private_object = Metasploit::Credential::BlankPassword.first_or_create
+          else
+            case private_type
+              when :password
+                private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
+              when :ssh_key
+                private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
+              when :ntlm_hash
+                private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
+                private_object.jtr_format = 'nt,lm'
+              when :nonreplayable_hash
+                private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
+                if opts[:jtr_format].present?
+                  private_object.jtr_format = opts[:jtr_format]
+                end
+              else
+                raise ArgumentError, "Invalid Private type: #{private_type}"
+            end
           end
           private_object.save!
         end
@@ -384,7 +390,11 @@ module Metasploit
         username = opts.fetch(:username)
 
         retry_transaction do
-          Metasploit::Credential::Public.where(username: username).first_or_create!
+          if username.blank?
+            Metasploit::Credential::BlankUsername.first_or_create!
+          else
+            Metasploit::Credential::Username.where(username: username).first_or_create!
+          end
         end
       end
 

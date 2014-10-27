@@ -56,7 +56,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
     }
 
     let(:first_public) {
-      FactoryGirl.create(:metasploit_credential_public)
+      FactoryGirl.create(:metasploit_credential_username)
     }
 
     let(:first_realm) {
@@ -106,7 +106,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
     }
 
     let(:second_public) {
-      FactoryGirl.create(:metasploit_credential_public)
+      FactoryGirl.create(:metasploit_credential_username)
     }
 
     let(:second_realm) {

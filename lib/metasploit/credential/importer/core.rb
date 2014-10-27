@@ -17,6 +17,9 @@ class Metasploit::Credential::Importer::Core
   # Constants
   #
 
+  # This token represents an explict Blank entry. An empty field instead indicates that we do not know what this value is
+  BLANK_TOKEN = "<BLANK>"
+
   # Valid headers for a CSV containing heterogenous {Metasploit::Credential::Private} types and values for {Metasploit::Credential::Realm}
   VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value, :host_address, :service_port, :service_name, :service_protocol]
 
@@ -115,10 +118,13 @@ class Metasploit::Credential::Importer::Core
         end
 
         realm_object_for_row   = realms[realm_value]
-        public_object_for_row  = Metasploit::Credential::Public.where(username: username).first_or_create
+
+        public_object = create_public_from_field(username)
 
         if private_class.present? &&  LONG_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include?(private_class.name)
-          if private_class == Metasploit::Credential::SSHKey
+          if private_data.strip == BLANK_TOKEN
+            private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
+          elsif private_class == Metasploit::Credential::SSHKey
             private_object_for_row = Metasploit::Credential::SSHKey.where(data: key_data_from_file(private_data)).first_or_create
           else
             private_object_for_row = private_class.where(data: private_data).first_or_create
@@ -126,7 +132,7 @@ class Metasploit::Credential::Importer::Core
         end
 
         core = create_credential_core(origin:origin, workspace_id: workspace.id,
-                                                     public: public_object_for_row,
+                                                     public: public_object,
                                                      private: private_object_for_row,
                                                      realm: realm_object_for_row )
 
@@ -156,10 +162,19 @@ class Metasploit::Credential::Importer::Core
       csv_object.each do |row|
         next if row.header_row?
 
-        public_object_for_row  = Metasploit::Credential::Public.where(username: row['username']).first_or_create
-        private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+        username     = row['username']
+        private_data = row['private_data']
+
+        public_object = create_public_from_field(username)
+
+        if private_data.strip == BLANK_TOKEN
+          private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
+        else
+          private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+        end
+
         create_credential_core(origin:origin, workspace_id: workspace.id,
-                                      public: public_object_for_row,
+                                      public: public_object,
                                       private: private_object_for_row)
       end
     end
@@ -167,6 +182,17 @@ class Metasploit::Credential::Importer::Core
 
 
   private
+
+  # Takes the username field and checks to see if it should be Blank or else a Username object
+  #
+  # @param [String] :username the username field contents
+  # @return [Metasploit::Credential::Public] the Public created from the field
+  def create_public_from_field(username)
+    if username.strip == BLANK_TOKEN
+      username = " "
+    end
+    create_credential_public(username: username)
+  end
 
   # Returns true if the headers are correct, based on whether a private type has been chosen
   # @param csv_headers [Array] the headers in the CSV contained in {#input}

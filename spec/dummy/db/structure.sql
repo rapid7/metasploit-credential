@@ -768,7 +768,8 @@ CREATE TABLE metasploit_credential_publics (
     id integer NOT NULL,
     username character varying(255) NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    type character varying(255) NOT NULL
 );
 
 
@@ -3665,6 +3666,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140728191933');
 INSERT INTO schema_migrations (version) VALUES ('20140801150537');
 
 INSERT INTO schema_migrations (version) VALUES ('20140905031549');
+
+INSERT INTO schema_migrations (version) VALUES ('20140922170030');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
