@@ -446,6 +446,16 @@ describe Metasploit::Credential::Creation do
         expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::NonreplayableHash.count}.by(1)
       end
     end
+
+    context 'when passed a blank string' do
+      it 'creates a Metasploit::Credential::BlankPassword' do
+        opts = {
+          private_data: '',
+          private_type: :password
+        }
+        expect(test_object.create_credential_private(opts)).to be_kind_of Metasploit::Credential::BlankPassword
+      end
+    end
   end
 
   context '#create_credential' do

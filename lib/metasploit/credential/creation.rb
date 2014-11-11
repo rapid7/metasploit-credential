@@ -355,7 +355,7 @@ module Metasploit
 
         retry_transaction do
           if private_data.blank?
-            private_object = Metasploit::Credential::BlankPassword.first_or_create
+            private_object = Metasploit::Credential::BlankPassword.where(data:'').first_or_create
           else
             case private_type
               when :password
@@ -391,7 +391,7 @@ module Metasploit
 
         retry_transaction do
           if username.blank?
-            Metasploit::Credential::BlankUsername.first_or_create!
+            Metasploit::Credential::BlankUsername.where(username:'').first_or_create!
           else
             Metasploit::Credential::Username.where(username: username).first_or_create!
           end
@@ -504,6 +504,8 @@ module Metasploit
           tries -= 1
           if tries > 0
             retry
+          else
+            raise
           end
         end
       end
