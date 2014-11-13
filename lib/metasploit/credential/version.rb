@@ -7,7 +7,9 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 13
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 2
+      PATCH = 3
+
+      PRERELEASE = 'blank-username-failure'
 
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
