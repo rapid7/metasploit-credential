@@ -94,7 +94,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let(:matching_public) {
           FactoryGirl.create(
-              :metasploit_credential_public,
+              :metasploit_credential_username,
               username: matching_public_username
           )
         }
@@ -140,7 +140,7 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let(:non_matching_public) {
           FactoryGirl.create(
-              :metasploit_credential_public,
+              :metasploit_credential_username,
               username: non_matching_public_username
           )
         }
@@ -857,14 +857,14 @@ describe MetasploitDataModels::Search::Visitor::Relation do
 
         let!(:matching_record) {
           FactoryGirl.create(
-              :metasploit_credential_public,
+              :metasploit_credential_username,
               username: matching_username
           )
         }
 
         let!(:non_matching_record) {
           FactoryGirl.create(
-              :metasploit_credential_public,
+              :metasploit_credential_username,
               username: non_matching_username
           )
         }
