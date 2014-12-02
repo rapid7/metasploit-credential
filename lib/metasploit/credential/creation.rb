@@ -24,6 +24,11 @@ module Metasploit
       # @option opts [Fixnum] :core_id the id for the originating {Metasploit::Credential::Core}
       def create_cracked_credential(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         username = opts.fetch(:username)
         password = opts.fetch(:password)
         core_id  = opts.fetch(:core_id)
@@ -45,6 +50,9 @@ module Metasploit
           if core.origin_id.nil?
             origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
             core.origin = origin
+          end
+          if opts[:task_id]
+            core.tasks << Mdm::Task.find(opts[:task_id])
           end
           core.save!
         end
@@ -100,6 +108,10 @@ module Metasploit
       def create_credential(opts={})
         return nil unless active_db?
 
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         if opts[:origin]
           origin = opts[:origin]
         else
@@ -142,6 +154,11 @@ module Metasploit
       # @return [Metasploit::Credential::Core]
       def create_credential_core(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         origin       = opts.fetch(:origin)
         workspace_id = opts.fetch(:workspace_id)
 
@@ -183,6 +200,11 @@ module Metasploit
       # @return [Metasploit::Credential::Login]
       def create_credential_login(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         access_level       = opts.fetch(:access_level, nil)
         core               = opts.fetch(:core)
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
