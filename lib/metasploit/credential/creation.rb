@@ -25,7 +25,7 @@ module Metasploit
       def create_cracked_credential(opts={})
         return nil unless active_db?
 
-        if self[:task]
+        if self.respond_to?(:[]) and self[:task]
           opts[:task_id] ||= self[:task].record.id
         end
 
@@ -108,7 +108,7 @@ module Metasploit
       def create_credential(opts={})
         return nil unless active_db?
 
-        if self[:task]
+        if self.respond_to?(:[]) and self[:task]
           opts[:task_id] ||= self[:task].record.id
         end
 
@@ -154,6 +154,11 @@ module Metasploit
       # @return [Metasploit::Credential::Core]
       def create_credential_core(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         origin       = opts.fetch(:origin)
         workspace_id = opts.fetch(:workspace_id)
 
@@ -195,6 +200,11 @@ module Metasploit
       # @return [Metasploit::Credential::Login]
       def create_credential_login(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         access_level       = opts.fetch(:access_level, nil)
         core               = opts.fetch(:core)
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
