@@ -221,6 +221,13 @@ module Metasploit
 
           login_object.access_level      = access_level if access_level
           login_object.last_attempted_at = last_attempted_at if last_attempted_at
+          if status == Metasploit::Model::Login::Status::UNTRIED
+            if login_object.status.blank?
+              login_object.status = status
+            end
+          else
+            login_object.status = status
+          end
           login_object.status            = status
           login_object.save!
         end
