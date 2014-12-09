@@ -221,7 +221,11 @@ module Metasploit
 
           login_object.access_level      = access_level if access_level
           login_object.last_attempted_at = last_attempted_at if last_attempted_at
-          login_object.status            = status
+          if login_object.status.present?
+            unless status == Metasploit::Model::Login::Status::UNTRIED and login_object.status != Metasploit::Model::Login::Status::UNTRIED
+              login_object.status = status
+            end
+          end
           login_object.save!
         end
 
@@ -522,7 +526,7 @@ module Metasploit
         tries = 3
         begin
           yield
-        rescue ActiveRecord::RecordNotUnique
+        rescue ActiveRecord::RecordInvalid,ActiveRecord::RecordNotUnique
           tries -= 1
           if tries > 0
             retry
