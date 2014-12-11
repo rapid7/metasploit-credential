@@ -65,6 +65,7 @@ module Metasploit
           end
           new_login.save!
         end
+        core
       end
 
 
