@@ -122,6 +122,9 @@ class Metasploit::Credential::Exporter::Core
   # The hashes returned by this method will contain credentials for
   # networked devices which may or may not successfully authenticate to those
   # devices.
+  # Note that the order of columns here must match the order in
+  # Metasploit::Credential::Importer::Core::VALID_LONG_CSV_HEADERS or
+  # the headers and row values will be mismatched and break import.
   # @param login [Metasploit::Credential::Login]
   # @return [Hash]
   def line_for_login(login)
@@ -130,7 +133,10 @@ class Metasploit::Credential::Exporter::Core
       host_address: login.service.host.address,
       service_port: login.service.port,
       service_name: login.service.try(:name),
-      service_protocol: login.service.proto
+      service_protocol: login.service.proto,
+      status: login.status,
+      access_level: login.access_level,
+      last_attempted_at: login.last_attempted_at
     })
   end
 

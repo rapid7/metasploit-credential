@@ -87,7 +87,9 @@ describe Metasploit::Credential::Exporter::Core do
       result_hash.values.should == [core.public.username, core.private.type,
                                     core.private.data, core.realm.key, core.realm.value,
                                     login.service.host.address, login.service.port,
-                                    login.service.name, login.service.proto]
+                                    login.service.name, login.service.proto,
+                                    login.status, login.access_level, login.last_attempted_at
+      ]
     end
 
     it 'should produce a hash with the service host address' do
@@ -104,6 +106,18 @@ describe Metasploit::Credential::Exporter::Core do
 
     it 'should produce a hash with the service protocol' do
       result_hash[:service_protocol].should == login.service.proto
+    end
+
+    it 'should produce a hash with the login status' do
+      result_hash[:status].should == login.status
+    end
+
+    it 'should produce a hash with the login access_level' do
+      result_hash[:access_level].should == login.access_level
+    end
+
+    it 'should produce a hash with the login last_attempted_at' do
+      result_hash[:last_attempted_at].should == login.last_attempted_at
     end
 
     it 'should produce a hash with the public information' do

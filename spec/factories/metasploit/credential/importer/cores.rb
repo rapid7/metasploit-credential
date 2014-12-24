@@ -1,6 +1,9 @@
 FactoryGirl.define do
-  long_form_headers  = 'username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol'
+  long_form_headers  = 'username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol,status,access_level,last_attempted_at'
   short_form_headers = 'username,private_data'
+  login_status       = Metasploit::Model::Login::Status::ALL.select {|x| x != Metasploit::Model::Login::Status::UNTRIED }.sample
+  access_level       = ['Admin', 'Foo'].sample
+  last_attempted_at  = Time.now - 10
 
   factory :metasploit_credential_core_importer,
           class: Metasploit::Credential::Importer::Core do
@@ -14,10 +17,10 @@ FactoryGirl.define do
   # Contains 2 realms
   sequence :well_formed_csv_compliant_header do |n|
     csv_string =<<-eos
-han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
 #{long_form_headers}
+han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,,,,,#{login_status},#{access_level},#{last_attempted_at}
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,,,,,#{login_status},#{access_level},#{last_attempted_at}
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins,,,,,#{login_status},#{access_level},#{last_attempted_at}
     eos
     StringIO.new(csv_string)
   end
@@ -27,10 +30,10 @@ lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit:
   # Contains 2 logins
   sequence :well_formed_csv_compliant_header_with_service_info do |n|
     csv_string =<<-eos
-han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,10.0.1.1,1234,smb,tcp
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,10.0.1.2,1234,smb,tcp
-lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
 #{long_form_headers}
+han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,10.0.1.1,1234,smb,tcp,#{login_status},#{access_level},#{last_attempted_at}
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,10.0.1.2,1234,smb,tcp,#{login_status},#{access_level},#{last_attempted_at}
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins,#{login_status},#{access_level},#{last_attempted_at}
     eos
     StringIO.new(csv_string)
   end
@@ -40,10 +43,10 @@ lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit:
   # Contains no realm data
   sequence :well_formed_csv_compliant_header_no_realm do |n|
     csv_string =<<-eos
-han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,,
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,,
-lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,,
 #{long_form_headers}
+han_solo-#{n},#{Metasploit::Credential::Password.name},falcon_chief,,,,,,#{login_status},#{access_level},#{last_attempted_at},,,,,#{login_status},#{access_level},#{last_attempted_at}
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,,,,,,#{login_status},#{access_level},#{last_attempted_at},,,,,#{login_status},#{access_level},#{last_attempted_at}
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,,,,,,#{login_status},#{access_level},#{last_attempted_at},,,,,#{login_status},#{access_level},#{last_attempted_at}
     eos
     StringIO.new(csv_string)
   end
@@ -54,10 +57,10 @@ lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,,
   # Contains core with a blank Public
   sequence :well_formed_csv_compliant_header_missing_public do |n|
     csv_string =<<-eos
-,#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels
-lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins
 #{long_form_headers}
+,#{Metasploit::Credential::Password.name},falcon_chief,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,,,,,#{login_status},#{access_level},#{last_attempted_at}
+princessl-#{n},#{Metasploit::Credential::Password.name},bagel_head,#{Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN},Rebels,,,,,#{login_status},#{access_level},#{last_attempted_at}
+lord_vader-#{n},#{Metasploit::Credential::Password.name},evilisfun,#{Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER},dstar_admins,,,,,#{login_status},#{access_level},#{last_attempted_at}
     eos
     StringIO.new(csv_string)
   end

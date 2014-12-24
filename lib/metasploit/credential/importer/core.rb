@@ -21,7 +21,12 @@ class Metasploit::Credential::Importer::Core
   BLANK_TOKEN = "<BLANK>"
 
   # Valid headers for a CSV containing heterogenous {Metasploit::Credential::Private} types and values for {Metasploit::Credential::Realm}
-  VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data, :realm_key, :realm_value, :host_address, :service_port, :service_name, :service_protocol]
+  VALID_LONG_CSV_HEADERS = [:username, :private_type, :private_data,
+                            :realm_key, :realm_value, :host_address,
+                            :service_port, :service_name,
+                            :service_protocol, :status, :access_level,
+                            :last_attempted_at
+  ]
 
   # Valid headers for a "short" CSV containing only data for {Metasploit::Credential::Public} and {Metasploit::Credential::Private} objects
   VALID_SHORT_CSV_HEADERS = [:username,  :private_data]
@@ -107,10 +112,13 @@ class Metasploit::Credential::Importer::Core
         private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         # Host and Service information for Logins
-        host_address     = row['host_address']
-        service_port     = row['service_port']
-        service_protocol = row['service_protocol']
-        service_name     = row['service_name']
+        host_address      = row['host_address']
+        service_port      = row['service_port']
+        service_protocol  = row['service_protocol']
+        service_name      = row['service_name']
+        access_level      = row['access_level']
+        last_attempted_at = row['last_attempted_at']
+        status            = row['status']
 
 
         if realms[realm_value].nil?
@@ -145,7 +153,10 @@ class Metasploit::Credential::Importer::Core
             port: service_port,
             protocol: service_protocol,
             workspace_id: workspace.id,
-            service_name: service_name.present? ? service_name : ""
+            service_name: service_name.present? ? service_name : "",
+            status: status,
+            access_level: access_level,
+            last_attempted_at: last_attempted_at
           }
           create_credential_login(login_opts)
         end
