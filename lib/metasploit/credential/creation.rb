@@ -206,10 +206,10 @@ module Metasploit
           opts[:task_id] ||= self[:task].record.id
         end
 
-        access_level       = opts.fetch(:access_level, nil)
         core               = opts.fetch(:core)
+        access_level       = opts.fetch(:access_level, nil)
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
-        status             = opts.fetch(:status)
+        status             = opts.fetch(:status, Metasploit::Model::Login::Status::UNTRIED)
 
         login_object = nil
         retry_transaction do

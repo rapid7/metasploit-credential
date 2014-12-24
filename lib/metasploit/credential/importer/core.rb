@@ -116,9 +116,11 @@ class Metasploit::Credential::Importer::Core
         service_port      = row['service_port']
         service_protocol  = row['service_protocol']
         service_name      = row['service_name']
-        access_level      = row['access_level']
-        last_attempted_at = row['last_attempted_at']
-        status            = row['status']
+        # These were not initially included in the export, so handle
+        # legacy cases:
+        access_level      = row['access_level'].present? ? row['access_level'] : ''
+        last_attempted_at = row['last_attempted_at'].present? ? row['last_attempted_at'] : ''
+        status            = row['status'].present? ? row['status'] : ''
 
 
         if realms[realm_value].nil?
@@ -148,16 +150,16 @@ class Metasploit::Credential::Importer::Core
         if host_address.present? && service_port.present? && service_protocol.present?
           login_opts = {
             core: core,
-            status: Metasploit::Model::Login::Status::UNTRIED,  # don't trust creds on import
             address: host_address,
             port: service_port,
             protocol: service_protocol,
             workspace_id: workspace.id,
-            service_name: service_name.present? ? service_name : "",
-            status: status,
-            access_level: access_level,
-            last_attempted_at: last_attempted_at
+            service_name: service_name.present? ? service_name : ""
           }
+          login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
+          login_opts[:status]            = status unless status.blank?
+          login_opts[:access_level]      = access_level unless access_level.blank?
+
           create_credential_login(login_opts)
         end
       end
