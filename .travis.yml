@@ -5,16 +5,11 @@ cache: bundler
 language: ruby
 matrix:
   allow_failures:
-    # Validation failed: Data is not in the NTLMHash data format of
-    # <LAN Manager hex digest>:<NT LAN Manager hex digest>, where each hex digest is 32 lowercase hexadecimal
-    # characters.
-    - rvm: 'jruby-19mode'
     # Rubinius.mri_backtrace primitive failed (PrimitiveFailure)
     - rvm: 'rbx-2.2'
 rvm:
   - '1.9.3'
   - '2.0'
   - '2.1'
-  - 'jruby-19mode'
   - 'rbx-2.2'
 sudo: false
