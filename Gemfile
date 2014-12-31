@@ -5,6 +5,13 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'metasploit_data_models',
+    github: 'rapid7/metasploit_data_models',
+    ref: 'f29efd129b3843c55289add6affb5465b2969446'
+gem 'metasploit-model',
+    github: 'rapid7/metasploit-model',
+    ref: 'ee4d06009811c21c36ace781b27509f816ef7fee'
+
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
