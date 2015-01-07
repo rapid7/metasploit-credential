@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 13
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 9
+      PATCH = 11
       # The prerelease version, scoped to the {PATCH} version number.
       PRERELEASE = 'attempted-at-access-level-add'
 
