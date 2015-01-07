@@ -36,17 +36,19 @@ module Metasploit
         private  = nil
         public   = nil
         old_core = nil
+        old_realm_id = nil
 
         retry_transaction do
           private  = Metasploit::Credential::Password.where(data: password).first_or_create!
           public   = Metasploit::Credential::Public.where(username: username).first_or_create!
           old_core = Metasploit::Credential::Core.find(core_id)
+          old_realm_id = old_core.realm.id if old_core.realm
         end
 
         core = nil
 
         retry_transaction do
-          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
+          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: old_realm_id, workspace_id: old_core.workspace_id).first_or_initialize
           if core.origin_id.nil?
             origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
             core.origin = origin
