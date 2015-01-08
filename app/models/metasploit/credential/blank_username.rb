@@ -21,7 +21,7 @@ class Metasploit::Credential::BlankUsername < Metasploit::Credential::Public
   #
   # @return [void]
   def blank_username
-    self.username ||= ''
+    self.username = ''
   end
 
   Metasploit::Concern.run(self)

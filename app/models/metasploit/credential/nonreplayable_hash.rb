@@ -1,4 +1,4 @@
-# A {Metasploit::Credential::PasswordHash password hash} that can be replayed to authenticate to other services.
+# A {Metasploit::Credential::PasswordHash password hash} that cannot be replayed to authenticate to other services.
 # Contrast with {Metasploit::Credential::ReplayableHash}.  {#data} is any password hash, such as those recovered from
 # `/etc/passwd` or `/etc/shadow`.
 class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::PasswordHash

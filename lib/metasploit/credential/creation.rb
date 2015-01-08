@@ -24,6 +24,11 @@ module Metasploit
       # @option opts [Fixnum] :core_id the id for the originating {Metasploit::Credential::Core}
       def create_cracked_credential(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         username = opts.fetch(:username)
         password = opts.fetch(:password)
         core_id  = opts.fetch(:core_id)
@@ -31,20 +36,25 @@ module Metasploit
         private  = nil
         public   = nil
         old_core = nil
+        old_realm_id = nil
 
         retry_transaction do
           private  = Metasploit::Credential::Password.where(data: password).first_or_create!
           public   = Metasploit::Credential::Public.where(username: username).first_or_create!
           old_core = Metasploit::Credential::Core.find(core_id)
+          old_realm_id = old_core.realm.id if old_core.realm
         end
 
         core = nil
 
         retry_transaction do
-          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
+          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: old_realm_id, workspace_id: old_core.workspace_id).first_or_initialize
           if core.origin_id.nil?
             origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
             core.origin = origin
+          end
+          if opts[:task_id]
+            core.tasks << Mdm::Task.find(opts[:task_id])
           end
           core.save!
         end
@@ -57,6 +67,7 @@ module Metasploit
           end
           new_login.save!
         end
+        core
       end
 
 
@@ -100,6 +111,10 @@ module Metasploit
       def create_credential(opts={})
         return nil unless active_db?
 
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         if opts[:origin]
           origin = opts[:origin]
         else
@@ -142,6 +157,11 @@ module Metasploit
       # @return [Metasploit::Credential::Core]
       def create_credential_core(opts={})
         return nil unless active_db?
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         origin       = opts.fetch(:origin)
         workspace_id = opts.fetch(:workspace_id)
 
@@ -183,10 +203,15 @@ module Metasploit
       # @return [Metasploit::Credential::Login]
       def create_credential_login(opts={})
         return nil unless active_db?
-        access_level       = opts.fetch(:access_level, nil)
+
+        if self.respond_to?(:[]) and self[:task]
+          opts[:task_id] ||= self[:task].record.id
+        end
+
         core               = opts.fetch(:core)
+        access_level       = opts.fetch(:access_level, nil)
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
-        status             = opts.fetch(:status)
+        status             = opts.fetch(:status, Metasploit::Model::Login::Status::UNTRIED)
 
         login_object = nil
         retry_transaction do
@@ -199,7 +224,13 @@ module Metasploit
 
           login_object.access_level      = access_level if access_level
           login_object.last_attempted_at = last_attempted_at if last_attempted_at
-          login_object.status            = status
+          if status == Metasploit::Model::Login::Status::UNTRIED
+            if login_object.last_attempted_at.nil?
+              login_object.status = status
+            end
+          else
+            login_object.status = status
+          end
           login_object.save!
         end
 
@@ -355,7 +386,7 @@ module Metasploit
 
         retry_transaction do
           if private_data.blank?
-            private_object = Metasploit::Credential::BlankPassword.first_or_create
+            private_object = Metasploit::Credential::BlankPassword.where(data:'').first_or_create
           else
             case private_type
               when :password
@@ -391,7 +422,7 @@ module Metasploit
 
         retry_transaction do
           if username.blank?
-            Metasploit::Credential::BlankUsername.first_or_create!
+            Metasploit::Credential::BlankUsername.where(username:'').first_or_create!
           else
             Metasploit::Credential::Username.where(username: username).first_or_create!
           end
@@ -500,10 +531,12 @@ module Metasploit
         tries = 3
         begin
           yield
-        rescue ActiveRecord::RecordNotUnique
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
           tries -= 1
           if tries > 0
             retry
+          else
+            raise
           end
         end
       end

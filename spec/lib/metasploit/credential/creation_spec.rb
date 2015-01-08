@@ -23,9 +23,10 @@ describe Metasploit::Credential::Creation do
     let(:hash) { FactoryGirl.create(:metasploit_credential_nonreplayable_hash) }
     let(:origin) { FactoryGirl.create(:metasploit_credential_origin_manual) }
     let(:password) { "omgwtfbbq" }
+    let(:realm) { FactoryGirl.create(:metasploit_credential_realm) }
 
     let!(:old_core) do
-      FactoryGirl.create(:metasploit_credential_core, public: public, private: hash, workspace: workspace, origin: origin)
+      FactoryGirl.create(:metasploit_credential_core, public: public, private: hash, realm: realm, workspace: workspace, origin: origin)
     end
 
     it 'creates a Core' do
@@ -37,6 +38,18 @@ describe Metasploit::Credential::Creation do
         )
       }.to change{Metasploit::Credential::Core.count}.by(1)
       expect(Metasploit::Credential::Private.last).to be_a Metasploit::Credential::Password
+    end
+
+    it 'replicates realm in new credential' do
+      expect {
+        core = test_object.create_cracked_credential(
+          core_id: old_core.id,
+          workspace_id: workspace.id,
+          username: public.username,
+          password: password
+        )
+      }.to change{Metasploit::Credential::Core.count}.by(1)
+      expect(Metasploit::Credential::Core.last.realm).to eq(realm)
     end
 
     context 'when previous core has logins' do
@@ -444,6 +457,16 @@ describe Metasploit::Credential::Creation do
             private_type: :nonreplayable_hash
         }
         expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::NonreplayableHash.count}.by(1)
+      end
+    end
+
+    context 'when passed a blank string' do
+      it 'creates a Metasploit::Credential::BlankPassword' do
+        opts = {
+          private_data: '',
+          private_type: :password
+        }
+        expect(test_object.create_credential_private(opts)).to be_kind_of Metasploit::Credential::BlankPassword
       end
     end
   end

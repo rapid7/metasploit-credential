@@ -59,69 +59,76 @@ describe Metasploit::Credential::Exporter::Core do
   end
 
   describe "#line_for_core" do
+    let(:result_hash) { core_exporter.line_for_core(core) }
+
     it 'should produce values in the proper order' do
-      core_exporter.line_for_core(core).values.should == [core.public.username, core.private.type,
-                                                          core.private.data, core.realm.key, core.realm.value]
+      result_hash.values.should == [core.public.username, core.private.type,
+                                    core.private.data, core.realm.key, core.realm.value]
     end
 
     it 'should produce a hash with the public username' do
-      result_hash = core_exporter.line_for_core(core)
       result_hash[:username].should == core.public.username
     end
 
     it 'should produce a hash with the private data' do
-      result_hash = core_exporter.line_for_core(core)
       result_hash[:private_data].should == core.private.data
     end
 
     it 'should produce a hash with the name of the private type' do
-      result_hash = core_exporter.line_for_core(core)
       result_hash[:private_type].should == core.private.type
     end
   end
 
   describe "#line_for_login" do
     let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core, service: service) }
+    let(:result_hash) { core_exporter.line_for_login(login) }
 
     it 'should produce values in the proper order' do
-      core_exporter.line_for_login(login).values.should == [core.public.username, core.private.type,
-                                                            core.private.data, core.realm.key, core.realm.value,
-                                                            login.service.host.address, login.service.port,
-                                                            login.service.name, login.service.proto]
+      result_hash.values.should == [core.public.username, core.private.type,
+                                    core.private.data, core.realm.key, core.realm.value,
+                                    login.service.host.address, login.service.port,
+                                    login.service.name, login.service.proto,
+                                    login.status, login.access_level, login.last_attempted_at
+      ]
     end
 
     it 'should produce a hash with the service host address' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:host_address].should == login.service.host.address
     end
 
     it 'should produce a hash with the service port' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:service_port].should == login.service.port
     end
 
     it 'should produce a hash with the service name' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:service_name].should == login.service.name
     end
 
     it 'should produce a hash with the service protocol' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:service_protocol].should == login.service.proto
     end
 
+    it 'should produce a hash with the login status' do
+      result_hash[:status].should == login.status
+    end
+
+    it 'should produce a hash with the login access_level' do
+      result_hash[:access_level].should == login.access_level
+    end
+
+    it 'should produce a hash with the login last_attempted_at' do
+      result_hash[:last_attempted_at].should == login.last_attempted_at
+    end
+
     it 'should produce a hash with the public information' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:username].should == login.core.public.username
     end
 
     it 'should produce a hash with the private data' do
-      result_hash = core_exporter.line_for_login(login)
       result_hash[:private_data].should == login.core.private.data
     end
 
-    it 'should produce a hash with the demodulized name of the  private type' do
-      result_hash = core_exporter.line_for_login(login)
+    it 'should produce a hash with the demodulized name of the private type' do
       result_hash[:private_type].should == login.core.private.type
     end
   end
