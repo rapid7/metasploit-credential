@@ -287,6 +287,20 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Instance Methods
   #
 
+  # Whether the {#public}'s {Public#username username} matches `regex`
+  #
+  # @param regex [Regexp]
+  def public_match?(regex)
+    !!(self.public.present? && self.public.username.match(regex))
+  end
+
+  # Whether the {#private}'s {Private#data data} matches `regex`
+  #
+  # @param regex [Regexp]
+  def private_match?(regex)
+    !!(self.private.present? && self.private.data.match(regex))
+  end
+
   private
 
   # Validates that the direct {#workspace} is consistent with the `Mdm::Workspace` accessible through the {#origin}.
