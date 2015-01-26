@@ -868,4 +868,84 @@ describe Metasploit::Credential::Core do
 
   end
 
+  context 'instance methods' do
+    let(:core) do
+      FactoryGirl.build(
+          :metasploit_credential_core,
+          private: FactoryGirl.build(:metasploit_credential_password, data: "password"),
+          public: FactoryGirl.build(:metasploit_credential_public, username: "administrator")
+      )
+    end
+
+    context 'with both public and private' do
+      context '#public_match?' do
+        specify do
+          expect(core.public_match?(/admin/)).to eq(true)
+        end
+        specify do
+          expect(core.public_match?(/user/)).to eq(false)
+        end
+      end
+
+      context '#private_match?' do
+        specify do
+          expect(core.private_match?(/password/)).to eq(true)
+        end
+        specify do
+          expect(core.private_match?(/qwerty123/)).to eq(false)
+        end
+      end
+    end
+
+    context 'with no public' do
+      before(:each) do
+        core.public = nil
+      end
+
+      context '#public_match?' do
+        specify do
+          expect(core.public_match?(/admin/)).to eq(false)
+        end
+      end
+
+      context '#private_match?' do
+        specify do
+          expect(core.private_match?(/password/)).to eq(true)
+        end
+        specify do
+          expect(core.private_match?(/qwerty123/)).to eq(false)
+        end
+      end
+
+    end
+
+    context 'with no private' do
+      before(:each) do
+        core.private = nil
+      end
+
+      context '#public_match?' do
+        specify do
+          expect(core.public_match?(/admin/)).to eq(true)
+        end
+        specify do
+          expect(core.public_match?(/user/)).to eq(false)
+        end
+      end
+
+      context '#private_match?' do
+        specify do
+          expect(core.private_match?(/password/)).to eq(false)
+        end
+        specify do
+          expect(core.private_match?(/qwerty123/)).to eq(false)
+        end
+      end
+
+
+    end
+
+
+  end
+
 end
