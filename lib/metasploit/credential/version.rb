@@ -7,7 +7,7 @@ module Metasploit
       # The minor version number, scoped to the {MAJOR} version number.
       MINOR = 0
       # The patch number, scoped to the {MINOR} version number.
-      PATCH = 11
+      PATCH = 16
       # the prerelease identifier
       PRERELEASE = 'rails-4.0'
 
