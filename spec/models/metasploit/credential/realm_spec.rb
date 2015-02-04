@@ -80,12 +80,6 @@ describe Metasploit::Credential::Realm do
     end
   end
 
-  context 'mass assignment security' do
-    it { should allow_mass_assignment_of(:key) }
-    it { should allow_mass_assignment_of(:value) }
-  end
-
-
   context 'search' do
     context 'attributes' do
       let(:base_class) {
