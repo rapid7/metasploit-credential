@@ -3268,13 +3268,6 @@ CREATE INDEX index_refs_on_name ON refs USING btree (name);
 
 
 --
--- Name: index_services_on_host_id_and_port_and_proto; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_services_on_host_id_and_port_and_proto ON services USING btree (host_id, port, proto);
-
-
---
 -- Name: index_services_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -3679,6 +3672,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140922170030');
 INSERT INTO schema_migrations (version) VALUES ('20150106201450');
 
 INSERT INTO schema_migrations (version) VALUES ('20150112203945');
+
+INSERT INTO schema_migrations (version) VALUES ('20150205192745');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
