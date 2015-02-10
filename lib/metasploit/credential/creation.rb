@@ -36,17 +36,19 @@ module Metasploit
         private  = nil
         public   = nil
         old_core = nil
+        old_realm_id = nil
 
         retry_transaction do
           private  = Metasploit::Credential::Password.where(data: password).first_or_create!
           public   = Metasploit::Credential::Public.where(username: username).first_or_create!
           old_core = Metasploit::Credential::Core.find(core_id)
+          old_realm_id = old_core.realm.id if old_core.realm
         end
 
         core = nil
 
         retry_transaction do
-          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: nil, workspace_id: old_core.workspace_id).first_or_initialize
+          core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: old_realm_id, workspace_id: old_core.workspace_id).first_or_initialize
           if core.origin_id.nil?
             origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
             core.origin = origin
@@ -206,10 +208,10 @@ module Metasploit
           opts[:task_id] ||= self[:task].record.id
         end
 
-        access_level       = opts.fetch(:access_level, nil)
         core               = opts.fetch(:core)
+        access_level       = opts.fetch(:access_level, nil)
         last_attempted_at  = opts.fetch(:last_attempted_at, nil)
-        status             = opts.fetch(:status)
+        status             = opts.fetch(:status, Metasploit::Model::Login::Status::UNTRIED)
 
         login_object = nil
         retry_transaction do
