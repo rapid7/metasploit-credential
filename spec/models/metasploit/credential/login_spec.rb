@@ -196,7 +196,7 @@ describe Metasploit::Credential::Login do
     end
 
     it { should validate_presence_of :service }
-    it { should ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
+    it { should validate_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
       include_context 'Mdm::Workspace'

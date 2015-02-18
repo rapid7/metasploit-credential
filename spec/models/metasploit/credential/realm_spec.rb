@@ -100,7 +100,7 @@ describe Metasploit::Credential::Realm do
 
   context 'validations' do
     context 'on #key' do
-      it { should ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
+      it { should validate_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
       it { should validate_presence_of :key }
     end
 
