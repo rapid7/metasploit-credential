@@ -139,7 +139,7 @@ If your changes are incompatible with the previous branch's API, then increment 
 - [ ] Following the rules for [semantic versioning 2.0](http://semver.org/spec/v2.0.0.html), update [`MINOR`](lib/metasploit/credential/version.rb) and [`PATCH`](lib/metasploit/credential/version.rb) and commit the changes.
 
 ## MRI Ruby
-- [ ] `rvm use ruby-1.9.3@metasploit_data_models`
+- [ ] `rvm use ruby-2.1@metasploit_data_models`
 - [ ] `rm Gemfile.lock`
 - [ ] `bundle install`
 - [ ] `rake release`
