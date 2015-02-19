@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :metasploit_credential_login,
           class: Metasploit::Credential::Login do
-    ignore do
+    transient do
       host {
         FactoryGirl.build(
           :mdm_host, workspace: workspace
