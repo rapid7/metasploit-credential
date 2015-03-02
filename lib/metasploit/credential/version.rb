@@ -9,6 +9,9 @@ module Metasploit
       # The patch number, scoped to the {MINOR} version number.
       PATCH = 0
 
+      # the prerelease identifier
+      PRERELEASE = 'MSP-12174-metasploit-credential-deprecation-warnings'
+
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
       #

@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :metasploit_credential_origin_service,
           class: Metasploit::Credential::Origin::Service do
-    ignore do
+    transient do
       module_type { generate :metasploit_credential_origin_service_module_type }
       reference_name { generate :metasploit_credential_origin_service_reference_name }
     end
