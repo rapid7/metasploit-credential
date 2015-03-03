@@ -32,5 +32,93 @@ describe Metasploit::Credential::PostgresMD5 do
     end
   end
 
+  context 'callbacks' do
+    context 'before_validation' do
+      context '#data' do
+        subject(:data) do
+          postgres_md5.data
+        end
+
+        let(:postgres_md5) do
+          FactoryGirl.build(
+            :metasploit_credential_postgres_md5,
+            data: given_data
+          )
+        end
+
+        before(:each) do
+          postgres_md5.valid?
+        end
+
+        context 'with nil' do
+          let(:given_data) do
+            nil
+          end
+
+          it { should be_nil }
+        end
+
+        context 'with upper case characters' do
+          let(:given_data) do
+            'ABCDEF1234567890'
+          end
+
+          it 'makes them lower case' do
+            expect(data).to eq(given_data.downcase)
+          end
+        end
+
+        context 'with all lower case characters' do
+          let(:given_data) do
+            'abcdef1234567890'
+          end
+
+          it 'does not change the case' do
+            expect(data).to eq(given_data)
+          end
+        end
+      end
+    end
+  end
+
+  context 'factories' do
+    context 'metasploit_credential_ntlm_hash' do
+      subject(:metasploit_credential_postgres_md5) do
+        FactoryGirl.build(:metasploit_credential_postgres_md5)
+      end
+
+      it { should be_valid }
+    end
+  end
+
+  context 'validations' do
+    context '#data_format' do
+      subject(:data_errors) do
+        postgres_md5.errors[:data]
+      end
+
+      let(:data) { "md5#{SecureRandom.hex(16)}" }
+
+      let(:postgres_md5) do
+        FactoryGirl.build(
+          :metasploit_credential_postgres_md5,
+          data: data
+        )
+      end
+
+      context 'with a valid postgres md5 hash' do
+        it 'should be valid' do
+          expect(postgres_md5).to be_valid
+        end
+      end
+
+      context 'with an invalid postgres md5 hash' do
+        let(:data) { "invalidstring" }
+        it 'should not be valid' do
+          expect(postgres_md5).to_not be_valid
+        end
+      end
+    end
+  end
 
 end
