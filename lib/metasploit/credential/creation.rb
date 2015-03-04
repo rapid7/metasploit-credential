@@ -396,6 +396,9 @@ module Metasploit
               when :ntlm_hash
                 private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
                 private_object.jtr_format = 'nt,lm'
+              when :postgres_md5
+                private_object = Metasploit::Credential::PostgresMD5.where(data: private_data).first_or_create
+                private_object.jtr_format = 'raw-md5,postgres'
               when :nonreplayable_hash
                 private_object = Metasploit::Credential::NonreplayableHash.where(data: private_data).first_or_create
                 if opts[:jtr_format].present?
