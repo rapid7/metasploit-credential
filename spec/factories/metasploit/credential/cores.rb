@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :metasploit_credential_core,
           class: Metasploit::Credential::Core do
-    transient do
+    ignore do
       origin_factory { generate :metasploit_credential_core_origin_factory }
       private_factory { generate :metasploit_credential_core_private_factory }
       realm_factory { generate :metasploit_credential_core_realm_factory }
@@ -34,25 +34,25 @@ FactoryGirl.define do
     }
 
     factory :metasploit_credential_core_import do
-      transient do
+      ignore do
         origin_factory :metasploit_credential_origin_import
       end
     end
 
     factory :metasploit_credential_core_manual do
-      transient do
+      ignore do
         origin_factory :metasploit_credential_origin_manual
       end
     end
 
     factory :metasploit_credential_core_service do
-      transient do
+      ignore do
         origin_factory :metasploit_credential_origin_service
       end
     end
 
     factory :metasploit_credential_core_session do
-      transient do
+      ignore do
         origin_factory :metasploit_credential_origin_session
       end
     end

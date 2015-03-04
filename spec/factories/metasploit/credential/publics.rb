@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :metasploit_credential_public,
           class: Metasploit::Credential::Username do
-    transient do
+    ignore do
       public_factory { [
         :metasploit_credential_username,
         :metasploit_credential_blank_username
