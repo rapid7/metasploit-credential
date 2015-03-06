@@ -122,6 +122,14 @@ class Metasploit::Credential::Exporter::Pwdump
     "#{creds_data[:username]} #{creds_data[:private_data]}"
   end
 
+  # Format a {Metasploit::Credential::Public} and a {Metasploit::Credential::PostgresMD5} for output
+  # @param login [Metasploit::Credential::Login]
+  # @return [String]
+  def format_postgres_md5(login)
+    creds_data = data_for_login(login)
+    "#{creds_data[:username]}:#{creds_data[:private_data]}"
+  end
+
   # Returns a string for the host/service/port/proto/service name combination in the pwdump file.
   # This string is added to make it easier for a human to scan the file.
   # @param login [Metasploit::Credential::Login] the login to look at

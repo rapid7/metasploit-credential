@@ -83,6 +83,29 @@ describe Metasploit::Credential::Exporter::Pwdump do
       end
     end
 
+    describe "PostgresMD5" do
+      let(:private){ FactoryGirl.build :metasploit_credential_postgres_md5 }
+
+      before(:each) do
+        core.private = private
+      end
+
+      it 'should have the proper formatting with extant data' do
+        exporter.format_postgres_md5(login).should == "#{login.core.public.username}:#{login.core.private.data}"
+      end
+
+      it 'should have the proper formatting with a missing public' do
+        login.core.public.username = ""
+        exporter.format_postgres_md5(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.core.private.data}"
+      end
+
+      it 'should have the proper formatting with a missing private' do
+        login.core.private.data = ""
+        exporter.format_postgres_md5(login).should == "#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}"
+      end
+
+    end
+
     describe "SMB net hashes" do
       describe "v1" do
         describe "netlm" do
