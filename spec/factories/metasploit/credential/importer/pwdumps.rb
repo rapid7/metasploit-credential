@@ -38,6 +38,10 @@ metasploit_credential_public_username1 metasploit_credential_password2
 
 # 192.168.0.3:4567/tcp (snmp)
 metasploit_credential_public_username2 metasploit_credential_password3
+
+# Postgres MD5 Hashes (1 hashes, 1 services)
+# 192.168.0.2:5432/postgres ()
+metasploit_credential_public_username1:md53175bce1d3201d16594cebf9d7eb3f9d
   EOS
   StringIO.new(pwdump_string)
   end
