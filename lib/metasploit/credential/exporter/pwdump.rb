@@ -86,6 +86,7 @@ class Metasploit::Credential::Exporter::Pwdump
       @data[:ntlm]           = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::NTLMHash) }
       @data[:non_replayable] = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::NonreplayableHash) }
       @data[:password]       = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::Password) }
+      @data[:postgres_md5]   = logins.select{ |l| l.core.private.present? && l.core.private.is_a?(Metasploit::Credential::PostgresMD5) }
     end
     @data
   end
