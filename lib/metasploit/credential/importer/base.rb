@@ -15,6 +15,7 @@ module Metasploit
                                       Metasploit::Credential::NonreplayableHash,
                                       Metasploit::Credential::NTLMHash,
                                       Metasploit::Credential::Password,
+                                      Metasploit::Credential::PostgresMD5,
                                       Metasploit::Credential::SSHKey].map(&:name)
 
 
@@ -23,7 +24,8 @@ module Metasploit
         SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES = [
                                       Metasploit::Credential::NonreplayableHash,
                                       Metasploit::Credential::NTLMHash,
-                                      Metasploit::Credential::Password].map(&:name)
+                                      Metasploit::Credential::Password,
+                                      Metasploit::Credential::PostgresMD5].map(&:name)
 
         included do
           include ActiveModel::Validations
