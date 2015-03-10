@@ -25,6 +25,8 @@ class Metasploit::Credential::Importer::Pwdump
   # Matches lines that contain usernames and plaintext passwords
   PLAINTEXT_REGEX                   = /^[\s]*([\x21-\x7f]+)[\s]+([\x21-\x7f]+)?/n
 
+  POSTGRES_REGEX                    = /^[\s]*([\x21-\x7f]+):md5([0-9a-f]{32})$/
+
   # Matches a line that we use to get information for creating {Mdm::Host} and {Mdm::Service} objects
   # TODO: change to use named groups from 1.9+
   SERVICE_COMMENT_REGEX             = /^#[\s]*([0-9.]+):([0-9]+)(\x2f(tcp|udp))?[\s]*(\x28([^\x29]*)\x29)?/n
@@ -97,6 +99,10 @@ class Metasploit::Credential::Importer::Pwdump
             info = parsed_regex_results($1, $2)
             username, private = info[:username], info[:private]
             creds_class = Metasploit::Credential::NonreplayableHash
+          when POSTGRES_REGEX
+            info = parsed_regex_results($1,"md5#{$2}")
+            username, private = info[:username], info[:private]
+            creds_class = Metasploit::Credential::PostgresMD5
           when PLAINTEXT_REGEX
             info = parsed_regex_results($1, $2, true)
             username, private = info[:username], info[:private]

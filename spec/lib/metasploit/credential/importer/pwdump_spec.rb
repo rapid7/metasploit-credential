@@ -58,7 +58,7 @@ describe Metasploit::Credential::Importer::Pwdump do
   describe "#import!" do
     describe "creating Credential objects" do
       it 'should create the proper number of Cores' do
-        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Core, :count).from(0).to(5)
+        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Core, :count).from(0).to(6)
       end
 
       it 'should create Cores with the same Origin' do
@@ -69,7 +69,7 @@ describe Metasploit::Credential::Importer::Pwdump do
       end
 
       it 'should create the proper number of Logins' do
-        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Login, :count).from(0).to(5)
+        expect{pwdump_importer.import!}.to change(Metasploit::Credential::Login, :count).from(0).to(6)
       end
 
       it 'should create the proper number of Publics' do
@@ -89,6 +89,10 @@ describe Metasploit::Credential::Importer::Pwdump do
           expect{pwdump_importer.import!}.to change(Metasploit::Credential::Password, :count).from(0).to(2)
         end
 
+        it 'creates 1 PostgresMD5' do
+          expect{pwdump_importer.import!}.to change(Metasploit::Credential::PostgresMD5, :count).from(0).to(1)
+        end
+
         # Legacy files may have these lines when missing SSH key files
         it 'should not create a Private from a "Warning" line' do
           pwdump_importer.import!
@@ -105,7 +109,7 @@ describe Metasploit::Credential::Importer::Pwdump do
 
     describe "creating Service objects" do
       it 'should create the proper number of Services' do
-        expect{pwdump_importer.import!}.to change(Mdm::Service, :count).from(0).to(2)
+        expect{pwdump_importer.import!}.to change(Mdm::Service, :count).from(0).to(3)
       end
     end
 
