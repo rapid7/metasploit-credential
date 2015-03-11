@@ -20,7 +20,7 @@ class CreateMetasploitCredentialLogins < ActiveRecord::Migration
       #
 
       t.datetime :last_attempted_at, null: true
-      t.timestamps
+      t.timestamps null: false
     end
 
     change_table :metasploit_credential_logins do |t|
