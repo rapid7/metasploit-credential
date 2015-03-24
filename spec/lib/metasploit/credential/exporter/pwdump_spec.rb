@@ -13,7 +13,7 @@ describe Metasploit::Credential::Exporter::Pwdump do
     describe "associated Mdm::Service objects" do
       it 'should properly format the service information' do
         service = login.service
-        exporter.format_service_for_login(login).should == "#{service.host.address}:#{service.port}/#{service.proto} (#{service.name})"
+        exporter.format_service_for_login(login).should == "#{service.host.address.to_s}:#{service.port}/#{service.proto} (#{service.name})"
       end
     end
 
