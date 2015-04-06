@@ -51,6 +51,12 @@ class Metasploit::Credential::Private < ActiveRecord::Base
   #   @return [DateTime]
 
   #
+  # Mass Assignment Security
+  #
+
+  attr_accessible :data
+
+  #
   #
   # Search
   #

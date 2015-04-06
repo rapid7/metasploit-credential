@@ -37,6 +37,12 @@ class Metasploit::Credential::Origin::Session < ActiveRecord::Base
   #     `'post'.`
 
   #
+  # Mass Assignment Security
+  #
+
+  attr_accessible :post_reference_name
+
+  #
   # Validations
   #
 
