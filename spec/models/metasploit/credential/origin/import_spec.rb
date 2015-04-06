@@ -35,4 +35,12 @@ describe Metasploit::Credential::Origin::Import do
 
     it { should be_valid }
   end
+
+  context 'mass assignment security' do
+    it { should_not allow_mass_assignment_of :created_at }
+    it { should allow_mass_assignment_of :filename }
+    it { should_not allow_mass_assignment_of :task }
+    it { should_not allow_mass_assignment_of :task_id }
+    it { should_not allow_mass_assignment_of :updated_at }
+  end
 end
