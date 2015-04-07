@@ -6,6 +6,7 @@ module Metasploit::Credential::Importer
   autoload :Base
   autoload :Core
   autoload :MsfPwdump
-  autoload :Zip
   autoload :Multi
+  autoload :Pwdump
+  autoload :Zip
 end

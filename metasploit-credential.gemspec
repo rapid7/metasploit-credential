@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir['{app,config,db,lib,spec}/**/*'] + ['CONTRIBUTING.md', 'LICENSE', 'Rakefile', 'README.md'] - Dir['spec/dummy/log/*.log']
   s.test_files = s.files.grep(/spec/)
+  s.require_paths = %w{app/models app/validators lib}
 
   s.required_ruby_version = '>= 2.1'
 
