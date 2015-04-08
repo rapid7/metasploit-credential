@@ -1,3 +1,5 @@
+# @note Must use nested module as `metasploit/credential/version` is used in `metasploit-credential.gemspec` before
+#   `metasploit/credential` itself is expected to be loaded.
 module Metasploit
   module Credential
     # Holds components of {VERSION} as defined by {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0}.
@@ -10,6 +12,7 @@ module Metasploit
       PATCH = 3
       # the prerelease identifier
       PRERELEASE = 'rails-4.0'
+
 
       # The full version string, including the {MAJOR}, {MINOR}, {PATCH}, and optionally, the {PRERELEASE} in the
       # {http://semver.org/spec/v2.0.0.html semantic versioning v2.0.0} format.
