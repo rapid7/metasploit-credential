@@ -23,8 +23,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'metasploit-concern'
   # Various Metasploit::Credential records have associations to Mdm records
   s.add_runtime_dependency 'metasploit_data_models'
-  # # Metasploit::Model::Search
+  # Metasploit::Model::Search
   s.add_runtime_dependency 'metasploit-model'
+  # Rails 4 has switched over to strong params, we still need protected_attributes
+  s.add_runtime_dependency 'protected_attributes'
+
   s.add_runtime_dependency 'railties'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'

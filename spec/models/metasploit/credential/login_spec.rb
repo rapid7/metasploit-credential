@@ -153,6 +153,18 @@ describe Metasploit::Credential::Login do
     end
   end
 
+  context 'mass assignment security' do
+    it { should allow_mass_assignment_of(:access_level) }
+    it { should_not allow_mass_assignment_of(:core) }
+    it { should_not allow_mass_assignment_of(:core_id) }
+    it { should_not allow_mass_assignment_of(:created_at) }
+    it { should allow_mass_assignment_of(:last_attempted_at) }
+    it { should_not allow_mass_assignment_of(:service) }
+    it { should_not allow_mass_assignment_of(:service_id) }
+    it { should allow_mass_assignment_of(:status) }
+    it { should_not allow_mass_assignment_of(:updated_at) }
+  end
+
   context 'search' do
     let(:base_class) {
       described_class

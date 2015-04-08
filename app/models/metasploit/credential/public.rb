@@ -36,6 +36,12 @@ class Metasploit::Credential::Public < ActiveRecord::Base
   #   @return [String]
 
   #
+  # Mass-Assignment Security
+  #
+
+  attr_accessible :username
+
+  #
   #
   # Search
   #

@@ -40,6 +40,14 @@ describe Metasploit::Credential::Origin::Service do
     end
   end
 
+  context 'mass assignment security' do
+    it { should_not allow_mass_assignment_of :created_at }
+    it { should allow_mass_assignment_of :module_full_name }
+    it { should_not allow_mass_assignment_of :service }
+    it { should_not allow_mass_assignment_of :service_id }
+    it { should_not allow_mass_assignment_of :updated_at }
+  end
+
   context 'validations' do
     context '#module_full_name' do
       # there is no way to test all values that match and do not match a regex, so testing by value is all that's

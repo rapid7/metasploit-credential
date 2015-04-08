@@ -50,6 +50,13 @@ class Metasploit::Credential::Realm < ActiveRecord::Base
   #   @return [String]
 
   #
+  # Mass Assignment Security
+  #
+
+  attr_accessible :key
+  attr_accessible :value
+
+  #
   # Search
   #
 

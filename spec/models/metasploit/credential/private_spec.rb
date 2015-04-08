@@ -26,6 +26,14 @@ describe Metasploit::Credential::Private do
     end
   end
 
+  context 'mass assignement security' do
+    it { should_not allow_mass_assignment_of :created_at }
+    it { should allow_mass_assignment_of :data }
+    it { should_not allow_mass_assignment_of :id }
+    it { should_not allow_mass_assignment_of :updated_at }
+    it { should_not allow_mass_assignment_of :type }
+  end
+
   context 'validations' do
     context 'data' do
       it { should validate_non_nilness_of :data }

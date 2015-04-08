@@ -46,6 +46,12 @@ class Metasploit::Credential::Origin::Service < ActiveRecord::Base
   #   @return [String] `'exploit/<Mdm::Module::Detail#refname>'` if an exploit module was used.
 
   #
+  # Mass Assignment Security
+  #
+
+  attr_accessible :module_full_name
+
+  #
   # Validations
   #
 

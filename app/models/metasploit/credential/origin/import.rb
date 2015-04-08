@@ -41,5 +41,13 @@ class Metasploit::Credential::Origin::Import < ActiveRecord::Base
   #
   #   @return [DateTime]
 
+
+  #
+  # Mass Assignment Security
+  #
+
+  attr_accessible :filename
+
+
   Metasploit::Concern.run(self)
 end
