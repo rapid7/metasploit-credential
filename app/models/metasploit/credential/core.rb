@@ -277,9 +277,18 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer]
   # @return [String]
   def self.cores_from_host_sql(host_id)
+    left = origin_service_host_id(host_id).ast
+    right = origin_session_host_id(host_id).ast
+
+    # TODO: Kill with fire. ActiveRecord 4.0.x leaks order/limit scopes
+    # We strip out order/limit statement from the subquery since it's invalid SQL
+    # https://github.com/rails/rails/issues/14003
+    left.orders = []
+    right.orders = []
+
     Arel::Nodes::Union.new(
-      origin_service_host_id(host_id).ast,
-      origin_session_host_id(host_id).ast
+      left,
+      right
     ).to_sql
   end
 
