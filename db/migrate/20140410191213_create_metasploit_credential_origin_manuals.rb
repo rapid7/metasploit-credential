@@ -11,7 +11,7 @@ class CreateMetasploitCredentialOriginManuals < ActiveRecord::Migration
       # Timestamps
       #
 
-      t.timestamps null: false
+      t.timestamps
     end
 
     #

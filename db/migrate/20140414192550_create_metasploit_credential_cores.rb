@@ -21,7 +21,7 @@ class CreateMetasploitCredentialCores < ActiveRecord::Migration
       # Timestamps
       #
 
-      t.timestamps null: false
+      t.timestamps
     end
 
     change_table :metasploit_credential_cores do |t|

@@ -11,7 +11,7 @@ class CreateMetasploitCredentialPublics < ActiveRecord::Migration
       # Timestamps
       #
 
-      t.timestamps null: false
+      t.timestamps
     end
 
     change_table :metasploit_credential_publics do |t|
