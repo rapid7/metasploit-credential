@@ -95,14 +95,6 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   before_validation :blank_to_nil
 
   #
-  # Mass Assignment Security
-  #
-
-  attr_accessible :access_level
-  attr_accessible :last_attempted_at
-  attr_accessible :status
-
-  #
   #
   # Search
   #

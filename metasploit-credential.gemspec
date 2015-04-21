@@ -20,9 +20,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.1'
 
-  # Rails 4 has switched over to strong params, we still need protected_attributes
-  s.add_runtime_dependency 'protected_attributes'
-
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern'
   # Various Metasploit::Credential records have associations to Mdm records
