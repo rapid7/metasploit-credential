@@ -13,7 +13,7 @@ class CreateMetasploitCredentialOriginCrackedPasswords < ActiveRecord::Migration
       # Timestamps
       #
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     #

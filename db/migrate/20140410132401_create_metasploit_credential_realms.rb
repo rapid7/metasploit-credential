@@ -4,7 +4,7 @@ class CreateMetasploitCredentialRealms < ActiveRecord::Migration
       t.string :key, null: false
       t.string :value, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
