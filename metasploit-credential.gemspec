@@ -6,7 +6,7 @@ require 'metasploit/credential/version'
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
-  s.version     = Metasploit::Credential::GEM_VERSION
+  s.version     = Metasploit::Credential::VERSION
   s.authors     = ['Luke Imhoff', 'Trevor Rosen']
   s.email       = ['luke_imhoff@rapid7.com', 'trevor_rosen@rapid7.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
