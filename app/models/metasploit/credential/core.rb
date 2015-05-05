@@ -280,11 +280,15 @@ class Metasploit::Credential::Core < ActiveRecord::Base
     left = origin_service_host_id(host_id).ast
     right = origin_session_host_id(host_id).ast
 
-    # TODO: Kill with fire. ActiveRecord 4.0.x leaks order/limit scopes
-    # We strip out order/limit statement from the subquery since it's invalid SQL
+    # TODO: Kill with fire. ActiveRecord 4.0.x leaks order/limit/offset scopes
+    # We strip out order/limit/offset statements from the subquery since it's invalid SQL
     # https://github.com/rails/rails/issues/14003
     left.orders = []
     right.orders = []
+    left.limit = nil
+    right.limit = nil
+    left.offset = nil
+    right.offset = nil
 
     Arel::Nodes::Union.new(
       left,
