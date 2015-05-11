@@ -839,7 +839,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         I18n.translate!('activerecord.errors.models.metasploit/credential/core.attributes.base.public_for_ssh_key')
       end
 
-      let(:core) do
+      subject(:core) do
         FactoryGirl.build(
             :metasploit_credential_core,
             private: FactoryGirl.build(:metasploit_credential_ssh_key),
@@ -847,7 +847,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         )
       end
 
-      it { core.should be_valid }
+      it { is_expected.to be_valid }
 
       context "when the Public is missing" do
         before(:each) do
@@ -855,7 +855,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         end
 
         it 'should not be valid if Private is an SSHKey and Public is missing' do
-          core.should_not be_valid
+          expect(core).not_to be_valid
         end
 
         it 'should show the proper error' do

@@ -16,7 +16,7 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
     describe "without a filename" do
       it 'should not be valid' do
         pwdump_importer.filename = nil
-        pwdump_importer.should_not be_valid
+        expect(pwdump_importer).not_to be_valid
       end
     end
   end

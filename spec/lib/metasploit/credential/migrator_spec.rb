@@ -62,9 +62,9 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it "should be created for each Mdm::Cred" do
-          Metasploit::Credential::Public.where(username: cred1.user).should_not be_blank
-          Metasploit::Credential::Public.where(username: cred2.user).should_not be_blank
-          Metasploit::Credential::Public.where(username: cred3.user).should_not be_blank
+          expect(Metasploit::Credential::Public.where(username: cred1.user)).not_to be_blank
+          expect(Metasploit::Credential::Public.where(username: cred2.user)).not_to be_blank
+          expect(Metasploit::Credential::Public.where(username: cred3.user)).not_to be_blank
         end
       end
 
@@ -75,9 +75,9 @@ RSpec.describe Metasploit::Credential::Migrator do
 
         it "should be created for each Mdm::Cred" do
           migrator.convert_creds_in_workspace(workspace)
-          Metasploit::Credential::Password.where(data: cred1.pass).should_not be_blank
-          Metasploit::Credential::Password.where(data: cred2.pass).should_not be_blank
-          Metasploit::Credential::Password.where(data: cred3.pass).should_not be_blank
+          expect(Metasploit::Credential::Password.where(data: cred1.pass)).not_to be_blank
+          expect(Metasploit::Credential::Password.where(data: cred2.pass)).not_to be_blank
+          expect(Metasploit::Credential::Password.where(data: cred3.pass)).not_to be_blank
         end
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new NTLMHash in the database' do
-          Metasploit::Credential::NTLMHash.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::NTLMHash.where(data: cred.pass)).not_to be_blank
         end
       end
 
@@ -126,7 +126,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           end
 
           it 'should create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+            expect(Metasploit::Credential::SSHKey.where(data: ssh_key_content)).not_to be_blank
           end
         end
 
@@ -144,7 +144,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           end
 
           it 'should create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+            expect(Metasploit::Credential::SSHKey.where(data: ssh_key_content)).not_to be_blank
           end
         end
 
@@ -182,7 +182,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new Password in the database' do
-          Metasploit::Credential::Password.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::Password.where(data: cred.pass)).not_to be_blank
         end
       end
 
@@ -200,7 +200,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new NonreplayableHash in the database' do
-          Metasploit::Credential::NonreplayableHash.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::NonreplayableHash.where(data: cred.pass)).not_to be_blank
         end
       end
     end

@@ -140,7 +140,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     it 'should not be opened in binmode' do
-      core_exporter.output.should_not be_binmode
+      expect(core_exporter.output).not_to be_binmode
     end
   end
 
@@ -178,7 +178,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
-          core_exporter.data.should_not include(login2)
+          expect(core_exporter.data).not_to include(login2)
         end
       end
 
@@ -200,7 +200,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
-          core_exporter.data.should_not include(core2)
+          expect(core_exporter.data).not_to include(core2)
         end
       end
 
@@ -375,7 +375,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
           end
-          manifest_entry.should_not be_blank
+          expect(manifest_entry).not_to be_blank
         end
 
         it 'should not contain a keys directory' do
@@ -406,7 +406,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
           end
-          manifest_entry.should_not be_blank
+          expect(manifest_entry).not_to be_blank
         end
 
         it 'should contain a keys directory' do
@@ -414,7 +414,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             keys_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME).first
           end
-          keys_entry.should_not be_blank
+          expect(keys_entry).not_to be_blank
         end
 
         describe "the keys directory" do
