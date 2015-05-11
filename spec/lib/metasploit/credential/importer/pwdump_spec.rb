@@ -49,7 +49,7 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
     context "with the dehex flag" do
       it 'should dehex the string with the Metasploit::Credential::Text#dehex method' do
         string = "mah-hard-passwerd"
-        Metasploit::Credential::Text.should_receive(:dehex).with string
+        expect(Metasploit::Credential::Text).to receive(:dehex).with string
         pwdump_importer.blank_or_string(string, true)
       end
     end

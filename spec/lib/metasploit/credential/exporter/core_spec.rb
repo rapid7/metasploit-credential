@@ -236,7 +236,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
       end
 
       it 'should grab data using the proper scope' do
-        Metasploit::Credential::Core.should_receive(:workspace_id).with(core_exporter.workspace.id)
+        expect(Metasploit::Credential::Core).to receive(:workspace_id).with(core_exporter.workspace.id)
         core_exporter.export_data
       end
     end
@@ -247,7 +247,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
       end
 
       it 'should grab data using the proper scope' do
-        Metasploit::Credential::Login.should_receive(:in_workspace_including_hosts_and_services).with(core_exporter.workspace)
+        expect(Metasploit::Credential::Login).to receive(:in_workspace_including_hosts_and_services).with(core_exporter.workspace)
         core_exporter.export_data
       end
     end
