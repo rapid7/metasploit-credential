@@ -14,8 +14,6 @@ module Metasploit
       MINOR = 14
       # The patch version number, scoped to the {MAJOR} and {MINOR} version numbers.
       PATCH = 7
-      # The prerelease version, scoped to the {MAJOR}, {MINOR}, and {PATCH} version numbers.
-      PRERELEASE = 'metasploit-version'
 
       # The full version string, including the {Metasploit::Credential::Version::MAJOR},
       # {Metasploit::Credential::Version::MINOR}, {Metasploit::Credential::Version::PATCH}, and optionally, the
