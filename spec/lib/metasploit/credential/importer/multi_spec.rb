@@ -39,7 +39,7 @@ RSpec.describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(valid_csv_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should eq(true)
+          expect(multi_importer.csv?).to eq(true)
         end
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(unsupported_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should eq(false)
+          expect(multi_importer.csv?).to eq(false)
         end
       end
     end

@@ -483,7 +483,7 @@ RSpec.describe Metasploit::Credential::Creation do
           task_id: task.id
       }
       core = test_object.create_credential(opts)
-      core.tasks.should include(task)
+      expect(core.tasks).to include(task)
     end
 
   end
@@ -526,7 +526,7 @@ RSpec.describe Metasploit::Credential::Creation do
           task_id: task.id
       }
       core = test_object.create_credential_core(opts)
-      core.tasks.should include(task)
+      expect(core.tasks).to include(task)
     end
 
   end
@@ -563,7 +563,7 @@ RSpec.describe Metasploit::Credential::Creation do
         status: Metasploit::Model::Login::Status::SUCCESSFUL,
       }
       login = test_object.create_credential_login(login_data)
-      login.tasks.should include(task)
+      expect(login.tasks).to include(task)
 
     end
 

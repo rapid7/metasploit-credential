@@ -522,7 +522,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       subject(:login){ FactoryGirl.create :metasploit_credential_login, core: core}
 
       it 'should find the right objects' do
-        Metasploit::Credential::Login.in_workspace_including_hosts_and_services(service.host.workspace).should include(login)
+        expect(Metasploit::Credential::Login.in_workspace_including_hosts_and_services(service.host.workspace)).to include(login)
       end
     end
   end

@@ -32,7 +32,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:input].should include error
+        expect(zip_importer.errors[:input]).to include error
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:input].should include error
+        expect(zip_importer.errors[:input]).to include error
       end
     end
 

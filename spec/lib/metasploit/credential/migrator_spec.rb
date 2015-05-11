@@ -162,7 +162,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           end
 
           it 'should not create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.count.should be_zero
+            expect(Metasploit::Credential::SSHKey.count).to be_zero
           end
         end
 

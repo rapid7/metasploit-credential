@@ -64,8 +64,8 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
       it 'should create Cores with the same Origin' do
         pwdump_importer.import!
         origins = Metasploit::Credential::Core.all.collect(&:origin).uniq
-        origins.size.should be(1)
-        origins.first.id.should be(origin.id)
+        expect(origins.size).to be(1)
+        expect(origins.first.id).to be(origin.id)
       end
 
       it 'should create the proper number of Logins' do
@@ -96,7 +96,7 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
         # Legacy files may have these lines when missing SSH key files
         it 'should not create a Private from a "Warning" line' do
           pwdump_importer.import!
-          Metasploit::Credential::Private.where(data:'missing').should be_blank
+          expect(Metasploit::Credential::Private.where(data:'missing')).to be_blank
         end
       end
     end

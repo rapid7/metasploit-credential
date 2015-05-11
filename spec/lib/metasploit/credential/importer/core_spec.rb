@@ -36,7 +36,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
         it 'should report the error being invalid private type' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:private_credential_type].should include error
+          expect(core_csv_importer.errors[:private_credential_type]).to include error
         end
       end
 
@@ -54,7 +54,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
         it 'should report the error being invalid headers' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:input].should include error
+          expect(core_csv_importer.errors[:input]).to include error
         end
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
           it 'should report the error being incorrect headers' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 
@@ -144,7 +144,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
           it 'should report the error being malformed CSV' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 
@@ -161,7 +161,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
           it 'should show the proper error message' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 

@@ -860,7 +860,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
 
         it 'should show the proper error' do
           core.valid?
-          core.errors[:base].should include(error)
+          expect(core.errors[:base]).to include(error)
         end
       end
 
