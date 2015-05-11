@@ -26,15 +26,20 @@ require 'rspec/rails'
 # in spec/support/ and its subdirectories from this gem and metasploit-concern
 #
 
-rooteds = [
-    Metasploit::Concern,
-    Metasploit::Credential::Engine,
-    Metasploit::Model::Engine,
-    MetasploitDataModels::Engine
+
+# Use find_all_by_name instead of find_by_name as find_all_by_name will return pre-release versions
+gem_specification = Gem::Specification.find_all_by_name('metasploit-version').first
+
+roots = [
+    gem_specification.gem_dir,
+    Metasploit::Concern.root,
+    Metasploit::Credential::Engine.root,
+    Metasploit::Model::Engine.root,
+    MetasploitDataModels::Engine.root
 ]
 
-rooteds.each do |rooted|
-  Dir[rooted.root.join('spec', 'support', '**', '*.rb')].each do |f|
+roots.each do |root|
+  Dir[File.join(root, 'spec', 'support', '**', '*.rb')].each do |f|
     require f
   end
 end
