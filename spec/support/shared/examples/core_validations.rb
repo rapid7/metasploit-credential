@@ -51,10 +51,6 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
     # lets
     #
 
-    let(:first_private) {
-      FactoryGirl.create(:metasploit_credential_private)
-    }
-
     let(:first_workspace) {
       FactoryGirl.create(:mdm_workspace)
     }
@@ -113,6 +109,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
   context 'database' do
     context 'indices' do
       context 'foreign keys' do
+        let(:first_private) {
+          FactoryGirl.create(:metasploit_credential_private)
+        }
+
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
         }
@@ -589,6 +589,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       it { is_expected.to validate_presence_of :workspace }
 
       context 'of uniqueness' do
+        let(:first_private) {
+          FactoryGirl.create(:metasploit_credential_private)
+        }
+
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
         }
