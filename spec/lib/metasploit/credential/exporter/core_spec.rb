@@ -174,7 +174,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
       let(:path_fragment){ "export-#{Time.now.to_s}" }
 
       before(:each) do
-        core_exporter.stub(:output_final_subdirectory_name).and_return(path_fragment)
+        allow(core_exporter).to receive(:output_final_subdirectory_name).and_return(path_fragment)
       end
 
       it 'should include a special time-stamped directory to contain the export data being staged' do
@@ -186,12 +186,12 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
   describe "#data" do
     describe "in LOGIN_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
       describe "when whitelist_ids is present" do
         before(:each) do
-          core_exporter.stub(:whitelist_ids).and_return([login1.id])
+          allow(core_exporter).to receive(:whitelist_ids).and_return([login1.id])
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
@@ -208,12 +208,12 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
     describe "in CORE_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
       describe "when whitelist_ids is present" do
         before(:each) do
-          core_exporter.stub(:whitelist_ids).and_return([core1.id])
+          allow(core_exporter).to receive(:whitelist_ids).and_return([core1.id])
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
@@ -232,7 +232,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
   describe "#export_data" do
     describe "in CORE_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
       it 'should grab data using the proper scope' do
@@ -243,7 +243,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
     describe "in LOGIN_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
       it 'should grab data using the proper scope' do
@@ -257,7 +257,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     describe "#render_manifest_and_output_keys" do
       describe "in CORE_MODE" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
@@ -304,7 +304,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
       describe "in LOGIN_MODE" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
@@ -382,7 +382,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     describe "#render_zip" do
       describe "when there are no SSH keys in the dataset" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
         end
@@ -413,7 +413,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
                                                  workspace: workspace)}
 
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
         end
