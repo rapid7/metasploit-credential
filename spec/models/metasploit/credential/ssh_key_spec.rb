@@ -18,7 +18,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         FactoryGirl.build(:metasploit_credential_dsa_key)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       it 'has DSA key type' do
         expect(metasploit_credential_dsa_key.data).to match(/-----BEGIN DSA PRIVATE KEY-----/)
@@ -31,7 +31,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         FactoryGirl.build(:metasploit_credential_rsa_key)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       it 'has RSA key type' do
         expect(metasploit_credential_rsa_key.data).to match(/-----BEGIN RSA PRIVATE KEY-----/)
@@ -44,12 +44,12 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         FactoryGirl.build(:metasploit_credential_ssh_key)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
   context 'validations' do
-    it { should validate_presence_of :data }
+    it { is_expected.to validate_presence_of :data }
 
     context 'on #data' do
       subject(:data_errors) do
@@ -92,7 +92,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             false
           end
 
-          it { should include(error) }
+          it { is_expected.to include(error) }
         end
       end
 
@@ -156,7 +156,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               ssh_key.valid?
             end
 
-            it { should be_empty }
+            it { is_expected.to be_empty }
           end
         end
 
@@ -175,7 +175,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             ssh_key.valid?
           end
 
-          it { should include(error) }
+          it { is_expected.to include(error) }
         end
       end
 
@@ -203,7 +203,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             true
           end
 
-          it { should include(error) }
+          it { is_expected.to include(error) }
         end
 
         context 'without #encrypted' do
@@ -255,7 +255,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               cipher.random_key
             end
 
-            it { should be_encrypted }
+            it { is_expected.to be_encrypted }
           end
 
           context 'without encrypted' do
@@ -333,7 +333,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               unencrypted_key.to_pem
             end
 
-            it { should be_a OpenSSL::PKey.const_get(key_type) }
+            it { is_expected.to be_a OpenSSL::PKey.const_get(key_type) }
           end
         end
       end
@@ -359,7 +359,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         nil
       end
 
-      it { should be_nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with DSA key' do
@@ -367,7 +367,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         FactoryGirl.build(:metasploit_credential_dsa_key)
       end
 
-      it { should be_a OpenSSL::PKey::DSA }
+      it { is_expected.to be_a OpenSSL::PKey::DSA }
     end
 
     context 'with RSA key' do
@@ -375,7 +375,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         FactoryGirl.build(:metasploit_credential_rsa_key)
       end
 
-      it { should be_a OpenSSL::PKey::RSA }
+      it { is_expected.to be_a OpenSSL::PKey::RSA }
     end
 
     context 'with nil' do
@@ -419,7 +419,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               private_key
             end
 
-            it { should be_private }
+            it { is_expected.to be_private }
           end
         end
       end

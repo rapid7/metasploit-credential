@@ -5,14 +5,14 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
   context 'database' do
     context 'columns' do
-      it { should have_db_column(:key).of_type(:string).with_options(null: false) }
-      it { should have_db_column(:value).of_type(:string).with_options(null: false) }
+      it { is_expected.to have_db_column(:key).of_type(:string).with_options(null: false) }
+      it { is_expected.to have_db_column(:value).of_type(:string).with_options(null: false) }
 
       it_should_behave_like 'timestamp database columns'
     end
 
     context 'indices' do
-      it { should have_db_index([:key, :value]).unique(true) }
+      it { is_expected.to have_db_index([:key, :value]).unique(true) }
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         FactoryGirl.build(:metasploit_credential_active_directory_domain)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#key' do
         subject(:key) {
@@ -40,7 +40,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         FactoryGirl.build(:metasploit_credential_oracle_system_identifier)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#key' do
         subject(:key) {
@@ -58,7 +58,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         FactoryGirl.build(:metasploit_credential_postgresql_database)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#key' do
         subject(:key) {
@@ -76,13 +76,13 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         FactoryGirl.build(:metasploit_credential_realm)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
   context 'mass assignment security' do
-    it { should allow_mass_assignment_of(:key) }
-    it { should allow_mass_assignment_of(:value) }
+    it { is_expected.to allow_mass_assignment_of(:key) }
+    it { is_expected.to allow_mass_assignment_of(:value) }
   end
 
 
@@ -106,12 +106,12 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
   context 'validations' do
     context 'on #key' do
-      it { should ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
-      it { should validate_presence_of :key }
+      it { is_expected.to ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
+      it { is_expected.to validate_presence_of :key }
     end
 
     context 'on #value' do
-      it { should validate_presence_of :value }
+      it { is_expected.to validate_presence_of :value }
 
       # key cannot be NULL so `validate_uniqueness_of(:value).scoped_to(:key)` does not work because it tries a NULL
       # key
@@ -164,7 +164,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
               existent_realm.value
             end
 
-            it { should include(error) }
+            it { is_expected.to include(error) }
           end
 
           context 'without same #value' do

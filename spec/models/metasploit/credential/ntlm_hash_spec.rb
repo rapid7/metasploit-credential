@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
-  it { should be_a Metasploit::Credential::ReplayableHash }
+  it { is_expected.to be_a Metasploit::Credential::ReplayableHash }
 
   context 'CONSTANTS' do
     context 'DATA_REGEXP' do
@@ -38,7 +38,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
         described_class::LAN_MANAGER_MAX_CHARACTERS
       end
 
-      it { should == 14 }
+      it { is_expected.to eq 14 }
     end
 
     context 'LAN_MANAGER_HEX_DIGEST_REGEXP' do
@@ -101,7 +101,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
             nil
           end
 
-          it { should be_nil }
+          it { is_expected.to be_nil }
         end
 
         context 'with upper case characters' do
@@ -133,7 +133,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
         FactoryGirl.build(:metasploit_credential_ntlm_hash)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
@@ -191,7 +191,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
           super().gsub(':', '')
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
 
       context 'without LAN Manager hex_digest' do
@@ -199,7 +199,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
           ":#{nt_lan_manager_hex_digest}"
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
 
       context 'with incorrect hash length(s)' do
@@ -207,7 +207,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
           "123456:abcdef"
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
     end
   end

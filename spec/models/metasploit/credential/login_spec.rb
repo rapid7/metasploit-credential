@@ -4,9 +4,9 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
-    it { should belong_to(:core).class_name('Metasploit::Credential::Core') }
-    it { should have_one(:host).class_name('Mdm::Host') }
-    it { should belong_to(:service).class_name('Mdm::Service')}
+    it { is_expected.to belong_to(:core).class_name('Metasploit::Credential::Core') }
+    it { is_expected.to have_one(:host).class_name('Mdm::Host') }
+    it { is_expected.to belong_to(:service).class_name('Mdm::Service')}
   end
 
   context 'callbacks' do
@@ -39,7 +39,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               ''
             end
 
-            it { should be_nil }
+            it { is_expected.to be_nil }
           end
 
           context 'with nil' do
@@ -47,7 +47,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should be_nil }
+            it { is_expected.to be_nil }
           end
 
           context 'with present' do
@@ -66,21 +66,21 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
   context 'database' do
     context 'columns' do
-      it { should have_db_column(:access_level).of_type(:string).with_options(null: true) }
-      it { should have_db_column(:last_attempted_at).of_type(:datetime).with_options(null: true) }
-      it { should have_db_column(:status).of_type(:string).with_options(null: false) }
+      it { is_expected.to have_db_column(:access_level).of_type(:string).with_options(null: true) }
+      it { is_expected.to have_db_column(:last_attempted_at).of_type(:datetime).with_options(null: true) }
+      it { is_expected.to have_db_column(:status).of_type(:string).with_options(null: false) }
 
       it_should_behave_like 'timestamp database columns'
 
       context 'foreign keys' do
-        it { should have_db_column(:core_id).of_type(:integer).with_options(null: false) }
-        it { should have_db_column(:service_id).of_type(:integer).with_options(null: false) }
+        it { is_expected.to have_db_column(:core_id).of_type(:integer).with_options(null: false) }
+        it { is_expected.to have_db_column(:service_id).of_type(:integer).with_options(null: false) }
       end
     end
 
     context 'indices' do
-      it { should have_db_index([:core_id, :service_id]).unique(true) }
-      it { should have_db_index([:service_id, :core_id]).unique(true) }
+      it { is_expected.to have_db_index([:core_id, :service_id]).unique(true) }
+      it { is_expected.to have_db_index([:service_id, :core_id]).unique(true) }
     end
   end
 
@@ -92,7 +92,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
         FactoryGirl.build(:metasploit_credential_login)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#status' do
         subject(:metasploit_credential_login) do
@@ -107,7 +107,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::DENIED_ACCESS
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'with Metasploit::Model::Login::Status::DISABLED' do
@@ -115,7 +115,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::DISABLED
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'with Metasploit::Model::Login::Status::LOCKED_OUT' do
@@ -123,7 +123,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::LOCKED_OUT
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'with Metasploit::Model::Login::Status::SUCCESSFUL' do
@@ -131,7 +131,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::SUCCESSFUL
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'with Metasploit::Model::Login::Status::UNABLE_TO_CONNECT' do
@@ -139,7 +139,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::UNABLE_TO_CONNECT
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'with Metasploit::Model::Login::Status::UNTRIED' do
@@ -147,21 +147,21 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             Metasploit::Model::Login::Status::UNTRIED
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
       end
     end
   end
 
   context 'mass assignment security' do
-    it { should allow_mass_assignment_of(:access_level) }
+    it { is_expected.to allow_mass_assignment_of(:access_level) }
     it { should_not allow_mass_assignment_of(:core) }
     it { should_not allow_mass_assignment_of(:core_id) }
     it { should_not allow_mass_assignment_of(:created_at) }
-    it { should allow_mass_assignment_of(:last_attempted_at) }
+    it { is_expected.to allow_mass_assignment_of(:last_attempted_at) }
     it { should_not allow_mass_assignment_of(:service) }
     it { should_not allow_mass_assignment_of(:service_id) }
-    it { should allow_mass_assignment_of(:status) }
+    it { is_expected.to allow_mass_assignment_of(:status) }
     it { should_not allow_mass_assignment_of(:updated_at) }
   end
 
@@ -191,7 +191,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
   end
 
   context 'validations' do
-    it { should validate_presence_of :core }
+    it { is_expected.to validate_presence_of :core }
 
     context 'with existent Metasploit::Credential::Login' do
       include_context 'Mdm::Workspace'
@@ -204,11 +204,11 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
         )
       end
 
-      it { should validate_uniqueness_of(:core_id).scoped_to(:service_id) }
+      it { is_expected.to validate_uniqueness_of(:core_id).scoped_to(:service_id) }
     end
 
-    it { should validate_presence_of :service }
-    it { should ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
+    it { is_expected.to validate_presence_of :service }
+    it { is_expected.to ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
       include_context 'Mdm::Workspace'
@@ -252,7 +252,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               DateTime.now.utc
             end
 
-            it { should include(error) }
+            it { is_expected.to include(error) }
           end
 
           context 'without #last_attempted' do
@@ -290,7 +290,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should include(error) }
+            it { is_expected.to include(error) }
           end
         end
       end
@@ -363,7 +363,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                     FactoryGirl.build(:mdm_workspace)
                   end
 
-                  it { should include(error) }
+                  it { is_expected.to include(error) }
                 end
               end
 
@@ -372,7 +372,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                   nil
                 end
 
-                it { should include(error) }
+                it { is_expected.to include(error) }
               end
             end
 
@@ -381,7 +381,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                 nil
               end
 
-              it { should include(error) }
+              it { is_expected.to include(error) }
             end
           end
 
@@ -390,7 +390,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should include(error) }
+            it { is_expected.to include(error) }
           end
         end
 
@@ -422,7 +422,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                   FactoryGirl.build(:mdm_workspace)
                 end
 
-                it { should include(error) }
+                it { is_expected.to include(error) }
               end
 
               context 'without Mdm::Host#workspace' do
@@ -479,7 +479,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                 FactoryGirl.build(:mdm_workspace)
               end
 
-              it { should include(error) }
+              it { is_expected.to include(error) }
             end
 
             context 'without Mdm::Host#workspace' do

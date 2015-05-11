@@ -566,7 +566,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
     end
 
     context 'validations' do
-      it { should validate_presence_of :workspace }
+      it { is_expected.to validate_presence_of :workspace }
 
       context 'of uniqueness' do
         shared_examples_for 'potential collision' do |options={}|
@@ -590,7 +590,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
               ).to include options.fetch(:message)
             end
           else
-            it { should be_valid }
+            it { is_expected.to be_valid }
           end
         end
 
@@ -1053,7 +1053,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 nil
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with same workspace without realm with same public without private' do
@@ -1065,7 +1065,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 nil
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with same workspace with same realm without public with same private' do
@@ -1073,7 +1073,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 nil
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with same workspace with same realm with same public without private' do
@@ -1085,7 +1085,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 nil
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
           end
 
@@ -1107,7 +1107,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 nil
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with same workspace without realm with public with same private' do
@@ -1115,7 +1115,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_public)
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with same workspace with realm without public with same private' do
@@ -1123,7 +1123,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_realm)
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
           end
 
@@ -1141,7 +1141,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_private)
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
 
             context 'with workspace with realm without public with private' do
@@ -1153,7 +1153,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_realm)
               }
 
-              it { should be_valid}
+              it { is_expected.to be_valid}
             end
           end
 
@@ -1171,7 +1171,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_realm)
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
           end
 
@@ -1189,7 +1189,7 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
                 FactoryGirl.create(:metasploit_credential_public)
               }
 
-              it { should be_valid }
+              it { is_expected.to be_valid }
             end
           end
         end

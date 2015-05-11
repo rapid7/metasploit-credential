@@ -71,27 +71,27 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
-    it { should have_and_belong_to_many(:tasks).class_name('Mdm::Task') }
-    it { should have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
-    it { should belong_to(:origin) }
-    it { should belong_to(:private).class_name('Metasploit::Credential::Private') }
-    it { should belong_to(:public).class_name('Metasploit::Credential::Public') }
-    it { should belong_to(:realm).class_name('Metasploit::Credential::Realm') }
-    it { should belong_to(:workspace).class_name('Mdm::Workspace') }
+    it { is_expected.to have_and_belong_to_many(:tasks).class_name('Mdm::Task') }
+    it { is_expected.to have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
+    it { is_expected.to belong_to(:origin) }
+    it { is_expected.to belong_to(:private).class_name('Metasploit::Credential::Private') }
+    it { is_expected.to belong_to(:public).class_name('Metasploit::Credential::Public') }
+    it { is_expected.to belong_to(:realm).class_name('Metasploit::Credential::Realm') }
+    it { is_expected.to belong_to(:workspace).class_name('Mdm::Workspace') }
   end
 
   context 'database' do
     context 'columns' do
       context 'foreign keys' do
         context 'polymorphic origin' do
-          it { should have_db_column(:origin_id).of_type(:integer).with_options(null: false) }
-          it { should have_db_column(:origin_type).of_type(:string).with_options(null: false) }
+          it { is_expected.to have_db_column(:origin_id).of_type(:integer).with_options(null: false) }
+          it { is_expected.to have_db_column(:origin_type).of_type(:string).with_options(null: false) }
         end
 
-        it { should have_db_column(:private_id).of_type(:integer).with_options(null: true) }
-        it { should have_db_column(:public_id).of_type(:integer).with_options(null: true) }
-        it { should have_db_column(:realm_id).of_type(:integer).with_options(null: true) }
-        it { should have_db_column(:workspace_id).of_type(:integer).with_options(null: false) }
+        it { is_expected.to have_db_column(:private_id).of_type(:integer).with_options(null: true) }
+        it { is_expected.to have_db_column(:public_id).of_type(:integer).with_options(null: true) }
+        it { is_expected.to have_db_column(:realm_id).of_type(:integer).with_options(null: true) }
+        it { is_expected.to have_db_column(:workspace_id).of_type(:integer).with_options(null: false) }
       end
 
       it_should_behave_like 'timestamp database columns'
@@ -100,11 +100,11 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
     context 'indices' do
       context 'foreign keys' do
 
-        it { should have_db_index([:origin_type, :origin_id]) }
-        it { should have_db_index(:private_id) }
-        it { should have_db_index(:public_id) }
-        it { should have_db_index(:realm_id) }
-        it { should have_db_index(:workspace_id) }
+        it { is_expected.to have_db_index([:origin_type, :origin_id]) }
+        it { is_expected.to have_db_index(:private_id) }
+        it { is_expected.to have_db_index(:public_id) }
+        it { is_expected.to have_db_index(:realm_id) }
+        it { is_expected.to have_db_index(:workspace_id) }
 
 
       end
@@ -295,7 +295,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         metasploit_credential_core.origin
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context 'with origin_factory' do
         subject(:metasploit_credential_core) do
@@ -310,7 +310,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
             :metasploit_credential_origin_import
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context ':metasploit_credential_origin_manual' do
@@ -318,14 +318,14 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
             :metasploit_credential_origin_manual
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
 
           context '#origin' do
             subject(:origin) do
               metasploit_credential_core.origin
             end
 
-            it { should be_a Metasploit::Credential::Origin::Manual }
+            it { is_expected.to be_a Metasploit::Credential::Origin::Manual }
           end
 
           context '#workspace' do
@@ -342,7 +342,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
             :metasploit_credential_origin_service
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
 
           context '#workspace' do
             subject(:workspace) do
@@ -361,7 +361,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
             :metasploit_credential_origin_session
           end
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
 
           context '#workspace' do
             subject(:workspace) do
@@ -382,7 +382,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         FactoryGirl.build(:metasploit_credential_core_import)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
 
     context 'metasploit_credential_core_manual' do
@@ -390,7 +390,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         FactoryGirl.build(:metasploit_credential_core_manual)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#workspace' do
         subject(:workspace) do
@@ -406,7 +406,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         FactoryGirl.build(:metasploit_credential_core_service)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#workspace' do
         subject(:workspace) do
@@ -429,7 +429,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
         FactoryGirl.build(:metasploit_credential_core_session)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
 
       context '#workspace' do
         subject(:workspace) do
@@ -449,7 +449,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
   end
 
   context 'validations' do
-    it { should validate_presence_of :origin }
+    it { is_expected.to validate_presence_of :origin }
 
 
     context '#consistent_workspaces' do
@@ -538,7 +538,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               end
 
               context 'without #workspace in Mdm::User#workspaces' do
-                it { should include error }
+                it { is_expected.to include error }
               end
             end
           end
@@ -548,7 +548,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should include error }
+            it { is_expected.to include error }
           end
         end
 
@@ -593,7 +593,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                   FactoryGirl.create(:mdm_workspace)
                 end
 
-                it { should include error }
+                it { is_expected.to include error }
               end
             end
 
@@ -602,7 +602,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                 nil
               end
 
-              it { should include error }
+              it { is_expected.to include error }
             end
           end
 
@@ -611,7 +611,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should include error }
+            it { is_expected.to include error }
           end
         end
 
@@ -657,7 +657,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                     FactoryGirl.create(:mdm_workspace)
                   end
 
-                  it { should include error }
+                  it { is_expected.to include error }
                 end
               end
 
@@ -666,7 +666,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                   nil
                 end
 
-                it { should include error }
+                it { is_expected.to include error }
               end
             end
 
@@ -675,7 +675,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                 nil
               end
 
-              it { should include error }
+              it { is_expected.to include error }
             end
           end
 
@@ -684,7 +684,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should include error }
+            it { is_expected.to include error }
           end
         end
       end

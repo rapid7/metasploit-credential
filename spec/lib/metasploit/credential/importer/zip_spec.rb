@@ -11,7 +11,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
     DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"
 
     context "when the zip file contains a keys directory and a manifest CSV" do
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
 
     context "when the zip file is not actually an archive" do

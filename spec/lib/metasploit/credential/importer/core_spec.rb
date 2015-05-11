@@ -19,7 +19,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
-        it { should be_valid }
+        it { is_expected.to be_valid }
       end
 
       describe "with a non-supported credential type" do
@@ -62,7 +62,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
     describe "long-form imports" do
       describe "with well-formed CSV data" do
         describe "with a compliant header" do
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         describe "with data that includes a missing Public (username)" do
@@ -140,7 +140,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
           end
 
-          it { should be_invalid }
+          it { is_expected.to be_invalid }
 
           it 'should report the error being malformed CSV' do
             core_csv_importer.valid?
@@ -157,7 +157,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
           end
 
-          it { should be_invalid }
+          it { is_expected.to be_invalid }
 
           it 'should show the proper error message' do
             core_csv_importer.valid?

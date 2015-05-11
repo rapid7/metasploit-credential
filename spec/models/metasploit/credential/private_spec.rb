@@ -8,11 +8,11 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
       it_should_behave_like 'single table inheritance database columns'
       it_should_behave_like 'timestamp database columns'
 
-      it { should have_db_column(:data).of_type(:text).with_options(null: false) }
+      it { is_expected.to have_db_column(:data).of_type(:text).with_options(null: false) }
     end
 
     context 'indices' do
-      it { should have_db_index([:type, :data]).unique(true) }
+      it { is_expected.to have_db_index([:type, :data]).unique(true) }
     end
   end
 
@@ -22,13 +22,13 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
         FactoryGirl.build(:metasploit_credential_private)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
   context 'mass assignement security' do
     it { should_not allow_mass_assignment_of :created_at }
-    it { should allow_mass_assignment_of :data }
+    it { is_expected.to allow_mass_assignment_of :data }
     it { should_not allow_mass_assignment_of :id }
     it { should_not allow_mass_assignment_of :updated_at }
     it { should_not allow_mass_assignment_of :type }
@@ -36,9 +36,9 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
 
   context 'validations' do
     context 'data' do
-      it { should validate_non_nilness_of :data }
+      it { is_expected.to validate_non_nilness_of :data }
 
-      # `it { should validate_uniqueness_of(:data).scoped_to(:type) }` tries to use a NULL type, which isn't allowed, so
+      # `it { is_expected.to validate_uniqueness_of(:data).scoped_to(:type) }` tries to use a NULL type, which isn't allowed, so
       # have to perform validation check manually
       context 'validates uniqueness of #data scoped to #type' do
         subject(:data_errors) do
@@ -89,7 +89,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
               existent_private.type
             end
 
-            it { should include(error) }
+            it { is_expected.to include(error) }
           end
 
           context 'without same #type' do

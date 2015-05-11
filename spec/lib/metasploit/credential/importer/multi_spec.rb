@@ -31,7 +31,7 @@ RSpec.describe Metasploit::Credential::Importer::Multi do
     context "when given zip file" do
       subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(supported_file), origin: import_origin)}
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
 
     describe "#csv?" do

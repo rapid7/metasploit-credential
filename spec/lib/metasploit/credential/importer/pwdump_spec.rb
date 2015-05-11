@@ -11,7 +11,7 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
                                                origin: origin)}
 
   describe "validation" do
-    it { should be_valid }
+    it { is_expected.to be_valid }
 
     describe "without a filename" do
       it 'should not be valid' do

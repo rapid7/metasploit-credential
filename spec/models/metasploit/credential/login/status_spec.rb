@@ -7,12 +7,12 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::ALL
       end
 
-      it { should include described_class::DENIED_ACCESS }
-      it { should include described_class::DISABLED }
-      it { should include described_class::LOCKED_OUT }
-      it { should include described_class::SUCCESSFUL }
-      it { should include described_class::UNABLE_TO_CONNECT }
-      it { should include described_class::UNTRIED }
+      it { is_expected.to include described_class::DENIED_ACCESS }
+      it { is_expected.to include described_class::DISABLED }
+      it { is_expected.to include described_class::LOCKED_OUT }
+      it { is_expected.to include described_class::SUCCESSFUL }
+      it { is_expected.to include described_class::UNABLE_TO_CONNECT }
+      it { is_expected.to include described_class::UNTRIED }
     end
 
     context 'DENIED_ACCESS' do
@@ -20,8 +20,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::DENIED_ACCESS
       end
 
-      it { should == 'Denied Access' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Denied Access' }
+      it { is_expected.to be_in described_class::ALL }
     end
 
     context 'DISABLED' do
@@ -29,8 +29,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::DISABLED
       end
 
-      it { should == 'Disabled' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Disabled' }
+      it { is_expected.to be_in described_class::ALL }
     end
 
     context 'LOCKED_OUT' do
@@ -38,8 +38,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::LOCKED_OUT
       end
 
-      it { should == 'Locked Out' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Locked Out' }
+      it { is_expected.to be_in described_class::ALL }
     end
 
     context 'SUCCESSFUL' do
@@ -47,8 +47,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::SUCCESSFUL
       end
 
-      it { should == 'Successful' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Successful' }
+      it { is_expected.to be_in described_class::ALL }
     end
 
     context 'UNABLE_TO_CONNECT' do
@@ -56,8 +56,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::UNABLE_TO_CONNECT
       end
 
-      it { should == 'Unable to Connect' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Unable to Connect' }
+      it { is_expected.to be_in described_class::ALL }
     end
 
     context 'UNTRIED' do
@@ -65,8 +65,8 @@ RSpec.describe Metasploit::Model::Login::Status, type: :model do
         described_class::UNTRIED
       end
 
-      it { should == 'Untried' }
-      it { should be_in described_class::ALL }
+      it { is_expected.to eq 'Untried' }
+      it { is_expected.to be_in described_class::ALL }
     end
   end
 end
