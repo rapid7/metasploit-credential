@@ -55,10 +55,6 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       FactoryGirl.create(:metasploit_credential_private)
     }
 
-    let(:first_realm) {
-      FactoryGirl.create(:metasploit_credential_realm)
-    }
-
     let(:first_workspace) {
       FactoryGirl.create(:mdm_workspace)
     }
@@ -256,6 +252,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
             nil
           }
 
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
           let(:second_public) {
             nil
           }
@@ -284,6 +284,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
             FactoryGirl.create(:metasploit_credential_username)
           }
 
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
           let(:second_private) {
             nil
           }
@@ -306,6 +310,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
           let(:first_public) {
             FactoryGirl.create(:metasploit_credential_username)
+          }
+
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
           }
 
           context_with_correlation(options, :workspace) do
@@ -718,6 +726,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
             nil
           }
 
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
           let(:second_public) {
             nil
           }
@@ -747,6 +759,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
             FactoryGirl.create(:metasploit_credential_username)
           }
 
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
+          }
+
           let(:second_private) {
             nil
           }
@@ -770,6 +786,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
           let(:first_public) {
             FactoryGirl.create(:metasploit_credential_username)
+          }
+
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
           }
 
           context_with_correlation(options, :workspace) do
@@ -1057,6 +1077,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
           let(:first_public) {
             FactoryGirl.create(:metasploit_credential_username)
+          }
+
+          let(:first_realm) {
+            FactoryGirl.create(:metasploit_credential_realm)
           }
 
           let(:second_private) {
