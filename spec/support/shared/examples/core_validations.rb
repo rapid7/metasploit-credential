@@ -97,10 +97,6 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       FactoryGirl.create(:metasploit_credential_private)
     }
 
-    let(:second_realm) {
-      FactoryGirl.create(:metasploit_credential_realm)
-    }
-
     let(:second_workspace) {
       FactoryGirl.create(:mdm_workspace)
     }
@@ -119,6 +115,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       context 'foreign keys' do
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
+        }
+
+        let(:second_realm) {
+          FactoryGirl.create(:metasploit_credential_realm)
         }
 
         shared_examples_for 'potential collision' do |options={}|
@@ -591,6 +591,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       context 'of uniqueness' do
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
+        }
+
+        let(:second_realm) {
+          FactoryGirl.create(:metasploit_credential_realm)
         }
 
         shared_examples_for 'potential collision' do |options={}|
