@@ -375,26 +375,26 @@ describe Metasploit::Credential::NTLMHash do
     context 'blank_password?' do
 
       it 'returns true if the hash is for a blank password' do
-        expect(blank_password_hash.blank_password?).to be_true
+        expect(blank_password_hash.blank_password?).to eq(true)
       end
 
       it 'returns false if the hash is not for a blank password' do
-        expect(non_blank_password.blank_password?).to be_false
+        expect(non_blank_password.blank_password?).to eq(false)
       end
 
       it 'returns false if the nt hash is not blank but the lm hash is' do
-        expect(no_lm_hash.blank_password?).to be_false
+        expect(no_lm_hash.blank_password?).to eq(false)
       end
     end
 
     context 'lm_hash_present?' do
 
       it 'returns false if the lm_hash is blank' do
-        expect(no_lm_hash.lm_hash_present?).to be_false
+        expect(no_lm_hash.lm_hash_present?).to eq(false)
       end
 
       it 'returns true if the lm_hash is not blank' do
-        expect(non_blank_password.lm_hash_present?).to be_true
+        expect(non_blank_password.lm_hash_present?).to eq(true)
       end
     end
   end

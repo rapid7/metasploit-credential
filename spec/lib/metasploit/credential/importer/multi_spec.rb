@@ -39,7 +39,7 @@ describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(valid_csv_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should be_true
+          multi_importer.csv?.should eq(true)
         end
       end
 
@@ -47,7 +47,7 @@ describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(unsupported_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should be_false
+          multi_importer.csv?.should eq(false)
         end
       end
     end

@@ -31,7 +31,7 @@ describe Metasploit::Credential::Exporter::Core do
   describe "#export!" do
     it 'should create the zipfile' do
       core_exporter.export!
-      File.exists?(core_exporter.output_zipfile_path).should be_true
+      File.exists?(core_exporter.output_zipfile_path).should eq(true)
     end
 
     it 'should output to a directory whose name contains the standardized identifier' do
