@@ -97,10 +97,6 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       FactoryGirl.create(:metasploit_credential_private)
     }
 
-    let(:second_public) {
-      FactoryGirl.create(:metasploit_credential_username)
-    }
-
     let(:second_realm) {
       FactoryGirl.create(:metasploit_credential_realm)
     }
@@ -121,6 +117,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
   context 'database' do
     context 'indices' do
       context 'foreign keys' do
+        let(:second_public) {
+          FactoryGirl.create(:metasploit_credential_username)
+        }
+
         shared_examples_for 'potential collision' do |options={}|
           options.assert_valid_keys(:collision, :index)
 
@@ -589,6 +589,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       it { is_expected.to validate_presence_of :workspace }
 
       context 'of uniqueness' do
+        let(:second_public) {
+          FactoryGirl.create(:metasploit_credential_username)
+        }
+
         shared_examples_for 'potential collision' do |options={}|
           options.assert_valid_keys(:attribute, :collision, :message)
 
