@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
   include_context 'Mdm::Workspace'
 

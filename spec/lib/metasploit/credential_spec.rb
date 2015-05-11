@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential do
   context 'CONSTANTS' do
     context 'VERSION' do

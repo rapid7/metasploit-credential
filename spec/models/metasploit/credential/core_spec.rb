@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 # Test plan for unique indexes and uniqueness validators
 #
 #    Index        |  First Metasploit::Credential::Core  |           |           |           |  Second Metasploit::Credential::Core  |             |             |             |  Collision  |

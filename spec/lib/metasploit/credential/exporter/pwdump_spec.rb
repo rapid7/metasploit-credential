@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential::Exporter::Pwdump do
   include_context 'Mdm::Workspace'
 

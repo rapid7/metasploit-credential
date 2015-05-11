@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
   subject(:visitor) {
     described_class.new(

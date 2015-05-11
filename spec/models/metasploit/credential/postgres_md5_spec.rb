@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 

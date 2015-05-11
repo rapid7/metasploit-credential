@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential::Creation do
   include_context 'Mdm::Workspace'
   let(:dummy_class) {

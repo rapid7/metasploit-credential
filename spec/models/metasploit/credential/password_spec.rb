@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Metasploit::Credential::Password, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
