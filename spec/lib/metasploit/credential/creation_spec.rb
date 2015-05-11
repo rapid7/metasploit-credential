@@ -42,7 +42,7 @@ RSpec.describe Metasploit::Credential::Creation do
 
     it 'replicates realm in new credential' do
       expect {
-        core = test_object.create_cracked_credential(
+        test_object.create_cracked_credential(
           core_id: old_core.id,
           workspace_id: workspace.id,
           username: public.username,
