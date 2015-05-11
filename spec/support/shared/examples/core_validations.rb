@@ -84,13 +84,8 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       }
     }
 
-
     let(:second_metasploit_credential_core) {
       FactoryGirl.build( factory_name, second_factory_options)
-    }
-
-    let(:second_workspace) {
-      FactoryGirl.create(:mdm_workspace)
     }
 
     #
@@ -119,6 +114,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
         let(:second_realm) {
           FactoryGirl.create(:metasploit_credential_realm)
+        }
+
+        let(:second_workspace) {
+          FactoryGirl.create(:mdm_workspace)
         }
 
         shared_examples_for 'potential collision' do |options={}|
@@ -603,6 +602,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
         let(:second_realm) {
           FactoryGirl.create(:metasploit_credential_realm)
+        }
+
+        let(:second_workspace) {
+          FactoryGirl.create(:mdm_workspace)
         }
 
         shared_examples_for 'potential collision' do |options={}|
