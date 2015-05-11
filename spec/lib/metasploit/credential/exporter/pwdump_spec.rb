@@ -13,7 +13,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "associated Mdm::Service objects" do
       it 'should properly format the service information' do
         service = login.service
-        exporter.format_service_for_login(login).should == "#{service.host.address}:#{service.port}/#{service.proto} (#{service.name})"
+        expect(exporter.format_service_for_login(login)).to eq("#{service.host.address}:#{service.port}/#{service.proto} (#{service.name})")
       end
     end
 
@@ -25,17 +25,17 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
       end
 
       it 'should have the proper formatting with extant data' do
-        exporter.format_password(login).should == "#{login.core.public.username} #{login.core.private.data}"
+        expect(exporter.format_password(login)).to eq("#{login.core.public.username} #{login.core.private.data}")
       end
 
       it 'should have the proper formatting with a missing public' do
         login.core.public.username = ""
-        exporter.format_password(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING} #{login.core.private.data}"
+        expect(exporter.format_password(login)).to eq("#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING} #{login.core.private.data}")
       end
 
       it 'should have the proper formatting with a missing private' do
         login.core.private.data = ""
-        exporter.format_password(login).should == "#{login.core.public.username} #{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}"
+        expect(exporter.format_password(login)).to eq("#{login.core.public.username} #{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}")
       end
     end
 
@@ -47,17 +47,17 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
       end
 
       it 'should have the proper formatting with extant data' do
-        exporter.format_nonreplayable_hash(login).should == "#{login.core.public.username}:#{login.core.private.data}:::"
+        expect(exporter.format_nonreplayable_hash(login)).to eq("#{login.core.public.username}:#{login.core.private.data}:::")
       end
 
       it 'should have the proper formatting with a missing public' do
         login.core.public.username = ""
-        exporter.format_nonreplayable_hash(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.core.private.data}:::"
+        expect(exporter.format_nonreplayable_hash(login)).to eq("#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.core.private.data}:::")
       end
 
       it 'should have the proper formatting with a missing private' do
         login.core.private.data = ""
-        exporter.format_nonreplayable_hash(login).should == "#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::"
+        expect(exporter.format_nonreplayable_hash(login)).to eq("#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::")
       end
     end
 
@@ -69,17 +69,17 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
       end
 
       it 'should have the proper formatting with extant data' do
-        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{login.core.private.data}:::"
+        expect(exporter.format_ntlm_hash(login)).to eq("#{login.core.public.username}:#{login.id}:#{login.core.private.data}:::")
       end
 
       it 'should have the proper formatting with a missing public' do
         login.core.public.username = ""
-        exporter.format_ntlm_hash(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.id}:#{login.core.private.data}:::"
+        expect(exporter.format_ntlm_hash(login)).to eq("#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.id}:#{login.core.private.data}:::")
       end
 
       it 'should have the proper formatting with a missing private' do
         login.core.private.data = ""
-        exporter.format_ntlm_hash(login).should == "#{login.core.public.username}:#{login.id}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::"
+        expect(exporter.format_ntlm_hash(login)).to eq("#{login.core.public.username}:#{login.id}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:::")
       end
     end
 
@@ -91,17 +91,17 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
       end
 
       it 'should have the proper formatting with extant data' do
-        exporter.format_postgres_md5(login).should == "#{login.core.public.username}:#{login.core.private.data}"
+        expect(exporter.format_postgres_md5(login)).to eq("#{login.core.public.username}:#{login.core.private.data}")
       end
 
       it 'should have the proper formatting with a missing public' do
         login.core.public.username = ""
-        exporter.format_postgres_md5(login).should == "#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.core.private.data}"
+        expect(exporter.format_postgres_md5(login)).to eq("#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}:#{login.core.private.data}")
       end
 
       it 'should have the proper formatting with a missing private' do
         login.core.private.data = ""
-        exporter.format_postgres_md5(login).should == "#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}"
+        expect(exporter.format_postgres_md5(login)).to eq("#{login.core.public.username}:#{Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING}")
       end
 
     end

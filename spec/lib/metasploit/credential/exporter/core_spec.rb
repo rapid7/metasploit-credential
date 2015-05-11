@@ -24,7 +24,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     it 'should be in LOGIN_MODE by default' do
-      core_exporter.mode.should == Metasploit::Credential::Exporter::Core::LOGIN_MODE
+      expect(core_exporter.mode).to eq(Metasploit::Credential::Exporter::Core::LOGIN_MODE)
     end
   end
 
@@ -46,14 +46,14 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     describe "when the argument is a Core" do
       it 'should be formed from the Public#username and the Private#id' do
         key_path = core_exporter.path_for_key(core)
-        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+        expect(Pathname.new(key_path).basename.to_s).to eq(key_path_basename_string)
       end
     end
 
     describe "when the argument is a Login" do
       it 'should be formed from the Public#username and the Private#id' do
         key_path = core_exporter.path_for_key(login)
-        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+        expect(Pathname.new(key_path).basename.to_s).to eq(key_path_basename_string)
       end
     end
   end
@@ -62,20 +62,27 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     let(:result_hash) { core_exporter.line_for_core(core) }
 
     it 'should produce values in the proper order' do
-      result_hash.values.should == [core.public.username, core.private.type,
-                                    core.private.data, core.realm.key, core.realm.value]
+      expect(result_hash.values).to eq(
+                                        [
+                                            core.public.username,
+                                            core.private.type,
+                                            core.private.data,
+                                            core.realm.key,
+                                            core.realm.value
+                                        ]
+                                    )
     end
 
     it 'should produce a hash with the public username' do
-      result_hash[:username].should == core.public.username
+      expect(result_hash[:username]).to eq(core.public.username)
     end
 
     it 'should produce a hash with the private data' do
-      result_hash[:private_data].should == core.private.data
+      expect(result_hash[:private_data]).to eq(core.private.data)
     end
 
     it 'should produce a hash with the name of the private type' do
-      result_hash[:private_type].should == core.private.type
+      expect(result_hash[:private_type]).to eq(core.private.type)
     end
   end
 
@@ -84,52 +91,62 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     let(:result_hash) { core_exporter.line_for_login(login) }
 
     it 'should produce values in the proper order' do
-      result_hash.values.should == [core.public.username, core.private.type,
-                                    core.private.data, core.realm.key, core.realm.value,
-                                    login.service.host.address, login.service.port,
-                                    login.service.name, login.service.proto,
-                                    login.status, login.access_level, login.last_attempted_at
-      ]
+      expect(result_hash.values).to eq(
+                                        [
+                                            core.public.username,
+                                            core.private.type,
+                                            core.private.data,
+                                            core.realm.key,
+                                            core.realm.value,
+                                            login.service.host.address,
+                                            login.service.port,
+                                            login.service.name,
+                                            login.service.proto,
+                                            login.status,
+                                            login.access_level,
+                                            login.last_attempted_at
+                                        ]
+                                    )
     end
 
     it 'should produce a hash with the service host address' do
-      result_hash[:host_address].should == login.service.host.address
+      expect(result_hash[:host_address]).to eq(login.service.host.address)
     end
 
     it 'should produce a hash with the service port' do
-      result_hash[:service_port].should == login.service.port
+      expect(result_hash[:service_port]).to eq(login.service.port)
     end
 
     it 'should produce a hash with the service name' do
-      result_hash[:service_name].should == login.service.name
+      expect(result_hash[:service_name]).to eq(login.service.name)
     end
 
     it 'should produce a hash with the service protocol' do
-      result_hash[:service_protocol].should == login.service.proto
+      expect(result_hash[:service_protocol]).to eq(login.service.proto)
     end
 
     it 'should produce a hash with the login status' do
-      result_hash[:status].should == login.status
+      expect(result_hash[:status]).to eq(login.status)
     end
 
     it 'should produce a hash with the login access_level' do
-      result_hash[:access_level].should == login.access_level
+      expect(result_hash[:access_level]).to eq(login.access_level)
     end
 
     it 'should produce a hash with the login last_attempted_at' do
-      result_hash[:last_attempted_at].should == login.last_attempted_at
+      expect(result_hash[:last_attempted_at]).to eq(login.last_attempted_at)
     end
 
     it 'should produce a hash with the public information' do
-      result_hash[:username].should == login.core.public.username
+      expect(result_hash[:username]).to eq(login.core.public.username)
     end
 
     it 'should produce a hash with the private data' do
-      result_hash[:private_data].should == login.core.private.data
+      expect(result_hash[:private_data]).to eq(login.core.private.data)
     end
 
     it 'should produce a hash with the demodulized name of the private type' do
-      result_hash[:private_type].should == login.core.private.type
+      expect(result_hash[:private_type]).to eq(login.core.private.type)
     end
   end
 
@@ -184,7 +201,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
       describe "when whitelist_ids is blank" do
         it 'should be the same as #export_data' do
-          core_exporter.data.should == core_exporter.export_data
+          expect(core_exporter.data).to eq(core_exporter.export_data)
         end
       end
     end
@@ -206,7 +223,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
       describe "when whitelist_ids is blank" do
         it 'should be the same as #export_data' do
-          core_exporter.data.should == core_exporter.export_data
+          expect(core_exporter.data).to eq(core_exporter.export_data)
         end
       end
     end
@@ -426,7 +443,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
           end
 
           it 'should contain a key for each SSH private in the export' do
-            @key_entries.size.should == core_exporter.data[:core].select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size
+            expect(@key_entries.size).to eq(core_exporter.data[:core].select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size)
           end
 
           it 'should contain key files named with Public#username and Private#id for each Core that uses an SSHKey' do

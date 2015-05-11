@@ -24,25 +24,25 @@ RSpec.describe Metasploit::Credential::Importer::Pwdump do
   describe "#blank_or_string" do
     context "with a blank string" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string("").should == ""
+        expect(pwdump_importer.blank_or_string("")).to eq("")
       end
     end
     context "with a BLANK_CRED_STRING" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string(Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING).should == ""
+        expect(pwdump_importer.blank_or_string(Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING)).to eq("")
       end
     end
 
     context "with a JTR_NO_PASSWORD_STRING" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string(Metasploit::Credential::Importer::Pwdump::JTR_NO_PASSWORD_STRING).should == ""
+        expect(pwdump_importer.blank_or_string(Metasploit::Credential::Importer::Pwdump::JTR_NO_PASSWORD_STRING)).to eq("")
       end
     end
 
     context "with a present string" do
       it 'should return the string' do
         string = "mah-hard-passwerd"
-        pwdump_importer.blank_or_string(string).should == string
+        expect(pwdump_importer.blank_or_string(string)).to eq(string)
       end
     end
 

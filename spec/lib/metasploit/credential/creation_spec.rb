@@ -160,7 +160,7 @@ RSpec.describe Metasploit::Credential::Creation do
 
     it 'should create an Mdm::Service in state "open"' do
       service = test_object.create_credential_service opts
-      service.state.should == "open"
+      expect(service.state).to eq("open")
     end
   end
 
