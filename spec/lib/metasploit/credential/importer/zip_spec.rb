@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Importer::Zip do
+RSpec.describe Metasploit::Credential::Importer::Zip do
   include_context 'Mdm::Workspace'
   include_context 'metasploit_credential_importer_zip_file'
 
@@ -11,7 +9,7 @@ describe Metasploit::Credential::Importer::Zip do
     DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"
 
     context "when the zip file contains a keys directory and a manifest CSV" do
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
 
     context "when the zip file is not actually an archive" do
@@ -32,7 +30,7 @@ describe Metasploit::Credential::Importer::Zip do
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:input].should include error
+        expect(zip_importer.errors[:input]).to include error
       end
     end
 
@@ -49,7 +47,7 @@ describe Metasploit::Credential::Importer::Zip do
 
       it 'should show the proper error message' do
         zip_importer.valid?
-        zip_importer.errors[:input].should include error
+        expect(zip_importer.errors[:input]).to include error
       end
     end
 
@@ -63,7 +61,7 @@ describe Metasploit::Credential::Importer::Zip do
 
   describe "zip constants" do
     it 'should have ZIP_HEADER_IDENTIFIER whose length corresponds to ZIP_HEADER_BYTE_LENGTH' do
-      Metasploit::Credential::Importer::Zip::ZIP_HEADER_IDENTIFIER.size.should == Metasploit::Credential::Importer::Zip::ZIP_HEADER_BYTE_LENGTH
+      expect(Metasploit::Credential::Importer::Zip::ZIP_HEADER_IDENTIFIER.size).to eq(Metasploit::Credential::Importer::Zip::ZIP_HEADER_BYTE_LENGTH)
     end
   end
 end

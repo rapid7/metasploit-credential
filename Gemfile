@@ -5,6 +5,8 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'metasploit-model', github: 'rapid7/metasploit-model', ref: 'd25cd50353aa6a25fb1b84b158737810c77bad50'
+
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
 # Metasploit::Credential::SSHKey validation and helper methods
@@ -39,11 +41,8 @@ group :development, :test do
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
-
+  # for dummy app
   gem 'rails', '>= 4.0.9', '< 4.1.0'
-  
-  # TODO make compatible with rspec 3.0.0
-  gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
-  gem 'rspec-rails', '< 3.0.0'
+  gem 'rspec-rails', '~> 3.1'
 end

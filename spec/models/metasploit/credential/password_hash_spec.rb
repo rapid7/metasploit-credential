@@ -1,9 +1,7 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::PasswordHash do
+RSpec.describe Metasploit::Credential::PasswordHash, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
-  it { should be_a Metasploit::Credential::Private }
+  it { is_expected.to be_a Metasploit::Credential::Private }
 
   context 'factories' do
     context 'metasploit_credential_password_hash' do
@@ -11,11 +9,11 @@ describe Metasploit::Credential::PasswordHash do
         FactoryGirl.build(:metasploit_credential_password_hash)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
   context 'validations' do
-    it { should validate_presence_of :data }
+    it { is_expected.to validate_presence_of :data }
   end
 end

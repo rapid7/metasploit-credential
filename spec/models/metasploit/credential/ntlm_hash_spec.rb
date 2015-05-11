@@ -1,9 +1,7 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::NTLMHash do
+RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
-  it { should be_a Metasploit::Credential::ReplayableHash }
+  it { is_expected.to be_a Metasploit::Credential::ReplayableHash }
 
   context 'CONSTANTS' do
     context 'DATA_REGEXP' do
@@ -38,7 +36,7 @@ describe Metasploit::Credential::NTLMHash do
         described_class::LAN_MANAGER_MAX_CHARACTERS
       end
 
-      it { should == 14 }
+      it { is_expected.to eq 14 }
     end
 
     context 'LAN_MANAGER_HEX_DIGEST_REGEXP' do
@@ -101,7 +99,7 @@ describe Metasploit::Credential::NTLMHash do
             nil
           end
 
-          it { should be_nil }
+          it { is_expected.to be_nil }
         end
 
         context 'with upper case characters' do
@@ -133,7 +131,7 @@ describe Metasploit::Credential::NTLMHash do
         FactoryGirl.build(:metasploit_credential_ntlm_hash)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
@@ -191,7 +189,7 @@ describe Metasploit::Credential::NTLMHash do
           super().gsub(':', '')
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
 
       context 'without LAN Manager hex_digest' do
@@ -199,7 +197,7 @@ describe Metasploit::Credential::NTLMHash do
           ":#{nt_lan_manager_hex_digest}"
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
 
       context 'with incorrect hash length(s)' do
@@ -207,7 +205,7 @@ describe Metasploit::Credential::NTLMHash do
           "123456:abcdef"
         end
 
-        it { should include(error) }
+        it { is_expected.to include(error) }
       end
     end
   end
@@ -375,26 +373,26 @@ describe Metasploit::Credential::NTLMHash do
     context 'blank_password?' do
 
       it 'returns true if the hash is for a blank password' do
-        expect(blank_password_hash.blank_password?).to be_true
+        expect(blank_password_hash.blank_password?).to eq(true)
       end
 
       it 'returns false if the hash is not for a blank password' do
-        expect(non_blank_password.blank_password?).to be_false
+        expect(non_blank_password.blank_password?).to eq(false)
       end
 
       it 'returns false if the nt hash is not blank but the lm hash is' do
-        expect(no_lm_hash.blank_password?).to be_false
+        expect(no_lm_hash.blank_password?).to eq(false)
       end
     end
 
     context 'lm_hash_present?' do
 
       it 'returns false if the lm_hash is blank' do
-        expect(no_lm_hash.lm_hash_present?).to be_false
+        expect(no_lm_hash.lm_hash_present?).to eq(false)
       end
 
       it 'returns true if the lm_hash is not blank' do
-        expect(non_blank_password.lm_hash_present?).to be_true
+        expect(non_blank_password.lm_hash_present?).to eq(true)
       end
     end
   end

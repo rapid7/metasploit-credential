@@ -49,10 +49,10 @@ class Metasploit::Credential::Exporter::Core
   # Attributes
   #
 
-  # @!attribute export_data
+  # @!attribute [rw] export_data
   #   Holds the raw information from the database before it is formatted into the {#data} attribute
   #   @return [Array]
-  attr_accessor :export_data
+  attr_writer :export_data
 
   # @!attribute finalized_zip_file
   #   The final output artifacts, zipped

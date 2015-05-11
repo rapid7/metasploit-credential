@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Importer::Pwdump do
+RSpec.describe Metasploit::Credential::Importer::Pwdump do
   include_context 'Mdm::Workspace'
 
   let(:workspace) {FactoryGirl.create(:mdm_workspace)}
@@ -11,12 +9,12 @@ describe Metasploit::Credential::Importer::Pwdump do
                                                origin: origin)}
 
   describe "validation" do
-    it { should be_valid }
+    it { is_expected.to be_valid }
 
     describe "without a filename" do
       it 'should not be valid' do
         pwdump_importer.filename = nil
-        pwdump_importer.should_not be_valid
+        expect(pwdump_importer).not_to be_valid
       end
     end
   end
@@ -24,32 +22,32 @@ describe Metasploit::Credential::Importer::Pwdump do
   describe "#blank_or_string" do
     context "with a blank string" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string("").should == ""
+        expect(pwdump_importer.blank_or_string("")).to eq("")
       end
     end
     context "with a BLANK_CRED_STRING" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string(Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING).should == ""
+        expect(pwdump_importer.blank_or_string(Metasploit::Credential::Exporter::Pwdump::BLANK_CRED_STRING)).to eq("")
       end
     end
 
     context "with a JTR_NO_PASSWORD_STRING" do
       it 'should return empty string' do
-        pwdump_importer.blank_or_string(Metasploit::Credential::Importer::Pwdump::JTR_NO_PASSWORD_STRING).should == ""
+        expect(pwdump_importer.blank_or_string(Metasploit::Credential::Importer::Pwdump::JTR_NO_PASSWORD_STRING)).to eq("")
       end
     end
 
     context "with a present string" do
       it 'should return the string' do
         string = "mah-hard-passwerd"
-        pwdump_importer.blank_or_string(string).should == string
+        expect(pwdump_importer.blank_or_string(string)).to eq(string)
       end
     end
 
     context "with the dehex flag" do
       it 'should dehex the string with the Metasploit::Credential::Text#dehex method' do
         string = "mah-hard-passwerd"
-        Metasploit::Credential::Text.should_receive(:dehex).with string
+        expect(Metasploit::Credential::Text).to receive(:dehex).with string
         pwdump_importer.blank_or_string(string, true)
       end
     end
@@ -64,8 +62,8 @@ describe Metasploit::Credential::Importer::Pwdump do
       it 'should create Cores with the same Origin' do
         pwdump_importer.import!
         origins = Metasploit::Credential::Core.all.collect(&:origin).uniq
-        origins.size.should be(1)
-        origins.first.id.should be(origin.id)
+        expect(origins.size).to be(1)
+        expect(origins.first.id).to be(origin.id)
       end
 
       it 'should create the proper number of Logins' do
@@ -96,7 +94,7 @@ describe Metasploit::Credential::Importer::Pwdump do
         # Legacy files may have these lines when missing SSH key files
         it 'should not create a Private from a "Warning" line' do
           pwdump_importer.import!
-          Metasploit::Credential::Private.where(data:'missing').should be_blank
+          expect(Metasploit::Credential::Private.where(data:'missing')).to be_blank
         end
       end
     end

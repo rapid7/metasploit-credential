@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Exporter::Core do
+RSpec.describe Metasploit::Credential::Exporter::Core do
   include_context 'Mdm::Workspace'
   include_context 'export objects'
 
@@ -24,19 +22,19 @@ describe Metasploit::Credential::Exporter::Core do
     end
 
     it 'should be in LOGIN_MODE by default' do
-      core_exporter.mode.should == Metasploit::Credential::Exporter::Core::LOGIN_MODE
+      expect(core_exporter.mode).to eq(Metasploit::Credential::Exporter::Core::LOGIN_MODE)
     end
   end
 
   describe "#export!" do
     it 'should create the zipfile' do
       core_exporter.export!
-      File.exists?(core_exporter.output_zipfile_path).should be_true
+      expect(File.exists?(core_exporter.output_zipfile_path)).to eq(true)
     end
 
     it 'should output to a directory whose name contains the standardized identifier' do
       core_exporter.export!
-      core_exporter.output_final_directory_path.should include(Metasploit::Credential::Exporter::Core::CREDS_DUMP_FILE_IDENTIFIER)
+      expect(core_exporter.output_final_directory_path).to include(Metasploit::Credential::Exporter::Core::CREDS_DUMP_FILE_IDENTIFIER)
     end
   end
 
@@ -46,14 +44,14 @@ describe Metasploit::Credential::Exporter::Core do
     describe "when the argument is a Core" do
       it 'should be formed from the Public#username and the Private#id' do
         key_path = core_exporter.path_for_key(core)
-        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+        expect(Pathname.new(key_path).basename.to_s).to eq(key_path_basename_string)
       end
     end
 
     describe "when the argument is a Login" do
       it 'should be formed from the Public#username and the Private#id' do
         key_path = core_exporter.path_for_key(login)
-        Pathname.new(key_path).basename.to_s.should == key_path_basename_string
+        expect(Pathname.new(key_path).basename.to_s).to eq(key_path_basename_string)
       end
     end
   end
@@ -62,20 +60,27 @@ describe Metasploit::Credential::Exporter::Core do
     let(:result_hash) { core_exporter.line_for_core(core) }
 
     it 'should produce values in the proper order' do
-      result_hash.values.should == [core.public.username, core.private.type,
-                                    core.private.data, core.realm.key, core.realm.value]
+      expect(result_hash.values).to eq(
+                                        [
+                                            core.public.username,
+                                            core.private.type,
+                                            core.private.data,
+                                            core.realm.key,
+                                            core.realm.value
+                                        ]
+                                    )
     end
 
     it 'should produce a hash with the public username' do
-      result_hash[:username].should == core.public.username
+      expect(result_hash[:username]).to eq(core.public.username)
     end
 
     it 'should produce a hash with the private data' do
-      result_hash[:private_data].should == core.private.data
+      expect(result_hash[:private_data]).to eq(core.private.data)
     end
 
     it 'should produce a hash with the name of the private type' do
-      result_hash[:private_type].should == core.private.type
+      expect(result_hash[:private_type]).to eq(core.private.type)
     end
   end
 
@@ -84,84 +89,94 @@ describe Metasploit::Credential::Exporter::Core do
     let(:result_hash) { core_exporter.line_for_login(login) }
 
     it 'should produce values in the proper order' do
-      result_hash.values.should == [core.public.username, core.private.type,
-                                    core.private.data, core.realm.key, core.realm.value,
-                                    login.service.host.address.to_s, login.service.port,
-                                    login.service.name, login.service.proto,
-                                    login.status, login.access_level, login.last_attempted_at
-      ]
+      expect(result_hash.values).to eq(
+                                        [
+                                            core.public.username,
+                                            core.private.type,
+                                            core.private.data,
+                                            core.realm.key,
+                                            core.realm.value,
+                                            login.service.host.address,
+                                            login.service.port,
+                                            login.service.name,
+                                            login.service.proto,
+                                            login.status,
+                                            login.access_level,
+                                            login.last_attempted_at
+                                        ]
+                                    )
     end
 
     it 'should produce a hash with the service host address' do
-      result_hash[:host_address].should == login.service.host.address.to_s
+      expect(result_hash[:host_address]).to eq(login.service.host.address)
     end
 
     it 'should produce a hash with the service port' do
-      result_hash[:service_port].should == login.service.port
+      expect(result_hash[:service_port]).to eq(login.service.port)
     end
 
     it 'should produce a hash with the service name' do
-      result_hash[:service_name].should == login.service.name
+      expect(result_hash[:service_name]).to eq(login.service.name)
     end
 
     it 'should produce a hash with the service protocol' do
-      result_hash[:service_protocol].should == login.service.proto
+      expect(result_hash[:service_protocol]).to eq(login.service.proto)
     end
 
     it 'should produce a hash with the login status' do
-      result_hash[:status].should == login.status
+      expect(result_hash[:status]).to eq(login.status)
     end
 
     it 'should produce a hash with the login access_level' do
-      result_hash[:access_level].should == login.access_level
+      expect(result_hash[:access_level]).to eq(login.access_level)
     end
 
     it 'should produce a hash with the login last_attempted_at' do
-      result_hash[:last_attempted_at].should == login.last_attempted_at
+      expect(result_hash[:last_attempted_at]).to eq(login.last_attempted_at)
     end
 
     it 'should produce a hash with the public information' do
-      result_hash[:username].should == login.core.public.username
+      expect(result_hash[:username]).to eq(login.core.public.username)
     end
 
     it 'should produce a hash with the private data' do
-      result_hash[:private_data].should == login.core.private.data
+      expect(result_hash[:private_data]).to eq(login.core.private.data)
     end
 
     it 'should produce a hash with the demodulized name of the private type' do
-      result_hash[:private_type].should == login.core.private.type
+      expect(result_hash[:private_type]).to eq(login.core.private.type)
     end
   end
 
   describe "#output" do
     it 'should be a writable File' do
       file_stat = core_exporter.output.stat
-      file_stat.should be_writable
+      expect(file_stat).to be_writable
     end
 
     it 'should not be opened in binmode' do
-      core_exporter.output.should_not be_binmode
+      expect(core_exporter.output).not_to be_binmode
     end
   end
 
   describe "#output_directory_path" do
     it 'should be in the platform-agnostic temp directory' do
-      core_exporter.output_final_directory_path.should include(Dir.tmpdir)
+      expect(core_exporter.output_final_directory_path).to include(Dir.tmpdir)
     end
 
     it 'should have the set export prefix' do
-      core_exporter.output_final_directory_path.should include(Metasploit::Credential::Exporter::Core::TEMP_ZIP_PATH_PREFIX)
+      expect(core_exporter.output_final_directory_path).to include(Metasploit::Credential::Exporter::Core::TEMP_ZIP_PATH_PREFIX)
     end
 
     describe "uniqueness for export" do
       let(:path_fragment){ "export-#{Time.now.to_s}" }
 
       before(:each) do
-        core_exporter.stub(:output_final_subdirectory_name).and_return(path_fragment)
+        allow(core_exporter).to receive(:output_final_subdirectory_name).and_return(path_fragment)
       end
 
       it 'should include a special time-stamped directory to contain the export data being staged' do
-        core_exporter.output_final_directory_path.should include(core_exporter.output_final_subdirectory_name)
+        expect(core_exporter.output_final_directory_path).to include(core_exporter.output_final_subdirectory_name)
       end
     end
   end
@@ -169,44 +184,44 @@ describe Metasploit::Credential::Exporter::Core do
   describe "#data" do
     describe "in LOGIN_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
       describe "when whitelist_ids is present" do
         before(:each) do
-          core_exporter.stub(:whitelist_ids).and_return([login1.id])
+          allow(core_exporter).to receive(:whitelist_ids).and_return([login1.id])
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
-          core_exporter.data.should_not include(login2)
+          expect(core_exporter.data).not_to include(login2)
         end
       end
 
       describe "when whitelist_ids is blank" do
         it 'should be the same as #export_data' do
-          core_exporter.data.should == core_exporter.export_data
+          expect(core_exporter.data).to eq(core_exporter.export_data)
         end
       end
     end
 
     describe "in CORE_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
       describe "when whitelist_ids is present" do
         before(:each) do
-          core_exporter.stub(:whitelist_ids).and_return([core1.id])
+          allow(core_exporter).to receive(:whitelist_ids).and_return([core1.id])
         end
 
         it 'should contain only those objects whose IDs are in the whitelist' do
-          core_exporter.data.should_not include(core2)
+          expect(core_exporter.data).not_to include(core2)
         end
       end
 
       describe "when whitelist_ids is blank" do
         it 'should be the same as #export_data' do
-          core_exporter.data.should == core_exporter.export_data
+          expect(core_exporter.data).to eq(core_exporter.export_data)
         end
       end
     end
@@ -215,22 +230,22 @@ describe Metasploit::Credential::Exporter::Core do
   describe "#export_data" do
     describe "in CORE_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
       it 'should grab data using the proper scope' do
-        Metasploit::Credential::Core.should_receive(:workspace_id).with(core_exporter.workspace.id)
+        expect(Metasploit::Credential::Core).to receive(:workspace_id).with(core_exporter.workspace.id)
         core_exporter.export_data
       end
     end
 
     describe "in LOGIN_MODE" do
       before(:each) do
-        core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+        allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
       it 'should grab data using the proper scope' do
-        Metasploit::Credential::Login.should_receive(:in_workspace_including_hosts_and_services).with(core_exporter.workspace)
+        expect(Metasploit::Credential::Login).to receive(:in_workspace_including_hosts_and_services).with(core_exporter.workspace)
         core_exporter.export_data
       end
     end
@@ -240,7 +255,7 @@ describe Metasploit::Credential::Exporter::Core do
     describe "#render_manifest_and_output_keys" do
       describe "in CORE_MODE" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
@@ -260,34 +275,34 @@ describe Metasploit::Credential::Exporter::Core do
         end
 
         it 'should contain the Public#username for all Core objects' do
-          @core_publics.should include(core1.public.username)
-          @core_publics.should include(core2.public.username)
+          expect(@core_publics).to include(core1.public.username)
+          expect(@core_publics).to include(core2.public.username)
         end
 
         it 'should contain the Private#type for all Core objects' do
-          @core_private_types.should include(core1.private.type)
-          @core_private_types.should include(core2.private.type)
+          expect(@core_private_types).to include(core1.private.type)
+          expect(@core_private_types).to include(core2.private.type)
         end
 
         it 'should contain the Private#data for all Core objects' do
-          @core_private_data.should include(core1.private.data)
-          @core_private_data.should include(core2.private.data)
+          expect(@core_private_data).to include(core1.private.data)
+          expect(@core_private_data).to include(core2.private.data)
         end
 
         it 'should contain the Realm#key for all Core objects' do
-          @core_realm_keys.should include(core1.realm.key)
-          @core_realm_keys.should include(core2.realm.key)
+          expect(@core_realm_keys).to include(core1.realm.key)
+          expect(@core_realm_keys).to include(core2.realm.key)
         end
 
         it 'should contain the Realm#value for all Core objects' do
-          @core_realm_values.should include(core1.realm.value)
-          @core_realm_values.should include(core2.realm.value)
+          expect(@core_realm_values).to include(core1.realm.value)
+          expect(@core_realm_values).to include(core2.realm.value)
         end
       end
 
       describe "in LOGIN_MODE" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
 
@@ -316,47 +331,47 @@ describe Metasploit::Credential::Exporter::Core do
 
 
         it 'should contain the Public#username for all Login objects' do
-          @login_publics.should include(login1.core.public.username)
-          @login_publics.should include(login2.core.public.username)
+          expect(@login_publics).to include(login1.core.public.username)
+          expect(@login_publics).to include(login2.core.public.username)
         end
 
         it 'should contain the Private#type for all Login objects' do
-          @login_private_types.should include(login1.core.private.type)
-          @login_private_types.should include(login2.core.private.type)
+          expect(@login_private_types).to include(login1.core.private.type)
+          expect(@login_private_types).to include(login2.core.private.type)
         end
 
         it 'should contain the Private#data for all Login objects' do
-          @login_private_data.should include(login1.core.private.data)
-          @login_private_data.should include(login2.core.private.data)
+          expect(@login_private_data).to include(login1.core.private.data)
+          expect(@login_private_data).to include(login2.core.private.data)
         end
 
         it 'should contain the Realm#key for all Login objects' do
-          @login_realm_keys.should include(login1.core.realm.key)
-          @login_realm_keys.should include(login2.core.realm.key)
+          expect(@login_realm_keys).to include(login1.core.realm.key)
+          expect(@login_realm_keys).to include(login2.core.realm.key)
         end
 
         it 'should contain the Realm#value for all Login objects' do
-          @login_realm_values.should include(login1.core.realm.value)
-          @login_realm_values.should include(login2.core.realm.value)
+          expect(@login_realm_values).to include(login1.core.realm.value)
+          expect(@login_realm_values).to include(login2.core.realm.value)
         end
 
         it 'should contain the associated Mdm::Host#address for all Login objects' do
-          @login_host_addresses.should include(login1.service.host.address.to_s, login2.service.host.address.to_s)
+          expect(@login_host_addresses).to include(login1.service.host.address.to_s, login2.service.host.address.to_s)
         end
 
         it 'should contain the associated Mdm::Service#port (stringified) for all Login objects' do
-          @login_service_ports.should include(login1.service.port.to_s)
-          @login_service_ports.should include(login2.service.port.to_s)
+          expect(@login_service_ports).to include(login1.service.port.to_s)
+          expect(@login_service_ports).to include(login2.service.port.to_s)
         end
 
         it 'should contain the associated Mdm::Service#name for all Login objects' do
-          @login_service_names.should include(login1.service.name)
-          @login_service_names.should include(login2.service.name)
+          expect(@login_service_names).to include(login1.service.name)
+          expect(@login_service_names).to include(login2.service.name)
         end
 
         it 'should contain the associated Mdm::Service#proto for all Login objects' do
-          @login_service_protocols.should include(login1.service.proto)
-          @login_service_protocols.should include(login2.service.proto)
+          expect(@login_service_protocols).to include(login1.service.proto)
+          expect(@login_service_protocols).to include(login2.service.proto)
         end
       end
     end
@@ -364,7 +379,7 @@ describe Metasploit::Credential::Exporter::Core do
     describe "#render_zip" do
       describe "when there are no SSH keys in the dataset" do
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
         end
@@ -374,7 +389,7 @@ describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
           end
-          manifest_entry.should_not be_blank
+          expect(manifest_entry).not_to be_blank
         end
 
         it 'should not contain a keys directory' do
@@ -382,7 +397,7 @@ describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             keys_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME).first
           end
-          keys_entry.should be_blank
+          expect(keys_entry).to be_blank
         end
       end
 
@@ -395,7 +410,7 @@ describe Metasploit::Credential::Exporter::Core do
                                                  workspace: workspace)}
 
         before(:each) do
-          core_exporter.stub(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
+          allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
         end
@@ -405,7 +420,7 @@ describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             manifest_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME).first
           end
-          manifest_entry.should_not be_blank
+          expect(manifest_entry).not_to be_blank
         end
 
         it 'should contain a keys directory' do
@@ -413,7 +428,7 @@ describe Metasploit::Credential::Exporter::Core do
           Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
             keys_entry = zip_file.glob(Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME).first
           end
-          keys_entry.should_not be_blank
+          expect(keys_entry).not_to be_blank
         end
 
         describe "the keys directory" do
@@ -425,12 +440,12 @@ describe Metasploit::Credential::Exporter::Core do
           end
 
           it 'should contain a key for each SSH private in the export' do
-            @key_entries.size.should == core_exporter.data[:core].select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size
+            expect(@key_entries.size).to eq(core_exporter.data[:core].select{ |d| d.private.type == Metasploit::Credential::SSHKey.name }.size)
           end
 
           it 'should contain key files named with Public#username and Private#id for each Core that uses an SSHKey' do
             key_names = @key_entries.map{ |e| e.to_s.gsub("#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/", '') }
-            key_names.should include("#{core_with_key.public.username}-#{core_with_key.private.id}")
+            expect(key_names).to include("#{core_with_key.public.username}-#{core_with_key.private.id}")
           end
 
         end

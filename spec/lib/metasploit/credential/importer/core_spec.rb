@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Importer::Core do
+RSpec.describe Metasploit::Credential::Importer::Core do
   include_context 'Mdm::Workspace'
   let(:workspace){FactoryGirl.create(:mdm_workspace)}
 
@@ -19,7 +17,7 @@ describe Metasploit::Credential::Importer::Core do
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
-        it { should be_valid }
+        it { is_expected.to be_valid }
       end
 
       describe "with a non-supported credential type" do
@@ -36,7 +34,7 @@ describe Metasploit::Credential::Importer::Core do
 
         it 'should report the error being invalid private type' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:private_credential_type].should include error
+          expect(core_csv_importer.errors[:private_credential_type]).to include error
         end
       end
 
@@ -54,7 +52,7 @@ describe Metasploit::Credential::Importer::Core do
 
         it 'should report the error being invalid headers' do
           core_csv_importer.valid?
-          core_csv_importer.errors[:input].should include error
+          expect(core_csv_importer.errors[:input]).to include error
         end
       end
     end
@@ -62,7 +60,7 @@ describe Metasploit::Credential::Importer::Core do
     describe "long-form imports" do
       describe "with well-formed CSV data" do
         describe "with a compliant header" do
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         describe "with data that includes a missing Public (username)" do
@@ -127,7 +125,7 @@ describe Metasploit::Credential::Importer::Core do
 
           it 'should report the error being incorrect headers' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 
@@ -140,11 +138,11 @@ describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
           end
 
-          it { should be_invalid }
+          it { is_expected.to be_invalid }
 
           it 'should report the error being malformed CSV' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 
@@ -157,11 +155,11 @@ describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
           end
 
-          it { should be_invalid }
+          it { is_expected.to be_invalid }
 
           it 'should show the proper error message' do
             core_csv_importer.valid?
-            core_csv_importer.errors[:input].should include error
+            expect(core_csv_importer.errors[:input]).to include error
           end
         end
 

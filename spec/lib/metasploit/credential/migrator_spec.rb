@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Metasploit::Credential::Migrator do
+RSpec.describe Metasploit::Credential::Migrator do
   include_context 'Mdm::Workspace'
 
   let(:workspace){ FactoryGirl.create(:mdm_workspace) }
@@ -71,7 +71,7 @@ describe Metasploit::Credential::Migrator do
         end
 
         it "should be created for each Mdm::Cred" do
-          expect(Metasploit::Credential::Password.pluck(:data)).to match_array([cred1.pass, cred2.pass, cred3.pass])          
+          expect(Metasploit::Credential::Password.pluck(:data)).to match_array([cred1.pass, cred2.pass, cred3.pass])
         end
       end
     end
@@ -91,7 +91,7 @@ describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new NTLMHash in the database' do
-          Metasploit::Credential::NTLMHash.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::NTLMHash.where(data: cred.pass)).not_to be_blank
         end
       end
 
@@ -120,7 +120,7 @@ describe Metasploit::Credential::Migrator do
           end
 
           it 'should create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+            expect(Metasploit::Credential::SSHKey.where(data: ssh_key_content)).not_to be_blank
           end
         end
 
@@ -138,7 +138,7 @@ describe Metasploit::Credential::Migrator do
           end
 
           it 'should create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.where(data: ssh_key_content).should_not be_blank
+            expect(Metasploit::Credential::SSHKey.where(data: ssh_key_content)).not_to be_blank
           end
         end
 
@@ -156,7 +156,7 @@ describe Metasploit::Credential::Migrator do
           end
 
           it 'should not create a new SSHKey in the database' do
-            Metasploit::Credential::SSHKey.count.should be_zero
+            expect(Metasploit::Credential::SSHKey.count).to be_zero
           end
         end
 
@@ -176,7 +176,7 @@ describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new Password in the database' do
-          Metasploit::Credential::Password.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::Password.where(data: cred.pass)).not_to be_blank
         end
       end
 
@@ -194,7 +194,7 @@ describe Metasploit::Credential::Migrator do
         end
 
         it 'should create a new NonreplayableHash in the database' do
-          Metasploit::Credential::NonreplayableHash.where(data: cred.pass).should_not be_blank
+          expect(Metasploit::Credential::NonreplayableHash.where(data: cred.pass)).not_to be_blank
         end
       end
     end

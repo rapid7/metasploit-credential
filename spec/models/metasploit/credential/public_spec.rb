@@ -1,17 +1,15 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Public do
+RSpec.describe Metasploit::Credential::Public, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'database' do
     context 'columns' do
       it_should_behave_like 'timestamp database columns'
 
-      it { should have_db_column(:username).of_type(:string).with_options(null: false) }
+      it { is_expected.to have_db_column(:username).of_type(:string).with_options(null: false) }
     end
 
     context 'indices' do
-      it { should have_db_index(:username).unique(true) }
+      it { is_expected.to have_db_index(:username).unique(true) }
     end
   end
 
@@ -21,7 +19,7 @@ describe Metasploit::Credential::Public do
         FactoryGirl.build(:metasploit_credential_public)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 

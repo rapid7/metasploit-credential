@@ -104,7 +104,7 @@ class Metasploit::Credential::Migrator
   # @return [String]
   def key_data_from_file(path)
     # Sometimes we will set the :pass attribute to a file path containing the key
-    if File.exists?(path)
+    if File.exist?(path)
       File.read(path)
     # In other cases we store the entire SSH key directly in the :pass attribute
     elsif Metasploit::Credential::SSHKey.new(data: path).private?

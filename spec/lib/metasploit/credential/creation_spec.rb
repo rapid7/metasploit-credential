@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Creation do
+RSpec.describe Metasploit::Credential::Creation do
   include_context 'Mdm::Workspace'
   let(:dummy_class) {
     Class.new do
@@ -42,7 +40,7 @@ describe Metasploit::Credential::Creation do
 
     it 'replicates realm in new credential' do
       expect {
-        core = test_object.create_cracked_credential(
+        test_object.create_cracked_credential(
           core_id: old_core.id,
           workspace_id: workspace.id,
           username: public.username,
@@ -160,7 +158,7 @@ describe Metasploit::Credential::Creation do
 
     it 'should create an Mdm::Service in state "open"' do
       service = test_object.create_credential_service opts
-      service.state.should == "open"
+      expect(service.state).to eq("open")
     end
   end
 
@@ -483,7 +481,7 @@ describe Metasploit::Credential::Creation do
           task_id: task.id
       }
       core = test_object.create_credential(opts)
-      core.tasks.should include(task)
+      expect(core.tasks).to include(task)
     end
 
   end
@@ -526,7 +524,7 @@ describe Metasploit::Credential::Creation do
           task_id: task.id
       }
       core = test_object.create_credential_core(opts)
-      core.tasks.should include(task)
+      expect(core.tasks).to include(task)
     end
 
   end
@@ -563,7 +561,7 @@ describe Metasploit::Credential::Creation do
         status: Metasploit::Model::Login::Status::SUCCESSFUL,
       }
       login = test_object.create_credential_login(login_data)
-      login.tasks.should include(task)
+      expect(login.tasks).to include(task)
 
     end
 

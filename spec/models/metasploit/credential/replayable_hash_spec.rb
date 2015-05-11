@@ -1,9 +1,7 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::ReplayableHash do
+RSpec.describe Metasploit::Credential::ReplayableHash, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
-  it { should be_a Metasploit::Credential::PasswordHash }
+  it { is_expected.to be_a Metasploit::Credential::PasswordHash }
 
   context 'factories' do
     context 'metasploit_credential_replayable_hash' do
@@ -11,7 +9,7 @@ describe Metasploit::Credential::ReplayableHash do
         FactoryGirl.build(:metasploit_credential_replayable_hash)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 end

@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Importer::Multi do
+RSpec.describe Metasploit::Credential::Importer::Multi do
   include_context 'Mdm::Workspace'
   include_context 'metasploit_credential_importer_zip_file'
 
@@ -31,7 +29,7 @@ describe Metasploit::Credential::Importer::Multi do
     context "when given zip file" do
       subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(supported_file), origin: import_origin)}
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
 
     describe "#csv?" do
@@ -39,7 +37,7 @@ describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(valid_csv_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should be_true
+          expect(multi_importer.csv?).to eq(true)
         end
       end
 
@@ -47,7 +45,7 @@ describe Metasploit::Credential::Importer::Multi do
         subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(unsupported_file), origin: import_origin)}
 
         it 'should return true' do
-          multi_importer.csv?.should be_false
+          expect(multi_importer.csv?).to eq(false)
         end
       end
     end
