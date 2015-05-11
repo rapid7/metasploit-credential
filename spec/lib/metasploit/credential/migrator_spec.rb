@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Metasploit::Credential::Migrator do
+RSpec.describe Metasploit::Credential::Migrator do
   include_context 'Mdm::Workspace'
 
   let(:workspace){ FactoryGirl.create(:mdm_workspace) }

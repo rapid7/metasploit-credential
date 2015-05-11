@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Version do
+RSpec.describe Metasploit::Credential::Version do
   context 'CONSTANTS' do
     context 'MAJOR' do
       subject(:major) do

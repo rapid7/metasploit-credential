@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Private, type: :model do
+RSpec.describe Metasploit::Credential::Private, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'database' do

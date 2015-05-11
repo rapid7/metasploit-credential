@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Importer::Core do
+RSpec.describe Metasploit::Credential::Importer::Core do
   include_context 'Mdm::Workspace'
   let(:workspace){FactoryGirl.create(:mdm_workspace)}
 

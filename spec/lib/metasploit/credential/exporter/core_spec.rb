@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Exporter::Core do
+RSpec.describe Metasploit::Credential::Exporter::Core do
   include_context 'Mdm::Workspace'
   include_context 'export objects'
 

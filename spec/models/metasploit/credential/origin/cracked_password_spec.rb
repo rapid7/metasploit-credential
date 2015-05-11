@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Origin::CrackedPassword, type: :model do
+RSpec.describe Metasploit::Credential::Origin::CrackedPassword, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
