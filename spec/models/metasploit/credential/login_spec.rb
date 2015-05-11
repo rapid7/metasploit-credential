@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Login do
+describe Metasploit::Credential::Login, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::Origin::Import do
+describe Metasploit::Credential::Origin::Import, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do

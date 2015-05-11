@@ -54,7 +54,7 @@ require 'spec_helper'
 #    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  different  |  same       |  FALSE      |
 #    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  different  |  different  |  FALSE      |
 #
-describe Metasploit::Credential::Core do
+describe Metasploit::Credential::Core, type: :model do
   include_context 'Mdm::Workspace'
 
   subject(:core) do

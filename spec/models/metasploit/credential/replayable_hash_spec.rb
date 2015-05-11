@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Metasploit::Credential::ReplayableHash do
+describe Metasploit::Credential::ReplayableHash, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
   it { should be_a Metasploit::Credential::PasswordHash }
