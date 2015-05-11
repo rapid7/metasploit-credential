@@ -89,10 +89,6 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
       FactoryGirl.build( factory_name, second_factory_options)
     }
 
-    let(:second_private) {
-      FactoryGirl.create(:metasploit_credential_private)
-    }
-
     let(:second_workspace) {
       FactoryGirl.create(:mdm_workspace)
     }
@@ -115,6 +111,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
+        }
+
+        let(:second_private) {
+          FactoryGirl.create(:metasploit_credential_private)
         }
 
         let(:second_realm) {
@@ -595,6 +595,10 @@ shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
         let(:second_public) {
           FactoryGirl.create(:metasploit_credential_username)
+        }
+
+        let(:second_private) {
+          FactoryGirl.create(:metasploit_credential_private)
         }
 
         let(:second_realm) {
