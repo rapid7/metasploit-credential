@@ -1,9 +1,7 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::PostgresMD5 do
+RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
   it_should_behave_like 'Metasploit::Concern.run'
 
-  it { should be_a Metasploit::Credential::ReplayableHash }
+  it { is_expected.to be_a Metasploit::Credential::ReplayableHash }
 
   context 'CONSTANTS' do
     context 'DATA_REGEXP' do
@@ -55,7 +53,7 @@ describe Metasploit::Credential::PostgresMD5 do
             nil
           end
 
-          it { should be_nil }
+          it { is_expected.to be_nil }
         end
 
         context 'with upper case characters' do
@@ -87,7 +85,7 @@ describe Metasploit::Credential::PostgresMD5 do
         FactoryGirl.build(:metasploit_credential_postgres_md5)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 

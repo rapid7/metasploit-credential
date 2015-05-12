@@ -39,11 +39,8 @@ group :development, :test do
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
-
+  # dummy app
   gem 'rails', '>= 4.0.9', '< 4.1.0'
-  
-  # TODO make compatible with rspec 3.0.0
-  gem 'rspec-core', '< 3.0.0'
   # unit testing framework with rails integration
-  gem 'rspec-rails', '< 3.0.0'
+  gem 'rspec-rails', '~> 3.1'
 end

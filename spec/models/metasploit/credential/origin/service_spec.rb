@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Metasploit::Credential::Origin::Service do
+RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
   include_context 'Mdm::Workspace'
 
   subject(:service_origin) do
@@ -10,23 +8,23 @@ describe Metasploit::Credential::Origin::Service do
   it_should_behave_like 'Metasploit::Concern.run'
 
   context 'associations' do
-    it { should have_many(:cores).class_name('Metasploit::Credential::Core').dependent(:destroy) }
-    it { should belong_to(:service).class_name('Mdm::Service') }
+    it { is_expected.to have_many(:cores).class_name('Metasploit::Credential::Core').dependent(:destroy) }
+    it { is_expected.to belong_to(:service).class_name('Mdm::Service') }
   end
 
   context 'database' do
     context 'columns' do
       it_should_behave_like 'timestamp database columns'
 
-      it { should have_db_column(:module_full_name).of_type(:text).with_options(null: false) }
+      it { is_expected.to have_db_column(:module_full_name).of_type(:text).with_options(null: false) }
 
       context 'foreign keys' do
-        it { should have_db_column(:service_id).of_type(:integer).with_options(null: false) }
+        it { is_expected.to have_db_column(:service_id).of_type(:integer).with_options(null: false) }
       end
     end
 
     context 'indices' do
-      it { should have_db_index([:service_id, :module_full_name]).unique(true) }
+      it { is_expected.to have_db_index([:service_id, :module_full_name]).unique(true) }
     end
   end
 
@@ -36,7 +34,7 @@ describe Metasploit::Credential::Origin::Service do
         FactoryGirl.build(:metasploit_credential_origin_service)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
@@ -156,10 +154,10 @@ describe Metasploit::Credential::Origin::Service do
           FactoryGirl.create(:metasploit_credential_origin_service)
         end
 
-        it { should validate_uniqueness_of(:module_full_name).scoped_to(:service_id) }
+        it { is_expected.to validate_uniqueness_of(:module_full_name).scoped_to(:service_id) }
       end
     end
 
-    it { should validate_presence_of :service }
+    it { is_expected.to validate_presence_of :service }
   end
 end
