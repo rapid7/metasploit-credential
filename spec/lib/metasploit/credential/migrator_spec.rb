@@ -62,7 +62,6 @@ RSpec.describe Metasploit::Credential::Migrator do
         it "should be created for each Mdm::Cred" do
           expect(Metasploit::Credential::Public.pluck(:username)).to match_array([cred1.user, cred2.user, cred3.user])
         end
-        
       end
 
       describe "new Privates" do

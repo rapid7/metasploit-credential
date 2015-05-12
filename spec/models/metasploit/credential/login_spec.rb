@@ -194,7 +194,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     end
 
     it { is_expected.to validate_presence_of :service }
-    it { is_expected.to ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
+    it { is_expected.to validate_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
       include_context 'Mdm::Workspace'

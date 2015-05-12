@@ -108,7 +108,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     it 'should produce a hash with the service host address' do
-      expect(result_hash[:host_address]).to eq(login.service.host.address)
+      expect(result_hash[:host_address]).to eq(login.service.host.address.to_s)
     end
 
     it 'should produce a hash with the service port' do

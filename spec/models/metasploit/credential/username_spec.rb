@@ -19,6 +19,4 @@ RSpec.describe Metasploit::Credential::Username, type: :model do
       it { is_expected.to validate_uniqueness_of :username }
     end
   end
-
-
 end

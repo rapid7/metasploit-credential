@@ -11,7 +11,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "associated Mdm::Service objects" do
       it 'should properly format the service information' do
         service = login.service
-        expect(exporter.format_service_for_login(login)).to eq("#{service.host.address}:#{service.port}/#{service.proto} (#{service.name})")
+        expect(exporter.format_service_for_login(login)).to eq "#{service.host.address.to_s}:#{service.port}/#{service.proto} (#{service.name})"
       end
     end
 
