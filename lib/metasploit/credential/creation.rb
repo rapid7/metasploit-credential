@@ -1,6 +1,6 @@
 # Implements a set of "convenience methods" for creating credentials and related portions of the object graph.  Creates
 # {Metasploit::Credential::Core} objects and their attendant relationships as well as {Metasploit::Credential::Login}
-# objects and their attendant {Mdm::Host} and {Mdm::Service} objects.
+# objects and their attendant `Mdm::Host` and `Mdm::Service` objects.
 module Metasploit::Credential::Creation
 
   # Returns true if ActiveRecord has an active database connection, false otherwise.
