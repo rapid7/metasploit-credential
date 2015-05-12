@@ -2,7 +2,11 @@
 # to authenticate to PostgreSQL servers. It is composed of a hexadecimal string of 32 charachters prepended by the string
 # 'md5'
 class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHash
+  #
+  # CONSTANTS
+  #
 
+  # Valid format for {Metasploit::Credential::Private#data}
   DATA_REGEXP = /md5([a-f0-9]{32})/
 
   #

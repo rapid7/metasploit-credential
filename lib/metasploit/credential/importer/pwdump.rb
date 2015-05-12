@@ -25,6 +25,7 @@ class Metasploit::Credential::Importer::Pwdump
   # Matches lines that contain usernames and plaintext passwords
   PLAINTEXT_REGEX                   = /^[\s]*([\x21-\x7f]+)[\s]+([\x21-\x7f]+)?/n
 
+  # Matches lines taht contain MD5 hashes for PostgreSQL
   POSTGRES_REGEX                    = /^[\s]*([\x21-\x7f]+):md5([0-9a-f]{32})$/
 
   # Matches a line that we use to get information for creating {Mdm::Host} and {Mdm::Service} objects
