@@ -12,7 +12,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
 
   # @!attribute tasks
-  #   The {Mdm::Task tasks} using this to track what tasks interacted with a given core.
+  #   The `Mdm::Task`s using this to track what tasks interacted with a given core.
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,

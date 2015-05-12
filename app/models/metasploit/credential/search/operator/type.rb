@@ -1,6 +1,6 @@
 # Operator that searches a polymorphic `#type` attribute.  Search terms are restricted to set of `Class#name`s and
 # `Class#model_name.human` with the `Class#model_name.human` being translated to `Class#name` in the operation returned
-# by {#operate_on}.
+# by `#operate_on`.
 class Metasploit::Credential::Search::Operator::Type < Metasploit::Model::Search::Operator::Attribute
   #
   # Attributes
@@ -40,7 +40,7 @@ class Metasploit::Credential::Search::Operator::Type < Metasploit::Model::Search
     @class_names ||= []
   end
 
-  # Maps `Class.model_name.human` to `Class.name` for all {#classes}.
+  # Maps `Class.model_name.human` to `Class.name` for {#class_set}.
   #
   # @return [Hash{String => String}] Maps `Class.model_name.name`s to `Class.name`s so `Class.model_names.name` can be
   #   converted to `Class.name` for the in database search.

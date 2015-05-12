@@ -1,8 +1,8 @@
 # Implements importation behavior for pwdump files exported by Metasploit as well as files from the John the Ripper
 # hash cracking suite: http://www.openwall.com/john/
 #
-# Please note that in the case of data exported from Metasploit, the dataset will contain information on the {Mdm::Host}
-# and {Mdm::Service} objects that are related to the credential.  This means that Metasploit exports will be limited to
+# Please note that in the case of data exported from Metasploit, the dataset will contain information on the `Mdm::Host`
+# and `Mdm::Service` objects that are related to the credential.  This means that Metasploit exports will be limited to
 # containing {Metasploit::Credential::Login} objects, which is the legacy behavior of this export prior to the creation
 # of this library.
 class Metasploit::Credential::Importer::Pwdump
@@ -28,7 +28,7 @@ class Metasploit::Credential::Importer::Pwdump
   # Matches lines taht contain MD5 hashes for PostgreSQL
   POSTGRES_REGEX                    = /^[\s]*([\x21-\x7f]+):md5([0-9a-f]{32})$/
 
-  # Matches a line that we use to get information for creating {Mdm::Host} and {Mdm::Service} objects
+  # Matches a line that we use to get information for creating `Mdm::Host` and `Mdm::Service` objects
   # TODO: change to use named groups from 1.9+
   SERVICE_COMMENT_REGEX             = /^#[\s]*([0-9.]+):([0-9]+)(\x2f(tcp|udp))?[\s]*(\x28([^\x29]*)\x29)?/n
 
@@ -71,7 +71,7 @@ class Metasploit::Credential::Importer::Pwdump
     end
   end
 
-  # Perform the import of the credential data, creating {Mdm::Host} and {Mdm::Service} objects as needed,
+  # Perform the import of the credential data, creating `Mdm::Host` and `Mdm::Service` objects as needed,
   # parsing out data by matching against regex constants that match the various kinds of valid lines found
   # in the file.  Ignore lines which match none of the REGEX constants.
   # @return [void]
@@ -160,7 +160,7 @@ class Metasploit::Credential::Importer::Pwdump
   end
 
   # Take an msfpwdump comment string and parse it into information necessary for
-  # creating {Mdm::Host} and {Mdm::Service} objects.
+  # creating `Mdm::Host` and `Mdm::Service` objects.
   # @param comment_string [String] a string starting with a '#' that conforms to {SERVICE_COMMENT_REGEX}
   # @return [Hash]
   def service_info_from_comment_string(comment_string)

@@ -3,7 +3,7 @@
 # and `Mdm::Server` information is exported as well. Exported data can be optionally scoped to include only
 # a certain whitelist of database IDs.
 #
-# The {#export!} method creates a zip file on disk containing a CSV with the data.  If the {#workspace} contains
+# The {#export!} method creates a zip file on disk containing a CSV with the data.  If the `workspace` contains
 # {Metasploit::Credential::SSHKey} objects on the exported {Metasploit::Credential::Core} objects, the keys are
 # exported to files inside a subdirectory of the zip file.
 # @example Exporting all Cores
@@ -41,7 +41,7 @@ class Metasploit::Credential::Exporter::Core
   # The downcased and Symbolized name of the default object type to export
   DEFAULT_MODE  = LOGIN_MODE
 
-  # An argument to {Dir::mktmpdir}
+  # An argument to `Dir::mktmpdir`
   TEMP_ZIP_PATH_PREFIX = "metasploit-exports"
 
 
@@ -109,7 +109,7 @@ class Metasploit::Credential::Exporter::Core
   end
 
   # Returns a platform-agnostic filesystem path where the key data will be saved as a file
-  # @param line [Hash] the result of {#line_for_login} or #{line_for_core}
+  # @param line [Hash] the result of {#line_for_login} or {#line_for_core}
   # @return [String]
   def path_for_key(datum)
     core = datum.is_a?(Metasploit::Credential::Core) ? datum : datum.core
