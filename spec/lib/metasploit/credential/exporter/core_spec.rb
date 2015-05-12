@@ -108,7 +108,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     it 'should produce a hash with the service host address' do
-      expect(result_hash[:host_address]).to eq(login.service.host.address)
+      expect(result_hash[:host_address]).to eq(login.service.host.address.to_s)
     end
 
     it 'should produce a hash with the service port' do
@@ -356,8 +356,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
         end
 
         it 'should contain the associated Mdm::Host#address for all Login objects' do
-          expect(@login_host_addresses).to include(login1.service.host.address)
-          expect(@login_host_addresses).to include(login2.service.host.address)
+          expect(@login_host_addresses).to include(login1.service.host.address.to_s, login2.service.host.address.to_s)
         end
 
         it 'should contain the associated Mdm::Service#port (stringified) for all Login objects' do

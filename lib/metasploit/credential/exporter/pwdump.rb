@@ -137,7 +137,7 @@ class Metasploit::Credential::Exporter::Pwdump
   # @return [String]
   def format_service_for_login(login)
     service = login.service
-    address = service.host.address
+    address = service.host.address.to_s
     "#{address}:#{service.port}/#{service.proto} (#{service.name})"
   end
 

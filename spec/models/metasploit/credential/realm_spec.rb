@@ -78,12 +78,6 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
     end
   end
 
-  context 'mass assignment security' do
-    it { is_expected.to allow_mass_assignment_of(:key) }
-    it { is_expected.to allow_mass_assignment_of(:value) }
-  end
-
-
   context 'search' do
     context 'attributes' do
       let(:base_class) {
@@ -104,7 +98,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
   context 'validations' do
     context 'on #key' do
-      it { is_expected.to ensure_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
+      it { is_expected.to validate_inclusion_of(:key).in_array(Metasploit::Model::Realm::Key::ALL) }
       it { is_expected.to validate_presence_of :key }
     end
 
@@ -123,7 +117,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         #
 
         let(:error) do
-          I18n.translate!('activerecord.errors.messages.taken')
+          I18n.translate!('errors.messages.taken')
         end
 
         let(:new_realm) do

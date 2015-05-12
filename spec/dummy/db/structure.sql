@@ -3327,17 +3327,17 @@ CREATE INDEX index_automatic_exploitation_match_sets_on_workspace_id ON automati
 
 
 --
+-- Name: index_automatic_exploitation_matches_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_automatic_exploitation_matches_on_module_detail_id ON automatic_exploitation_matches USING btree (module_detail_id);
+
+
+--
 -- Name: index_automatic_exploitation_matches_on_module_fullname; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_automatic_exploitation_matches_on_module_fullname ON automatic_exploitation_matches USING btree (module_fullname);
-
-
---
--- Name: index_automatic_exploitation_matches_on_ref_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_automatic_exploitation_matches_on_ref_id ON automatic_exploitation_matches USING btree (module_detail_id);
 
 
 --
@@ -3495,24 +3495,24 @@ CREATE UNIQUE INDEX index_metasploit_credential_realms_on_key_and_value ON metas
 
 
 --
--- Name: index_module_actions_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_module_actions_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_module_actions_on_module_detail_id ON module_actions USING btree (detail_id);
-
-
---
--- Name: index_module_archs_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_module_archs_on_module_detail_id ON module_archs USING btree (detail_id);
+CREATE INDEX index_module_actions_on_detail_id ON module_actions USING btree (detail_id);
 
 
 --
--- Name: index_module_authors_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_module_archs_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_module_authors_on_module_detail_id ON module_authors USING btree (detail_id);
+CREATE INDEX index_module_archs_on_detail_id ON module_archs USING btree (detail_id);
+
+
+--
+-- Name: index_module_authors_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_module_authors_on_detail_id ON module_authors USING btree (detail_id);
 
 
 --
@@ -3544,24 +3544,24 @@ CREATE INDEX index_module_details_on_refname ON module_details USING btree (refn
 
 
 --
--- Name: index_module_mixins_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_module_mixins_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_module_mixins_on_module_detail_id ON module_mixins USING btree (detail_id);
-
-
---
--- Name: index_module_platforms_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_module_platforms_on_module_detail_id ON module_platforms USING btree (detail_id);
+CREATE INDEX index_module_mixins_on_detail_id ON module_mixins USING btree (detail_id);
 
 
 --
--- Name: index_module_refs_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_module_platforms_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_module_refs_on_module_detail_id ON module_refs USING btree (detail_id);
+CREATE INDEX index_module_platforms_on_detail_id ON module_platforms USING btree (detail_id);
+
+
+--
+-- Name: index_module_refs_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_module_refs_on_detail_id ON module_refs USING btree (detail_id);
 
 
 --
@@ -3586,10 +3586,10 @@ CREATE INDEX index_module_runs_on_user_id ON module_runs USING btree (user_id);
 
 
 --
--- Name: index_module_targets_on_module_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_module_targets_on_detail_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_module_targets_on_module_detail_id ON module_targets USING btree (detail_id);
+CREATE INDEX index_module_targets_on_detail_id ON module_targets USING btree (detail_id);
 
 
 --
@@ -4059,7 +4059,11 @@ INSERT INTO schema_migrations (version) VALUES ('20150226151459');
 
 INSERT INTO schema_migrations (version) VALUES ('20150312155312');
 
+INSERT INTO schema_migrations (version) VALUES ('20150317145455');
+
 INSERT INTO schema_migrations (version) VALUES ('20150326183742');
+
+INSERT INTO schema_migrations (version) VALUES ('20150421211719');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 

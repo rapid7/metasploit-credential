@@ -39,9 +39,8 @@ group :development, :test do
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
-  # restrict for compatibility with rest of metasploit ecosystem until it upgrades to Rails 4
-  # @todo MSP-9647
-  gem 'rails', '>= 3.2', '< 4.0.0'
+  # dummy app
+  gem 'rails', '>= 4.0.9', '< 4.1.0'
   # unit testing framework with rails integration
   gem 'rspec-rails', '~> 3.1'
 end

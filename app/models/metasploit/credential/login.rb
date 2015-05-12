@@ -12,10 +12,10 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #   The {Mdm::Task tasks} using this to track what tasks interacted with a given core.
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
-  has_and_belongs_to_many :tasks, 
+  has_and_belongs_to_many :tasks,
+                          -> { uniq },
                           class_name: "Mdm::Task", 
-                          join_table: "credential_logins_tasks",
-                          uniq: true
+                          join_table: "credential_logins_tasks"
 
   # @!attribute core
   #   The {Metasploit::Credential::Core core credential} used to authenticate to {#service}.
@@ -93,14 +93,6 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
 
   before_validation :blank_to_nil
-
-  #
-  # Mass Assignment Security
-  #
-
-  attr_accessible :access_level
-  attr_accessible :last_attempted_at
-  attr_accessible :status
 
   #
   #

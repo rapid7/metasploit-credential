@@ -14,7 +14,9 @@ RSpec.describe Metasploit::Credential::Migrator do
   describe "#convert_creds_in_workspace" do
     describe "when there are no Mdm::Cred objects in the workspace" do
       before(:each) do
-        workspace.creds = []
+        workspace.services.each do |service|
+          service.creds = []
+        end
       end
 
       it 'should not change the Core count' do
@@ -44,13 +46,9 @@ RSpec.describe Metasploit::Credential::Migrator do
       let(:service2){ FactoryGirl.create(:mdm_service, host: host2)}
       let(:service3){ FactoryGirl.create(:mdm_service, host: host3)}
 
-      let(:cred1){ FactoryGirl.create(:mdm_cred, service: service1)}
-      let(:cred2){ FactoryGirl.create(:mdm_cred, service: service2)}
-      let(:cred3){ FactoryGirl.create(:mdm_cred, service: service3)}
-
-      before(:each) do
-        cred1; cred2; cred3
-      end
+      let!(:cred1){ FactoryGirl.create(:mdm_cred, service: service1)}
+      let!(:cred2){ FactoryGirl.create(:mdm_cred, service: service2)}
+      let!(:cred3){ FactoryGirl.create(:mdm_cred, service: service3)}
 
       it 'should migrate them into Metasploit::Credential::Core objects' do
         expect{migrator.convert_creds_in_workspace(workspace)}.to change(Metasploit::Credential::Core, :count).from(0).to(3)
@@ -62,9 +60,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it "should be created for each Mdm::Cred" do
-          expect(Metasploit::Credential::Public.where(username: cred1.user)).not_to be_blank
-          expect(Metasploit::Credential::Public.where(username: cred2.user)).not_to be_blank
-          expect(Metasploit::Credential::Public.where(username: cred3.user)).not_to be_blank
+          expect(Metasploit::Credential::Public.pluck(:username)).to match_array([cred1.user, cred2.user, cred3.user])
         end
       end
 
@@ -74,10 +70,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it "should be created for each Mdm::Cred" do
-          migrator.convert_creds_in_workspace(workspace)
-          expect(Metasploit::Credential::Password.where(data: cred1.pass)).not_to be_blank
-          expect(Metasploit::Credential::Password.where(data: cred2.pass)).not_to be_blank
-          expect(Metasploit::Credential::Password.where(data: cred3.pass)).not_to be_blank
+          expect(Metasploit::Credential::Password.pluck(:data)).to match_array([cred1.pass, cred2.pass, cred3.pass])
         end
       end
     end

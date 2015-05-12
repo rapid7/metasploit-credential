@@ -34,14 +34,6 @@ RSpec.describe Metasploit::Credential::Origin::Session, type: :model do
     end
   end
 
-  context 'mass assignment security' do
-    it { should_not allow_mass_assignment_of(:created_at) }
-    it { is_expected.to allow_mass_assignment_of(:post_reference_name) }
-    it { should_not allow_mass_assignment_of(:session) }
-    it { should_not allow_mass_assignment_of(:session_id) }
-    it { should_not allow_mass_assignment_of(:updated_at) }
-  end
-
   context 'validations' do
     context 'post_reference_name' do
       include_context 'Mdm::Workspace'

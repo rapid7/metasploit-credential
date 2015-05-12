@@ -151,18 +151,6 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     end
   end
 
-  context 'mass assignment security' do
-    it { is_expected.to allow_mass_assignment_of(:access_level) }
-    it { should_not allow_mass_assignment_of(:core) }
-    it { should_not allow_mass_assignment_of(:core_id) }
-    it { should_not allow_mass_assignment_of(:created_at) }
-    it { is_expected.to allow_mass_assignment_of(:last_attempted_at) }
-    it { should_not allow_mass_assignment_of(:service) }
-    it { should_not allow_mass_assignment_of(:service_id) }
-    it { is_expected.to allow_mass_assignment_of(:status) }
-    it { should_not allow_mass_assignment_of(:updated_at) }
-  end
-
   context 'search' do
     let(:base_class) {
       described_class
@@ -206,7 +194,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     end
 
     it { is_expected.to validate_presence_of :service }
-    it { is_expected.to ensure_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
+    it { is_expected.to validate_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
       include_context 'Mdm::Workspace'

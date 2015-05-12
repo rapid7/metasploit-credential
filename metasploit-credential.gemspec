@@ -6,7 +6,7 @@ require 'metasploit/credential/version'
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
-  s.version     = Metasploit::Credential::GEM_VERSION
+  s.version     = Metasploit::Credential::VERSION
   s.authors     = ['Luke Imhoff', 'Trevor Rosen']
   s.email       = ['luke_imhoff@rapid7.com', 'trevor_rosen@rapid7.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
@@ -23,12 +23,13 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'metasploit-version', '~> 0.1.3'
 
   # patching inverse association in Mdm models.
-  s.add_runtime_dependency 'metasploit-concern', '0.5.0'
+  s.add_runtime_dependency 'metasploit-concern', '~> 1.0'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '0.24.3'
+  s.add_runtime_dependency 'metasploit_data_models', '~> 1.0'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model', '~> 0.30.1'
-  s.add_runtime_dependency 'railties', '< 4.0.0'
+  s.add_runtime_dependency 'metasploit-model', '~> 1.0'
+
+  s.add_runtime_dependency 'railties'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys

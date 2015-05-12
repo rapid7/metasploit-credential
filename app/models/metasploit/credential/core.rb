@@ -16,9 +16,9 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,
+                          -> { uniq },
                           class_name: "Mdm::Task",
-                          join_table: "credential_cores_tasks",
-                          uniq: true
+                          join_table: "credential_cores_tasks"
 
   # @!attribute logins
   #   The {Metasploit::Credential::Login logins} using this core credential to log into a service.
@@ -277,9 +277,22 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @param host_id [Integer]
   # @return [String]
   def self.cores_from_host_sql(host_id)
+    left = origin_service_host_id(host_id).ast
+    right = origin_session_host_id(host_id).ast
+
+    # TODO: Kill with fire. ActiveRecord 4.0.x leaks order/limit/offset scopes
+    # We strip out order/limit/offset statements from the subquery since it's invalid SQL
+    # https://github.com/rails/rails/issues/14003
+    left.orders = []
+    right.orders = []
+    left.limit = nil
+    right.limit = nil
+    left.offset = nil
+    right.offset = nil
+
     Arel::Nodes::Union.new(
-      origin_service_host_id(host_id).ast,
-      origin_session_host_id(host_id).ast
+      left,
+      right
     ).to_sql
   end
 

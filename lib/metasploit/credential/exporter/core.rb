@@ -130,7 +130,7 @@ class Metasploit::Credential::Exporter::Core
   def line_for_login(login)
     result = line_for_core(login.core)
     result.merge({
-      host_address: login.service.host.address,
+      host_address: login.service.host.address.to_s,
       service_port: login.service.port,
       service_name: login.service.try(:name),
       service_protocol: login.service.proto,

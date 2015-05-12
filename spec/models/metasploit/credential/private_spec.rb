@@ -24,14 +24,6 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
     end
   end
 
-  context 'mass assignement security' do
-    it { should_not allow_mass_assignment_of :created_at }
-    it { is_expected.to allow_mass_assignment_of :data }
-    it { should_not allow_mass_assignment_of :id }
-    it { should_not allow_mass_assignment_of :updated_at }
-    it { should_not allow_mass_assignment_of :type }
-  end
-
   context 'validations' do
     context 'data' do
       it { is_expected.to validate_non_nilness_of :data }
@@ -48,7 +40,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
         #
 
         let(:error) do
-          I18n.translate!(:'activerecord.errors.messages.taken')
+          I18n.translate!(:'errors.messages.taken')
         end
 
         let(:new_private) do

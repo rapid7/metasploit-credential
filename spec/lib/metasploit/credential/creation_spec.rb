@@ -573,7 +573,7 @@ RSpec.describe Metasploit::Credential::Creation do
       let(:untried_login) { FactoryGirl.create(:metasploit_credential_login, status: Metasploit::Model::Login::Status::UNTRIED)}
 
       let(:opts) {{
-        address: untried_login.service.host.address,
+        address: untried_login.service.host.address.to_s,
         port: untried_login.service.port,
         protocol: untried_login.service.proto,
         username: untried_login.core.public.username,
