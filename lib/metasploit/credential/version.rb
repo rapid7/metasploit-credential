@@ -15,7 +15,11 @@ module Metasploit
       # The patch version number, scoped to the {MAJOR} and {MINOR} version numbers.
       PATCH = 0
       # The prerelease version, scoped to the {MAJOR}, {MINOR}, and {PATCH} version numbers.
-      PRERELEASE = 'rails-4.0'
+      PRERELEASE = '1-0-0-plus'
+
+      #
+      # Module Methods
+      #
 
       # The full version string, including the {Metasploit::Credential::Version::MAJOR},
       # {Metasploit::Credential::Version::MINOR}, {Metasploit::Credential::Version::PATCH}, and optionally, the

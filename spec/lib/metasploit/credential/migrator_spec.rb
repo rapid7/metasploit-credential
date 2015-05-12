@@ -70,7 +70,7 @@ RSpec.describe Metasploit::Credential::Migrator do
         end
 
         it "should be created for each Mdm::Cred" do
-          expect(Metasploit::Credential::Password.pluck(:data)).to match_array([cred1.pass, cred2.pass, cred3.pass])          
+          expect(Metasploit::Credential::Password.pluck(:data)).to match_array([cred1.pass, cred2.pass, cred3.pass])
         end
       end
     end
