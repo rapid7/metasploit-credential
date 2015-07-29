@@ -44,7 +44,7 @@ en:
               data:
                 help: "Filters the results by private credentials that contain the specified value."
               type:
-                help: "Filters the results by private credential type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Hash'."
+                help: "Filters the results by private credential type. The search value must be  'Password', 'NTLM hash', 'SSH key', or 'Nonreplayable hash'."
       metasploit/credential/public:
         search:
           operator:
