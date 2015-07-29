@@ -230,11 +230,12 @@ module Metasploit::Credential::Creation
       login_object.save!
     end
     login_object.status = status
-    require 'pry'
-    binding.pry
-    login_object.host.status = 2 # this won't work. set workspace_stats[:sess_hosts][address]
+    login_object.host.workspace.stats[:pass_hosts][login_object.host.address]
     login_object.save!
     login_object.host.save!
+    login_object.host.workspace.save!
+    require 'pry'
+    binding.pry
     login_object
   end
 
