@@ -82,11 +82,12 @@ class Metasploit::Credential::Importer::Core
   # Otherwise, assume that this is a short form import and process accordingly.
   # @return [void]
   def import!
-    if private_credential_type.present?
-      import_short_form
+    if csv_object.first.headers.include? 'private_type'
+      result =  import_long_form
     else
-      import_long_form
+      result =  import_short_form
     end
+    return result
   end
 
   # Performs an import of a "long" CSV - one that that contains realms and heterogenous private types
@@ -97,9 +98,12 @@ class Metasploit::Credential::Importer::Core
   #
   # @return [void]
   def import_long_form
+    all_creds_valid = true
     realms = Hash.new
     Metasploit::Credential::Core.transaction do
+      core_opts = []
       csv_object.each do |row|
+
         next if row.header_row?
         next unless row['username'].present? || row['private_data'].present?
 
@@ -108,7 +112,7 @@ class Metasploit::Credential::Importer::Core
         realm_key     = row['realm_key']
         realm_value   = row['realm_value']  # Use the name of the Realm as a lookup for getting the object
 
-        private_class = row['private_type'].present? ? row['private_type'].constantize : ''
+        private_class = row['private_type'].present? ? row['private_type'].constantize : private_data_type.constantize
         private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         # Host and Service information for Logins
@@ -140,43 +144,56 @@ class Metasploit::Credential::Importer::Core
             private_object_for_row = private_class.where(data: private_data).first_or_create
           end
         end
+        all_creds_valid = all_creds_valid && (public_object.valid? && private_object_for_row.valid?)
 
-        core = create_credential_core(origin:origin, workspace_id: workspace.id,
-                                                     public: public_object,
-                                                     private: private_object_for_row,
-                                                     realm: realm_object_for_row )
+        core_opts << {origin:origin, workspace_id: workspace.id,
+         public: public_object,
+         private: private_object_for_row,
+         realm: realm_object_for_row}
 
-        # Make Logins with attendant Host/Service information if we are doing that
         if host_address.present? && service_port.present? && service_protocol.present?
           login_opts = {
-            core: core,
-            address: host_address,
-            port: service_port,
-            protocol: service_protocol,
-            workspace_id: workspace.id,
-            service_name: service_name.present? ? service_name : ""
+              core: core,
+              address: host_address,
+              port: service_port,
+              protocol: service_protocol,
+              workspace_id: workspace.id,
+              service_name: service_name.present? ? service_name : ""
           }
           login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
           login_opts[:status]            = status unless status.blank?
           login_opts[:access_level]      = access_level unless access_level.blank?
 
           create_credential_login(login_opts)
+
+        end
+      end
+
+      if all_creds_valid
+        core_opts.each do |item|
+          core = create_credential_core(item)
+
+          # Make Logins with attendant Host/Service information if we are doing that
+
         end
       end
     end
+    return all_creds_valid
   end
 
 
   # Performs an import of a "short" form of CSV - one that contains only one type of {Metasploit::Credential::Private}
   # and no {Metasploit::Credential::Realm} data
-  # @return [void]
+  # @return [Boolean]
   def import_short_form
+    core_opts = []
+    all_creds_valid = true
     Metasploit::Credential::Core.transaction do
       csv_object.each do |row|
         next if row.header_row?
 
-        username     = row['username']
-        private_data = row['private_data']
+        username     = row['user name'].present? ? row['username'] : ''
+        private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         public_object = create_public_from_field(username)
 
@@ -186,11 +203,25 @@ class Metasploit::Credential::Importer::Core
           private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
         end
 
-        create_credential_core(origin:origin, workspace_id: workspace.id,
+        # need to check private_object_for_row.valid? to raise a user facing message if any cred had invalid private
+
+        all_creds_valid = all_creds_valid && (public_object.valid? && private_object_for_row.valid?)
+
+
+        core_opts << {origin:origin, workspace_id: workspace.id,
                                       public: public_object,
-                                      private: private_object_for_row)
+                                      private: private_object_for_row}
       end
+      if all_creds_valid
+        core_opts.each do |item|
+
+          create_credential_core(item)
+        end
+      end
+
+
     end
+    return  all_creds_valid
   end
 
 
@@ -211,10 +242,10 @@ class Metasploit::Credential::Importer::Core
   # @param csv_headers [Array] the headers in the CSV contained in {#input}
   # @return [Boolean]
   def csv_headers_are_correct?(csv_headers)
-    if private_credential_type.present?
-      return csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS
+    if csv_headers.include? 'private_type'
+      headers_valid = (csv_headers.map(&:to_sym) == VALID_LONG_CSV_HEADERS)
     else
-      return csv_headers.map(&:to_sym) == VALID_LONG_CSV_HEADERS
+      headers_valid = (csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS)
     end
   end
 

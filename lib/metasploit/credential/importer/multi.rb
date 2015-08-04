@@ -41,11 +41,11 @@ class Metasploit::Credential::Importer::Multi
     end
   end
 
-  # Perform the import
+  # Perform the import. Return true if import succeeded. Return false if any cred failed due to formatting.
   #
-  # @return [void]
+  # @return [Boolean]
   def import!
-    selected_importer.import!
+    return selected_importer.import!
   end
 
 
