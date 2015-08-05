@@ -14,6 +14,7 @@ module Metasploit
       MINOR = 0
       # The patch version number, scoped to the {MAJOR} and {MINOR} version numbers.
       PATCH = 1
+      # The prerelease tag, to be removed before pushing a merged master.
       PRERELEASE = 'creds-csv-import'
 
       #

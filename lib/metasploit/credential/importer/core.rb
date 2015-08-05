@@ -102,6 +102,7 @@ class Metasploit::Credential::Importer::Core
     realms = Hash.new
     Metasploit::Credential::Core.transaction do
       core_opts = []
+      rows = []
       csv_object.each do |row|
 
         next if row.header_row?
@@ -112,19 +113,8 @@ class Metasploit::Credential::Importer::Core
         realm_key     = row['realm_key']
         realm_value   = row['realm_value']  # Use the name of the Realm as a lookup for getting the object
 
-        private_class = row['private_type'].present? ? row['private_type'].constantize : private_data_type.constantize
+        private_class = row['private_type'].present? ? row['private_type'].constantize : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
-
-        # Host and Service information for Logins
-        host_address      = row['host_address']
-        service_port      = row['service_port']
-        service_protocol  = row['service_protocol']
-        service_name      = row['service_name']
-        # These were not initially included in the export, so handle
-        # legacy cases:
-        access_level      = row['access_level'].present? ? row['access_level'] : ''
-        last_attempted_at = row['last_attempted_at'].present? ? row['last_attempted_at'] : ''
-        status            = row['status'].present? ? row['status'] : ''
 
 
         if realms[realm_value].nil?
@@ -144,40 +134,60 @@ class Metasploit::Credential::Importer::Core
             private_object_for_row = private_class.where(data: private_data).first_or_create
           end
         end
-        all_creds_valid = all_creds_valid && (public_object.valid? && private_object_for_row.valid?)
+        all_creds_valid = all_creds_valid && public_object && private_object_for_row && (public_object.valid? && private_object_for_row.valid?)
 
         core_opts << {origin:origin, workspace_id: workspace.id,
          public: public_object,
          private: private_object_for_row,
          realm: realm_object_for_row}
 
-        if host_address.present? && service_port.present? && service_protocol.present?
-          login_opts = {
-              core: core,
-              address: host_address,
-              port: service_port,
-              protocol: service_protocol,
-              workspace_id: workspace.id,
-              service_name: service_name.present? ? service_name : ""
-          }
-          login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
-          login_opts[:status]            = status unless status.blank?
-          login_opts[:access_level]      = access_level unless access_level.blank?
+        rows << row
 
-          create_credential_login(login_opts)
 
-        end
+
       end
-
       if all_creds_valid
-        core_opts.each do |item|
-          core = create_credential_core(item)
+        core_opts.each_index do |index|
+          row = rows[index]
 
-          # Make Logins with attendant Host/Service information if we are doing that
 
+          # Host and Service information for Logins
+          host_address      = row['host_address']
+          service_port      = row['service_port']
+          service_protocol  = row['service_protocol']
+          service_name      = row['service_name']
+          # These were not initially included in the export, so handle
+          # legacy cases:
+          access_level      = row['access_level'].present? ? row['access_level'] : ''
+          last_attempted_at = row['last_attempted_at'].present? ? row['last_attempted_at'] : ''
+          status            = row['status'].present? ? row['status'] : ''
+
+          if Metasploit::Credential::Core.where(core_opts[index]).blank?
+            core = create_credential_core(core_opts[index])
+          else
+            core = Metasploit::Credential::Core.where(core_opts[index])
+          end
+
+
+          if host_address.present? && service_port.present? && service_protocol.present?
+            login_opts = {
+                core: core,
+                address: host_address,
+                port: service_port,
+                protocol: service_protocol,
+                workspace_id: workspace.id,
+                service_name: service_name.present? ? service_name : ""
+            }
+            login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
+            login_opts[:status]            = status unless status.blank?
+            login_opts[:access_level]      = access_level unless access_level.blank?
+
+            create_credential_login(login_opts)
+
+          end
         end
       end
-    end
+      end
     return all_creds_valid
   end
 
@@ -192,7 +202,7 @@ class Metasploit::Credential::Importer::Core
       csv_object.each do |row|
         next if row.header_row?
 
-        username     = row['user name'].present? ? row['username'] : ''
+        username     = row['username'].present? ? row['username'] : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         public_object = create_public_from_field(username)
@@ -200,7 +210,7 @@ class Metasploit::Credential::Importer::Core
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
         else
-          private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+          private_object_for_row = @private_credential_type.constantize.where(data: row['private_data']).first_or_create
         end
 
         # need to check private_object_for_row.valid? to raise a user facing message if any cred had invalid private
@@ -214,13 +224,15 @@ class Metasploit::Credential::Importer::Core
       end
       if all_creds_valid
         core_opts.each do |item|
-
-          create_credential_core(item)
+          if Metasploit::Credential::Core.where(private:item[:private]).blank?
+            create_credential_core(item)
+          end
         end
       end
 
 
     end
+    puts all_creds_valid
     return  all_creds_valid
   end
 
@@ -243,9 +255,9 @@ class Metasploit::Credential::Importer::Core
   # @return [Boolean]
   def csv_headers_are_correct?(csv_headers)
     if csv_headers.include? 'private_type'
-      headers_valid = (csv_headers.map(&:to_sym) == VALID_LONG_CSV_HEADERS)
+      return csv_headers.map(&:to_sym) == VALID_LONG_CSV_HEADERS
     else
-      headers_valid = (csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS)
+      return csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS
     end
   end
 
@@ -278,7 +290,7 @@ class Metasploit::Credential::Importer::Core
   # Returns true if the {#private_credential_type} is in {Metasploit::Credential::Importer::Base::ALLOWED_PRIVATE_TYPE_NAMES}
   # @return [void]
   def private_type_is_allowed
-    if Metasploit::Credential::Importer::Base::SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? private_credential_type
+    if Metasploit::Credential::Importer::Base::SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? @private_credential_type
       true
     else
       errors.add(:private_credential_type, :invalid_type)
