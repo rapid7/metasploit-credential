@@ -82,11 +82,12 @@ class Metasploit::Credential::Importer::Core
   # Otherwise, assume that this is a short form import and process accordingly.
   # @return [void]
   def import!
-    if private_credential_type.present?
-      import_short_form
+    if csv_object.first.headers.include? 'private_type'
+      result =  import_long_form
     else
-      import_long_form
+      result =  import_short_form
     end
+    return result
   end
 
   # Performs an import of a "long" CSV - one that that contains realms and heterogenous private types
@@ -97,9 +98,13 @@ class Metasploit::Credential::Importer::Core
   #
   # @return [void]
   def import_long_form
+    all_creds_valid = true
     realms = Hash.new
     Metasploit::Credential::Core.transaction do
+      core_opts = []
+      rows = []
       csv_object.each do |row|
+
         next if row.header_row?
         next unless row['username'].present? || row['private_data'].present?
 
@@ -110,17 +115,6 @@ class Metasploit::Credential::Importer::Core
 
         private_class = row['private_type'].present? ? row['private_type'].constantize : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
-
-        # Host and Service information for Logins
-        host_address      = row['host_address']
-        service_port      = row['service_port']
-        service_protocol  = row['service_protocol']
-        service_name      = row['service_name']
-        # These were not initially included in the export, so handle
-        # legacy cases:
-        access_level      = row['access_level'].present? ? row['access_level'] : ''
-        last_attempted_at = row['last_attempted_at'].present? ? row['last_attempted_at'] : ''
-        status            = row['status'].present? ? row['status'] : ''
 
 
         if realms[realm_value].nil?
@@ -140,57 +134,105 @@ class Metasploit::Credential::Importer::Core
             private_object_for_row = private_class.where(data: private_data).first_or_create
           end
         end
+        all_creds_valid = all_creds_valid && public_object && private_object_for_row && (public_object.valid? && private_object_for_row.valid?)
 
-        core = create_credential_core(origin:origin, workspace_id: workspace.id,
-                                                     public: public_object,
-                                                     private: private_object_for_row,
-                                                     realm: realm_object_for_row )
+        core_opts << {origin:origin, workspace_id: workspace.id,
+         public: public_object,
+         private: private_object_for_row,
+         realm: realm_object_for_row}
 
-        # Make Logins with attendant Host/Service information if we are doing that
-        if host_address.present? && service_port.present? && service_protocol.present?
-          login_opts = {
-            core: core,
-            address: host_address,
-            port: service_port,
-            protocol: service_protocol,
-            workspace_id: workspace.id,
-            service_name: service_name.present? ? service_name : ""
-          }
-          login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
-          login_opts[:status]            = status unless status.blank?
-          login_opts[:access_level]      = access_level unless access_level.blank?
+        rows << row
 
-          create_credential_login(login_opts)
+
+
+      end
+      if all_creds_valid
+        core_opts.each_index do |index|
+          row = rows[index]
+
+
+          # Host and Service information for Logins
+          host_address      = row['host_address']
+          service_port      = row['service_port']
+          service_protocol  = row['service_protocol']
+          service_name      = row['service_name']
+          # These were not initially included in the export, so handle
+          # legacy cases:
+          access_level      = row['access_level'].present? ? row['access_level'] : ''
+          last_attempted_at = row['last_attempted_at'].present? ? row['last_attempted_at'] : ''
+          status            = row['status'].present? ? row['status'] : ''
+
+          if Metasploit::Credential::Core.where(core_opts[index]).blank?
+            core = create_credential_core(core_opts[index])
+          else
+            core = Metasploit::Credential::Core.where(core_opts[index])
+          end
+
+
+          if host_address.present? && service_port.present? && service_protocol.present?
+            login_opts = {
+                core: core,
+                address: host_address,
+                port: service_port,
+                protocol: service_protocol,
+                workspace_id: workspace.id,
+                service_name: service_name.present? ? service_name : ""
+            }
+            login_opts[:last_attempted_at] = last_attempted_at unless status.blank?
+            login_opts[:status]            = status unless status.blank?
+            login_opts[:access_level]      = access_level unless access_level.blank?
+
+            create_credential_login(login_opts)
+
+          end
         end
       end
-    end
+      end
+    return all_creds_valid
   end
 
 
   # Performs an import of a "short" form of CSV - one that contains only one type of {Metasploit::Credential::Private}
   # and no {Metasploit::Credential::Realm} data
-  # @return [void]
+  # @return [Boolean]
   def import_short_form
+    core_opts = []
+    all_creds_valid = true
     Metasploit::Credential::Core.transaction do
       csv_object.each do |row|
         next if row.header_row?
 
-        username     = row['username']
-        private_data = row['private_data']
+        username     = row['username'].present? ? row['username'] : ''
+        private_data  = row['private_data'].present? ? row['private_data'] : ''
 
         public_object = create_public_from_field(username)
 
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
         else
-          private_object_for_row = private_credential_type.constantize.where(data: row['private_data']).first_or_create
+          private_object_for_row = @private_credential_type.constantize.where(data: row['private_data']).first_or_create
         end
 
-        create_credential_core(origin:origin, workspace_id: workspace.id,
+        # need to check private_object_for_row.valid? to raise a user facing message if any cred had invalid private
+
+        all_creds_valid = all_creds_valid && (public_object.valid? && private_object_for_row.valid?)
+
+
+        core_opts << {origin:origin, workspace_id: workspace.id,
                                       public: public_object,
-                                      private: private_object_for_row)
+                                      private: private_object_for_row}
       end
+      if all_creds_valid
+        core_opts.each do |item|
+          if Metasploit::Credential::Core.where(private:item[:private]).blank?
+            create_credential_core(item)
+          end
+        end
+      end
+
+
     end
+    return  all_creds_valid
   end
 
 
@@ -211,10 +253,10 @@ class Metasploit::Credential::Importer::Core
   # @param csv_headers [Array] the headers in the CSV contained in {#input}
   # @return [Boolean]
   def csv_headers_are_correct?(csv_headers)
-    if private_credential_type.present?
-      return csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS
-    else
+    if csv_headers.include? 'private_type'
       return csv_headers.map(&:to_sym) == VALID_LONG_CSV_HEADERS
+    else
+      return csv_headers.map(&:to_sym) == VALID_SHORT_CSV_HEADERS
     end
   end
 
@@ -247,7 +289,7 @@ class Metasploit::Credential::Importer::Core
   # Returns true if the {#private_credential_type} is in {Metasploit::Credential::Importer::Base::ALLOWED_PRIVATE_TYPE_NAMES}
   # @return [void]
   def private_type_is_allowed
-    if Metasploit::Credential::Importer::Base::SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? private_credential_type
+    if Metasploit::Credential::Importer::Base::SHORT_FORM_ALLOWED_PRIVATE_TYPE_NAMES.include? @private_credential_type
       true
     else
       errors.add(:private_credential_type, :invalid_type)
