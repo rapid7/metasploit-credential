@@ -232,7 +232,6 @@ class Metasploit::Credential::Importer::Core
 
 
     end
-    puts all_creds_valid
     return  all_creds_valid
   end
 
