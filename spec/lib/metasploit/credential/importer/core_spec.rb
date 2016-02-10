@@ -5,14 +5,14 @@ RSpec.describe Metasploit::Credential::Importer::Core do
   subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer, workspace:workspace)}
 
   # CSV objects are IOs
-  after(:each) do
+  after(:example) do
     core_csv_importer.csv_object.rewind
   end
 
   describe "validations" do
     describe "short-form imports" do
       describe "with well-formed CSV data" do
-        before(:each) do
+        before(:example) do
           core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
@@ -25,7 +25,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.private_credential_type.invalid_type')
         end
 
-        before(:each) do
+        before(:example) do
           core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
           core_csv_importer.private_credential_type = "Metasploit::Credential::SSHKey"
         end
@@ -43,7 +43,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
         end
 
-        before(:each) do
+        before(:example) do
           core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv_non_compliant_header
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
@@ -64,7 +64,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         end
 
         describe "with data that includes a missing Public (username)" do
-          before(:each) do
+          before(:example) do
             core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_public
           end
 
@@ -74,7 +74,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         end
 
         describe "with data that includes a missing Private" do
-          before(:each) do
+          before(:example) do
             core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_private
           end
 
@@ -96,7 +96,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             }
           end
 
-          before(:each) do
+          before(:example) do
             core         = Metasploit::Credential::Core.new
             core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
             core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
@@ -117,7 +117,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.incorrect_csv_headers')
           end
 
-          before(:each) do
+          before(:example) do
             core_csv_importer.input = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
           end
 
@@ -134,7 +134,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.malformed_csv')
           end
 
-          before(:each) do
+          before(:example) do
             core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
           end
 
@@ -151,7 +151,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             I18n.translate!('activemodel.errors.models.metasploit/credential/importer/core.attributes.input.empty_csv')
           end
 
-          before(:each) do
+          before(:example) do
             core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
           end
 
@@ -164,7 +164,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         end
 
         describe "when accesssing without rewind" do
-          before(:each) do
+          before(:example) do
             core_csv_importer.csv_object.gets
           end
 
@@ -176,7 +176,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
     end
 
     describe "short-form imports" do
-      before(:each) do
+      before(:example) do
         core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
       end
@@ -202,7 +202,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           }
         end
 
-        before(:each) do
+        before(:example) do
           core         = Metasploit::Credential::Core.new
           core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
           core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
@@ -224,7 +224,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         # Contains 3 unique Publics
         let(:stored_public){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first['username'] }
 
-        before(:each) do
+        before(:example) do
           Metasploit::Credential::Username.create!(username: stored_public)
           core_csv_importer.csv_object.rewind
         end
@@ -247,7 +247,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         let(:stored_private_row){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first }
         let(:private_class){ stored_private_row['private_type'].constantize }
 
-        before(:each) do
+        before(:example) do
           private_cred      = private_class.new
           private_cred.data = stored_private_row['private_data']
           private_cred.save!
@@ -272,7 +272,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         # Contains 2 unique Realms
         let(:stored_realm_row){ core_csv_importer.csv_object.gets; core_csv_importer.csv_object.first }
 
-        before(:each) do
+        before(:example) do
           Metasploit::Credential::Realm.create(key: stored_realm_row['realm_key'],
                                                value: stored_realm_row['realm_value'])
         end
@@ -296,7 +296,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
     end
 
     context "when there are Logins in the input" do
-      before(:each) do
+      before(:example) do
         core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_with_service_info
       end
 

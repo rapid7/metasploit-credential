@@ -1,4 +1,4 @@
-shared_context 'metasploit_credential_importer_zip_file' do
+RSpec.shared_context 'metasploit_credential_importer_zip_file' do
   #
   # Methods
   #
@@ -15,12 +15,12 @@ shared_context 'metasploit_credential_importer_zip_file' do
   #
 
   # Clean up leftovers from aborted spec runs.
-  before(:each) do
+  before(:example) do
     remove_metasploit_credential_importer_zip_files
   end
 
   # Clean up after completed spec runs.
-  after(:each) do
+  after(:example) do
     remove_metasploit_credential_importer_zip_files
   end
 end

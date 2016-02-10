@@ -71,7 +71,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         # Callbacks
         #
 
-        before(:each) do
+        before(:example) do
           expect(ssh_key).to receive(:private?).and_return(private)
 
           ssh_key.valid?
@@ -126,7 +126,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             # Callbacks
             #
 
-            before(:each) do
+            before(:example) do
               expect(ssh_key).to receive(:openssl_pkey_pkey).and_raise(exception)
 
               ssh_key.valid?
@@ -150,7 +150,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
           end
 
           context 'without error' do
-            before(:each) do
+            before(:example) do
               ssh_key.valid?
             end
 
@@ -167,7 +167,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
           # Callbacks
           #
 
-          before(:each) do
+          before(:example) do
             ssh_key.data = nil
 
             ssh_key.valid?
@@ -190,7 +190,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         # Callbacks
         #
 
-        before(:each) do
+        before(:example) do
           expect(ssh_key).to receive(:encrypted?).and_return(encrypted)
 
           ssh_key.valid?

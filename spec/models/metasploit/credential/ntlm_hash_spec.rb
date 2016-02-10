@@ -90,7 +90,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
           )
         end
 
-        before(:each) do
+        before(:example) do
           ntlm_hash.valid?
         end
 
@@ -176,7 +176,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
       # Callbacks
       #
 
-      before(:each) do
+      before(:example) do
         ntlm_hash.valid?
       end
 

@@ -44,7 +44,7 @@ RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
           )
         end
 
-        before(:each) do
+        before(:example) do
           postgres_md5.valid?
         end
 

@@ -17,12 +17,12 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
         I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.malformed_archive')
       end
 
-      before(:each) do
+      before(:example) do
         File.open(DUMMY_ZIP_PATH, 'wb')
         zip_importer.input = File.open(DUMMY_ZIP_PATH, 'r')
       end
 
-      after(:each) do
+      after(:example) do
         FileUtils.rm(DUMMY_ZIP_PATH)
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
         I18n.translate!('activemodel.errors.models.metasploit/credential/importer/zip.attributes.input.missing_manifest')
       end
 
-      before(:each) do
+      before(:example) do
         zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
       end
 

@@ -1,4 +1,4 @@
-shared_examples_for 'Metasploit::Credential::CoreValidations' do
+RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
   #
   # Context Methods

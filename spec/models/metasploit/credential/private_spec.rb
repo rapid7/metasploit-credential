@@ -65,7 +65,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
         # Callbacks
         #
 
-        before(:each) do
+        before(:example) do
           new_private.valid?
         end
 

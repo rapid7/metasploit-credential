@@ -142,7 +142,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         # Callback
         #
 
-        before(:each) do
+        before(:example) do
           new_realm.valid?
         end
 

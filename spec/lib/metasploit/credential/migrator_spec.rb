@@ -13,7 +13,7 @@ RSpec.describe Metasploit::Credential::Migrator do
 
   describe "#convert_creds_in_workspace" do
     describe "when there are no Mdm::Cred objects in the workspace" do
-      before(:each) do
+      before(:example) do
         workspace.services.each do |service|
           service.creds = []
         end
@@ -55,7 +55,7 @@ RSpec.describe Metasploit::Credential::Migrator do
       end
 
       describe "new Publics" do
-        before(:each) do
+        before(:example) do
           migrator.convert_creds_in_workspace(workspace)
         end
 
@@ -65,7 +65,7 @@ RSpec.describe Metasploit::Credential::Migrator do
       end
 
       describe "new Privates" do
-        before(:each) do
+        before(:example) do
           migrator.convert_creds_in_workspace(workspace)
         end
 
@@ -85,7 +85,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           )
         end
 
-        before(:each) do
+        before(:example) do
           migrator.convert_creds_in_workspace(cred.service.host.workspace)
         end
 
@@ -114,7 +114,7 @@ RSpec.describe Metasploit::Credential::Migrator do
             )
           end
 
-          before(:each) do
+          before(:example) do
             migrator.convert_creds_in_workspace(cred.service.host.workspace)
           end
 
@@ -132,7 +132,7 @@ RSpec.describe Metasploit::Credential::Migrator do
             )
           end
 
-          before(:each) do
+          before(:example) do
             migrator.convert_creds_in_workspace(cred.service.host.workspace)
           end
 
@@ -150,7 +150,7 @@ RSpec.describe Metasploit::Credential::Migrator do
             )
           end
 
-          before(:each) do
+          before(:example) do
             migrator.convert_creds_in_workspace(cred.service.host.workspace)
           end
 
@@ -170,7 +170,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           )
         end
 
-        before(:each) do
+        before(:example) do
           migrator.convert_creds_in_workspace(cred.service.host.workspace)
         end
 
@@ -188,7 +188,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           )
         end
 
-        before(:each) do
+        before(:example) do
           migrator.convert_creds_in_workspace(cred.service.host.workspace)
         end
 

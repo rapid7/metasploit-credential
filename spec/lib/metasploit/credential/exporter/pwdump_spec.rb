@@ -18,7 +18,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "plaintext passwords" do
       let(:private){ FactoryGirl.build :metasploit_credential_password }
 
-      before(:each) do
+      before(:example) do
         core.private = private
       end
 
@@ -40,7 +40,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "non-replayable" do
       let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash }
 
-      before(:each) do
+      before(:example) do
         core.private = private
       end
 
@@ -62,7 +62,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "NTLM" do
       let(:private){ FactoryGirl.build :metasploit_credential_ntlm_hash }
 
-      before(:each) do
+      before(:example) do
         core.private = private
       end
 
@@ -84,7 +84,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "PostgresMD5" do
       let(:private){ FactoryGirl.build :metasploit_credential_postgres_md5 }
 
-      before(:each) do
+      before(:example) do
         core.private = private
       end
 
@@ -109,7 +109,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         describe "netlm" do
           let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netlm' }
 
-          before(:each) do
+          before(:example) do
             core.private = private
           end
 
@@ -121,7 +121,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         describe "netntlm" do
           let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netntlm' }
 
-          before(:each) do
+          before(:example) do
             core.private = private
           end
 
@@ -135,7 +135,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         describe "netlmv2" do
           let(:private){ FactoryGirl.build :metasploit_credential_non_replayable_hash, jtr_type: 'netlmv2' }
 
-          before(:each) do
+          before(:example) do
             core.private = private
           end
 
@@ -147,7 +147,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         describe "netntlmv2" do
           let(:private){ FactoryGirl.build :metasploit_credential_non_replayable_hash, jtr_type: 'netntlmv2' }
 
-          before(:each) do
+          before(:example) do
             core.private = private
           end
 

@@ -23,7 +23,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
         # Callbacks
         #
 
-        before(:each) do
+        before(:example) do
           login.valid?
         end
 
@@ -182,7 +182,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     context 'with existent Metasploit::Credential::Login' do
       include_context 'Mdm::Workspace'
 
-      before(:each) do
+      before(:example) do
         # validate_uniqueness_of will use Metasploit::Credential::Login#service_id and not trigger service_id non-null
         # constraint.
         FactoryGirl.create(
@@ -219,7 +219,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       # Callbacks
       #
 
-      before(:each) do
+      before(:example) do
         login.valid?
       end
 
@@ -309,7 +309,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       # Callbacks
       #
 
-      before(:each) do
+      before(:example) do
         login.valid?
       end
 

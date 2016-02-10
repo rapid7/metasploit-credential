@@ -152,7 +152,7 @@ RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
 
       context do
         # example to sample for service_id
-        before(:each) do
+        before(:example) do
           FactoryGirl.create(:metasploit_credential_origin_service)
         end
 

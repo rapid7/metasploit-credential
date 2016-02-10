@@ -5,14 +5,14 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
   subject(:core_exporter){ Metasploit::Credential::Exporter::Core.new(workspace: workspace) }
 
-  before(:each) do
+  before(:example) do
     origin.task = nil
   end
 
   #
   # Clean up generated files/paths
   #
-  after(:each) do
+  after(:example) do
     Dir.glob("#{Dir.tmpdir}/metasploit*").each {|d| FileUtils.rm_rf d}
   end
 
@@ -171,7 +171,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     describe "uniqueness for export" do
       let(:path_fragment){ "export-#{Time.now.to_s}" }
 
-      before(:each) do
+      before(:example) do
         allow(core_exporter).to receive(:output_final_subdirectory_name).and_return(path_fragment)
       end
 
@@ -183,12 +183,12 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
   describe "#data" do
     describe "in LOGIN_MODE" do
-      before(:each) do
+      before(:example) do
         allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
       describe "when whitelist_ids is present" do
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:whitelist_ids).and_return([login1.id])
         end
 
@@ -205,12 +205,12 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     describe "in CORE_MODE" do
-      before(:each) do
+      before(:example) do
         allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
       describe "when whitelist_ids is present" do
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:whitelist_ids).and_return([core1.id])
         end
 
@@ -229,7 +229,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
   describe "#export_data" do
     describe "in CORE_MODE" do
-      before(:each) do
+      before(:example) do
         allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
       end
 
@@ -240,7 +240,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
     end
 
     describe "in LOGIN_MODE" do
-      before(:each) do
+      before(:example) do
         allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
       end
 
@@ -254,7 +254,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
   describe "generation" do
     describe "#render_manifest_and_output_keys" do
       describe "in CORE_MODE" do
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
@@ -301,7 +301,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
       end
 
       describe "in LOGIN_MODE" do
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::LOGIN_MODE
           core_exporter.render_manifest_output_and_keys
           path = core_exporter.output_final_directory_path + '/' + Metasploit::Credential::Importer::Zip::MANIFEST_FILE_NAME
@@ -378,7 +378,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
 
     describe "#render_zip" do
       describe "when there are no SSH keys in the dataset" do
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
@@ -409,7 +409,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
                                                  private: private_with_key,
                                                  workspace: workspace)}
 
-        before(:each) do
+        before(:example) do
           allow(core_exporter).to receive(:mode).and_return Metasploit::Credential::Exporter::Core::CORE_MODE
           core_exporter.render_manifest_output_and_keys
           core_exporter.render_zip
@@ -432,7 +432,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
         end
 
         describe "the keys directory" do
-          before(:each) do
+          before(:example) do
             @key_entries = nil
             Zip::File.open(core_exporter.output_zipfile_path) do |zip_file|
               @key_entries = zip_file.glob("#{Metasploit::Credential::Importer::Zip::KEYS_SUBDIRECTORY_NAME}/*")

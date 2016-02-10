@@ -1,5 +1,5 @@
 # Provides object graph for performing exports
-shared_context 'export objects' do
+RSpec.shared_context 'export objects' do
   #
   # Basics for testing export object itself
   #

@@ -16,7 +16,6 @@ RSpec.describe Metasploit::Credential::Username, type: :model do
   context 'validations' do
     context 'username' do
       it { is_expected.to validate_presence_of :username }
-      it { is_expected.to validate_uniqueness_of :username }
     end
   end
 end

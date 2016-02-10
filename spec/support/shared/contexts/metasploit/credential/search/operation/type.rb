@@ -1,4 +1,4 @@
-shared_examples_for 'Metasploit::Credential::Search::Operation::Type' do |options={}|
+RSpec.shared_examples_for 'Metasploit::Credential::Search::Operation::Type' do |options={}|
   options.assert_valid_keys(:attribute, :matching_class)
 
   attribute = options.fetch(:attribute, :type)

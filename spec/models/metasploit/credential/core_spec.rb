@@ -475,7 +475,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
       # Callbacks
       #
 
-      before(:each) do
+      before(:example) do
         core.valid?
       end
 
@@ -714,7 +714,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
       # Callbacks
       #
 
-      before(:each) do
+      before(:example) do
         core.valid?
       end
 
@@ -848,7 +848,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
       it { is_expected.to be_valid }
 
       context "when the Public is missing" do
-        before(:each) do
+        before(:example) do
           core.public = nil
         end
 

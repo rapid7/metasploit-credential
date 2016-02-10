@@ -38,7 +38,7 @@ RSpec.describe Metasploit::Credential::Origin::Session, type: :model do
     context 'post_reference_name' do
       include_context 'Mdm::Workspace'
 
-      before(:each) do
+      before(:example) do
         FactoryGirl.create(:metasploit_credential_origin_session)
       end
 
