@@ -331,7 +331,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               metasploit_credential_core.workspace
             end
 
-            it { should_not be_nil }
+            it { is_expected.not_to be_nil }
           end
         end
 
@@ -395,7 +395,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
           metasploit_credential_core_manual.workspace
         end
 
-        it { should_not be_nil }
+        it { is_expected.not_to be_nil }
       end
     end
 
@@ -505,7 +505,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                 true
               end
 
-              it { should_not include error }
+              it { is_expected.not_to include error }
             end
 
             context 'without Mdm::User#admin' do
@@ -527,11 +527,11 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                     }
                   end
 
-                  it { should_not include error }
+                  it { is_expected.not_to include error }
                 end
 
                 context 'without persisted' do
-                  it { should_not include error }
+                  it { is_expected.not_to include error }
                 end
               end
 
@@ -583,7 +583,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                   workspace
                 end
 
-                it { should_not include error }
+                it { is_expected.not_to include error }
               end
 
               context 'different than #workspace' do
@@ -647,7 +647,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
                     workspace
                   end
 
-                  it { should_not include error }
+                  it { is_expected.not_to include error }
                 end
 
                 context 'different than #workspace' do
@@ -741,7 +741,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without #realm' do
@@ -749,7 +749,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -767,7 +767,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without #realm' do
@@ -775,7 +775,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
       end
@@ -799,7 +799,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without #realm' do
@@ -807,7 +807,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -825,7 +825,7 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
               FactoryGirl.generate :metasploit_credential_core_realm_factory
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
         end

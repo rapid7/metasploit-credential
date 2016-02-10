@@ -23,7 +23,7 @@ RSpec.describe Metasploit::Credential::Importer::Multi do
     describe "when given a file that is not a zip or a CSV" do
       subject(:multi_importer){ Metasploit::Credential::Importer::Multi.new(input: File.open(unsupported_file), origin: import_origin)}
 
-      it { should_not be_valid }
+      it { is_expected.not_to be_valid }
     end
 
     context "when given zip file" do

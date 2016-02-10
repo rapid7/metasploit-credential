@@ -30,7 +30,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           core_csv_importer.private_credential_type = "Metasploit::Credential::SSHKey"
         end
 
-        it{ should_not be_valid }
+        it{ is_expected.not_to be_valid }
 
         it 'should report the error being invalid private type' do
           core_csv_importer.valid?
@@ -48,7 +48,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
-        it{ should_not be_valid }
+        it{ is_expected.not_to be_valid }
 
         it 'should report the error being invalid headers' do
           core_csv_importer.valid?
@@ -121,7 +121,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
             core_csv_importer.input = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
           end
 
-          it { should_not be_valid }
+          it { is_expected.not_to be_valid }
 
           it 'should report the error being incorrect headers' do
             core_csv_importer.valid?

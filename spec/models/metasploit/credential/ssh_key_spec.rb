@@ -82,7 +82,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             true
           end
 
-          it { should_not include(error) }
+          it { is_expected.not_to include(error) }
         end
 
         context 'without #private?' do
@@ -209,7 +209,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             false
           end
 
-          it { should_not include(error) }
+          it { is_expected.not_to include(error) }
         end
       end
     end
@@ -261,7 +261,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               unencrypted_key.to_pem
             end
 
-            it { should_not be_encrypted }
+            it { is_expected.not_to be_encrypted }
           end
         end
       end
@@ -275,7 +275,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         nil
       end
 
-      it { should_not be_encrypted }
+      it { is_expected.not_to be_encrypted }
     end
   end
 
@@ -409,7 +409,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
               private_key.public_key
             end
 
-            it { should_not be_private }
+            it { is_expected.not_to be_private }
           end
 
           context 'with private' do
@@ -431,7 +431,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         nil
       end
 
-      it { should_not be_private }
+      it { is_expected.not_to be_private }
     end
   end
 

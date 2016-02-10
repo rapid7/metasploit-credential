@@ -87,7 +87,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
               FactoryGirl.generate :metasploit_credential_private_type
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -101,7 +101,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
               existent_private.type
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without same #type' do
@@ -109,7 +109,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
               FactoryGirl.generate :metasploit_credential_private_type
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
       end

@@ -181,7 +181,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
       end
 
       context 'with <LAN Manager hex digest>:<NT LAN Manager hex digest>' do
-        it { should_not include(error) }
+        it { is_expected.not_to include(error) }
       end
 
       context "without ':'" do

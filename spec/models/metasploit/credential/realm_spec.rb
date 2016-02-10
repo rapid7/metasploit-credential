@@ -164,7 +164,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
               FactoryGirl.generate :metasploit_credential_realm_value
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -178,7 +178,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
               existent_realm.value
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without same #value' do
@@ -186,7 +186,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
               FactoryGirl.generate :metasploit_credential_realm_value
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
       end

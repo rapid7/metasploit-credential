@@ -26,7 +26,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
         FileUtils.rm(DUMMY_ZIP_PATH)
       end
 
-      it { should_not be_valid }
+      it { is_expected.not_to be_valid }
 
       it 'should show the proper error message' do
         zip_importer.valid?
@@ -43,7 +43,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
         zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
       end
 
-      it { should_not be_valid }
+      it { is_expected.not_to be_valid }
 
       it 'should show the proper error message' do
         zip_importer.valid?

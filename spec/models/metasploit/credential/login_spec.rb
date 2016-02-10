@@ -246,7 +246,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -268,7 +268,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               DateTime.now.utc
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
 
           context 'without #last_attempted' do
@@ -341,7 +341,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                     core.workspace
                   end
 
-                  it { should_not include(error) }
+                  it { is_expected.not_to include(error) }
                 end
 
                 context 'different than #workspace' do
@@ -416,7 +416,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                   nil
                 end
 
-                it { should_not include(error) }
+                it { is_expected.not_to include(error) }
               end
             end
 
@@ -425,7 +425,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                 nil
               end
 
-              it { should_not include(error) }
+              it { is_expected.not_to include(error) }
             end
           end
 
@@ -434,7 +434,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
       end
@@ -473,7 +473,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
                 nil
               end
 
-              it { should_not include(error) }
+              it { is_expected.not_to include(error) }
             end
           end
 
@@ -482,7 +482,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
               nil
             end
 
-            it { should_not include(error) }
+            it { is_expected.not_to include(error) }
           end
         end
 
@@ -491,7 +491,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
             nil
           end
 
-          it { should_not include(error) }
+          it { is_expected.not_to include(error) }
         end
       end
     end
