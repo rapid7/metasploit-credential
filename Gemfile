@@ -20,6 +20,10 @@ group :development do
   # documentation
   # 0.8.7.4 has a bug where setters are not documented when @!attribute is used
   gem 'yard', '< 0.8.7.4'
+
+  # rails-upgrade staging gems
+  gem 'metasploit-concern', git: 'https://github.com/rapid7/metasploit-concern', branch: 'staging/rails-upgrade'
+  gem 'metasploit_data_models', git: 'https://github.com/rapid7/metasploit_data_models', branch: 'staging/rails-upgrade'
 end
 
 group :development, :test do
