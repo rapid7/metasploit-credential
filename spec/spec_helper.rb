@@ -26,12 +26,7 @@ require 'rspec/rails'
 # in spec/support/ and its subdirectories from this gem and metasploit-concern
 #
 
-
-# Use find_all_by_name instead of find_by_name as find_all_by_name will return pre-release versions
-gem_specification = Gem::Specification.find_all_by_name('metasploit-version').first
-
 roots = [
-    gem_specification.gem_dir,
     Metasploit::Concern.root,
     Metasploit::Credential::Engine.root,
     Metasploit::Model::Engine.root,
