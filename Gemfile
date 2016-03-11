@@ -49,6 +49,8 @@ group :development, :test do
   gem 'simplecov', :require => false
   # dummy app
   gem 'rails', '>= 4.1', '< 4.2'
+  # running documentation generation tasks and rspec tasks
+  gem 'rake', '~> 10.5'
   # unit testing framework with rails integration
   gem 'rspec-rails', '~> 3.1'
 end
