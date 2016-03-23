@@ -291,8 +291,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
     right.offset = nil
 
     Arel::Nodes::Union.new(
-      origin_service_host_id(host_id).ast,
-      origin_session_host_id(host_id).ast
+      left,
+      right
     ).to_sql
   end
 
