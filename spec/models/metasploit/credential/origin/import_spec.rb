@@ -25,7 +25,7 @@ RSpec.describe Metasploit::Credential::Origin::Import, type: :model do
   end
 
   context 'factories' do
-    include_context 'Mdm::Workspace'
+
 
     subject(:metasploit_credential_origin_import) do
       FactoryGirl.build(:metasploit_credential_origin_import)

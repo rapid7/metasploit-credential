@@ -19,7 +19,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
 
     context 'MetasploitDataModels::Search::Visitor::Relation#query Metasploit::Model::Search::Query#klass' do
       context 'with Metasploit::Credential::Core' do
-        include_context 'Mdm::Workspace'
+
 
         #
         # Shared Examples
@@ -283,7 +283,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
       end
 
       context 'with Metasploit::Credential::Login' do
-        include_context 'Mdm::Workspace'
+
         include_context 'Rex::Text'
 
         #

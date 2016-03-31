@@ -1,5 +1,5 @@
 RSpec.describe Metasploit::Credential::Exporter::Pwdump do
-  include_context 'Mdm::Workspace'
+
 
   subject(:exporter){ Metasploit::Credential::Exporter::Pwdump.new}
 
