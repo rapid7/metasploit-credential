@@ -35,4 +35,7 @@
 /spec/dummy/log/*.log
 /spec/dummy/tmp/
 
+# Secrets
+spec/dummy/config/secrets.yml
+
 

@@ -21,17 +21,17 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1'
 
   # patching inverse association in Mdm models.
-  s.add_runtime_dependency 'metasploit-concern', '~> 1.1'
+  s.add_runtime_dependency 'metasploit-concern'#, '~> 1.1'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models', '~> 1.3'
+  s.add_runtime_dependency 'metasploit_data_models'#, '~> 1.3'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model', '~> 1.1'
+  s.add_runtime_dependency 'metasploit-model'#, '~> 1.1'
 
   s.add_runtime_dependency 'railties'
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys
-  s.add_runtime_dependency 'rubyzip', '~> 1.1'
+  s.add_runtime_dependency 'rubyzip'
 
   if RUBY_PLATFORM =~ /java/
     s.add_runtime_dependency 'jdbc-postgres'

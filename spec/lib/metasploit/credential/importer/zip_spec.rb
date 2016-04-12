@@ -1,5 +1,5 @@
 RSpec.describe Metasploit::Credential::Importer::Zip do
-  include_context 'Mdm::Workspace'
+
   include_context 'metasploit_credential_importer_zip_file'
 
   let(:workspace){FactoryGirl.create(:mdm_workspace)}

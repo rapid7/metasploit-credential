@@ -1,5 +1,5 @@
 RSpec.describe Metasploit::Credential::Creation do
-  include_context 'Mdm::Workspace'
+
   let(:dummy_class) {
     Class.new do
       include Metasploit::Credential::Creation

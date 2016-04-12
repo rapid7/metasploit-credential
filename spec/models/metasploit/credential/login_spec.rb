@@ -10,7 +10,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
   context 'callbacks' do
     context 'before_valiation' do
       context '#blank_to_nil' do
-        include_context 'Mdm::Workspace'
+
 
         let(:login) do
           FactoryGirl.build(
@@ -83,7 +83,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
   end
 
   context 'factories' do
-    include_context 'Mdm::Workspace'
+
 
     context 'metasploit_credential_login' do
       subject(:metasploit_credential_login) do
@@ -180,7 +180,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     it { is_expected.to validate_presence_of :core }
 
     context 'with existent Metasploit::Credential::Login' do
-      include_context 'Mdm::Workspace'
+
 
       before(:example) do
         # validate_uniqueness_of will use Metasploit::Credential::Login#service_id and not trigger service_id non-null
@@ -197,7 +197,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     it { is_expected.to validate_inclusion_of(:status).in_array(Metasploit::Model::Login::Status::ALL) }
 
     context '#consistent_last_attempted_at' do
-      include_context 'Mdm::Workspace'
+
 
       subject(:last_attempted_at_errors) do
         login.errors[:last_attempted_at]
@@ -283,7 +283,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
     end
 
     context '#consistent_workspaces' do
-      include_context 'Mdm::Workspace'
+
 
       subject(:workspace_errors) do
         login.errors[:base]
@@ -498,7 +498,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
   end
 
   context "scopes" do
-    include_context 'Mdm::Workspace'
+
 
     context "::in_workspace_with_hosts_and_services" do
       let(:service){ FactoryGirl.create :mdm_service }

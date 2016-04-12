@@ -53,7 +53,7 @@
 #    complete     |  non-nil                             |  non-nil  |  non-nil  |  non-nil  |  different                            |  different  |  different  |  different  |  FALSE      |
 #
 RSpec.describe Metasploit::Credential::Core, type: :model do
-  include_context 'Mdm::Workspace'
+
 
   subject(:core) do
     described_class.new

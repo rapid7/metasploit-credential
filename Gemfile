@@ -5,12 +5,12 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 # rails-upgrade staging gems
-# gem 'metasploit-yard',        github: 'rapid7/metasploit-yard',        branch: 'staging/rails-upgrade'
-# gem 'metasploit-erd',         github: 'rapid7/metasploit-erd',         branch: 'staging/rails-upgrade'
-# gem 'yard-metasploit-erd',    github: 'rapid7/yard-metasploit-erd',    branch: 'staging/rails-upgrade'
-# gem 'metasploit-concern',     github: 'rapid7/metasploit-concern',     branch: 'staging/rails-upgrade'
-# gem 'metasploit-model',       github: 'rapid7/metasploit-model',       branch: 'staging/rails-upgrade'
-# gem 'metasploit_data_models', github: 'rapid7/metasploit_data_models', branch: 'staging/rails-upgrade'
+ gem 'metasploit-yard',        github: 'rapid7/metasploit-yard',        branch: 'staging/rails-upgrade'
+ gem 'metasploit-erd',         github: 'rapid7/metasploit-erd',         branch: 'staging/rails-upgrade'
+ gem 'yard-metasploit-erd',    github: 'rapid7/yard-metasploit-erd',    branch: 'staging/rails-upgrade'
+ gem 'metasploit-concern',     github: 'rapid7/metasploit-concern',     branch: 'staging/rails-upgrade'
+ gem 'metasploit-model',       github: 'rapid7/metasploit-model',       branch: 'staging/rails-upgrade'
+ gem 'metasploit_data_models', github: 'rapid7/metasploit_data_models', branch: 'staging/rails-upgrade'
 
 # This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
 # instead of this gem.
@@ -37,7 +37,7 @@ group :development, :test do
   gem 'coveralls', require: false
   # supplies factories for producing model instance for specs
   # Version 4.1.0 or newer is needed to support generate calls without the 'FactoryGirl.' in factory definitions syntax.
-  gem 'factory_girl', '>= 4.1.0'
+  gem 'factory_girl'
   # auto-load factories from spec/factories
   gem 'factory_girl_rails'
   # jquery-rails is used by the dummy application
@@ -48,7 +48,9 @@ group :development, :test do
   # code coverage of tests
   gem 'simplecov', :require => false
   # dummy app
-  gem 'rails', '>= 4.0.9', '< 4.1.0'
+  gem 'rails', '~> 4.1.15'
+  # running documentation generation tasks and rspec tasks
+  gem 'rake'
   # unit testing framework with rails integration
-  gem 'rspec-rails', '~> 3.1'
+  gem 'rspec-rails'
 end

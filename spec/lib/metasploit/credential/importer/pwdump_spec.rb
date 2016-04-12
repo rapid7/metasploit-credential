@@ -1,5 +1,5 @@
 RSpec.describe Metasploit::Credential::Importer::Pwdump do
-  include_context 'Mdm::Workspace'
+
 
   let(:workspace) {FactoryGirl.create(:mdm_workspace)}
   let(:origin) { FactoryGirl.create(:metasploit_credential_origin_import) }
