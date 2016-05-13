@@ -21,11 +21,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1'
 
   # patching inverse association in Mdm models.
-  s.add_runtime_dependency 'metasploit-concern'#, '~> 1.1'
+  s.add_runtime_dependency 'metasploit-concern'
   # Various Metasploit::Credential records have associations to Mdm records
-  s.add_runtime_dependency 'metasploit_data_models'#, '~> 1.3'
+  s.add_runtime_dependency 'metasploit_data_models'
   # Metasploit::Model::Search
-  s.add_runtime_dependency 'metasploit-model'#, '~> 1.1'
+  s.add_runtime_dependency 'metasploit-model'
 
   s.add_runtime_dependency 'railties'
   # Metasploit::Credential::NTLMHash helper methods
