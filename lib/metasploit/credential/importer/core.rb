@@ -165,7 +165,7 @@ class Metasploit::Credential::Importer::Core
           if Metasploit::Credential::Core.where(core_opts[index]).blank?
             core = create_credential_core(core_opts[index])
           else
-            core = Metasploit::Credential::Core.where(core_opts[index])
+            core = Metasploit::Credential::Core.where(core_opts[index]).first
           end
 
 
