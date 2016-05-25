@@ -204,8 +204,8 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @return [ActiveRecord::Relation] that contains related Cores
   scope :originating_host_id, lambda { |host_id|
     core_table = Metasploit::Credential::Core.arel_table
-    subquery = Metasploit::Credential::Core.cores_from_host_sql(host_id)
-    where(core_table[:id].in(Arel::Nodes::SqlLiteral.new(subquery)))
+    subquery = Metasploit::Credential::Core.cores_from_host(host_id)
+    where(core_table[:id].in(subquery))
   }
 
   # Finds Cores that are attached to a given workspace
@@ -269,31 +269,18 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # Class Methods
   #
 
-  # Wrapper to provide raw SQL string UNIONing cores from a host via
+  # Provides UNIONing cores from a host via
   # service origins or via session origins.
-  # TODO: Fix this in Rails 4. In Rails 3 there is a known bug that prevents
-  #   .count from being called on the returned ActiveRecord::Relation.
-  #   https://github.com/rails/rails/issues/939
   # @param host_id [Integer]
   # @return [String]
-  def self.cores_from_host_sql(host_id)
+  def self.cores_from_host(host_id)
     left = origin_service_host_id(host_id).ast
     right = origin_session_host_id(host_id).ast
 
-    # TODO: Kill with fire. ActiveRecord 4.0.x leaks order/limit/offset scopes
-    # We strip out order/limit/offset statements from the subquery since it's invalid SQL
-    # https://github.com/rails/rails/issues/14003
-    left.orders = []
-    right.orders = []
-    left.limit = nil
-    right.limit = nil
-    left.offset = nil
-    right.offset = nil
-
-    Arel::Nodes::Union.new(
-      origin_service_host_id(host_id).ast,
-      origin_session_host_id(host_id).ast
-    ).to_sql
+    Arel::Nodes::UnionAll.new(
+      left,
+      right
+    )
   end
 
   #
