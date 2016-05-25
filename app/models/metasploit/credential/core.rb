@@ -202,10 +202,12 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   # @scope Metasploit::Credential::Core
   # @param host_id [Integer] the host to look up
   # @return [ActiveRecord::Relation] that contains related Cores
-  scope :originating_host_id, lambda { |host_id|
-    core_table = Metasploit::Credential::Core.arel_table
-    subquery = Metasploit::Credential::Core.cores_from_host(host_id)
-    where(core_table[:id].in(subquery))
+  scope :originating_host_id, ->(host_id) {
+    where(
+      Metasploit::Credential::Core[:id].in(
+        Metasploit::Credential::Core.cores_from_host(host_id)
+      )
+    )
   }
 
   # Finds Cores that are attached to a given workspace
