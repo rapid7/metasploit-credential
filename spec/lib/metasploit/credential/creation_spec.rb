@@ -16,6 +16,71 @@ RSpec.describe Metasploit::Credential::Creation do
 
   subject(:test_object) { dummy_class.new }
 
+  context '#create_credential_and_login' do
+    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:credential_core) { FactoryGirl.create(:metasploit_credential_core_manual, workspace: workspace) }
+    let(:origins){[:manual,:service,:session]}
+    context 'creates a Metasploit::Credential::Login' do
+      context 'Origen[manual], Public[Username], Private[Password]' do
+        let(:login_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          origin_type: :manual,
+          username: 'username',
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id,
+          address: service.host.address,
+          port: service.port,
+          service_name: service.name,
+          protocol: service.proto,
+          last_attempted_at: DateTime.current,
+          status: Metasploit::Model::Login::Status::SUCCESSFUL,
+        }}
+        it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Core.count}.by(1)}
+        it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Password.count}.by(1)}
+        it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Public.count}.by(1)}
+        it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Login.count}.by(1)}
+      end
+      [
+        Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN,
+        Metasploit::Model::Realm::Key::DB2_DATABASE,
+        Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER,
+        Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE,
+        Metasploit::Model::Realm::Key::RSYNC_MODULE,
+        Metasploit::Model::Realm::Key::WILDCARD
+      ].each do |realm|
+        context "Origen[manual], Realm[#{realm}], Public[Username], Private[Password]" do
+          let(:login_data) {{
+            workspace_id: workspace.id,
+            user_id: user.id,
+            realm_key: realm,
+            realm_value: 'Some Value',
+            origin_type: :manual,
+            username: 'username',
+            private_data: 'password',
+            private_type: :password,
+            workspace_id: workspace.id,
+            address: service.host.address,
+            port: service.port,
+            service_name: service.name,
+            protocol: service.proto,
+            last_attempted_at: DateTime.current,
+            status: Metasploit::Model::Login::Status::SUCCESSFUL,
+          }}
+          it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Core.count}.by(1)}
+          it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Realm.count}.by(1)}
+          it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Password.count}.by(1)}
+          it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Public.count}.by(1)}
+          it {expect{test_object.create_credential_and_login(login_data)}.to change{Metasploit::Credential::Login.count}.by(1)}
+        end 
+      end
+     
+    end
+  end
+
   context '#create_cracked_credential' do
     let(:public) { FactoryGirl.create(:metasploit_credential_public) }
     let(:hash) { FactoryGirl.create(:metasploit_credential_nonreplayable_hash) }
@@ -470,17 +535,16 @@ RSpec.describe Metasploit::Credential::Creation do
   end
 
   context '#create_credential' do
-
+    let(:manual_cred_opts) {{
+      origin_type: :manual,
+      user_id: user.id,
+      username: 'username',
+      private_data: 'password',
+      workspace_id: workspace.id,
+      task_id: task.id
+    }}
     it 'associates the new Metasploit::Credential::Core with a task if passed' do
-      opts = {
-          origin_type: :manual,
-           user_id: user.id,
-          username: 'username',
-          private_data: 'password',
-          workspace_id: workspace.id,
-          task_id: task.id
-      }
-      core = test_object.create_credential(opts)
+      core = test_object.create_credential(:manual_cred_opts)
       expect(core.tasks).to include(task)
     end
 

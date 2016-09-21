@@ -125,7 +125,7 @@ module Metasploit::Credential::Creation
     if opts.has_key?(:realm_key) && opts.has_key?(:realm_value)
       core_opts[:realm] = create_credential_realm(opts)
     end
-
+    
     if opts.has_key?(:private_type) && opts.has_key?(:private_data)
       core_opts[:private] = create_credential_private(opts)
     end
@@ -139,6 +139,89 @@ module Metasploit::Credential::Creation
     end
 
     create_credential_core(core_opts)
+  end
+  
+  # This method is responsible for creation {Metasploit::Credential::Core} and
+  # {Metasploit::Credential::Login}.
+  # This method is responsible for creating a {Metasploit::Credential::Login} object
+  # which ties a {Metasploit::Credential::Core} to the `Mdm::Service` it is a valid
+  # credential for.
+  #
+  # {Metasploit::Credential::Core} options
+  # @option opts [String] :jtr_format The format for John the ripper to use to try and crack this
+  # @option opts [Symbol] :origin_type The Origin type we are trying to create
+  # @option opts [String] :address The address of the `Mdm::Host` to link this Origin to
+  # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Origin to
+  # @option opts [String] :service_name The service name to use for the `Mdm::Service`
+  # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Origin to
+  # @option opts [String] :module_fullname The fullname of the Metasploit Module to link this Origin to
+  # @option opts [Fixnum] :workspace_id The ID of the `Mdm::Workspace` to use for the `Mdm::Host`
+  # @option opts [Fixnum] :task_id The ID of the `Mdm::Task` to link this Origin and Core to
+  # @option opts [String] :filename The filename of the file that was imported
+  # @option opts [Fixnum] :user_id The ID of the `Mdm::User` to link this Origin to
+  # @option opts [Fixnum] :session_id The ID of the `Mdm::Session` to link this Origin to
+  # @option opts [String] :post_reference_name The reference name of the Metasploit Post module to link the origin to
+  # @option opts [String] :private_data The actual data for the private (e.g. password, hash, key etc)
+  # @option opts [Symbol] :private_type The type of {Metasploit::Credential::Private} to create
+  # {Metasploit::Credential::Login}
+  # @option opts [String] :access_level The access level to assign to this login if we know it
+  # @option opts [String] :status The status for the Login object
+  # @raise [KeyError] if a required option is missing
+  # @raise [ArgumentError] if an invalid :private_type is specified
+  # @raise [ArgumentError] if an invalid :origin_type is specified
+  # @return [NilClass] if there is no active database connection
+  # @return [Metasploit::Credential::Core]
+  # @example Reporting a Bruteforced Credential and Login
+  #     create_credential(
+  #       origin_type: :service,
+  #       address: '192.168.1.100',
+  #       port: 445,
+  #       service_name: 'smb',
+  #       protocol: 'tcp',
+  #       module_fullname: 'auxiliary/scanner/smb/smb_login',
+  #       workspace_id: myworkspace.id,
+  #       private_data: 'password1',
+  #       private_type: :password,
+  #       username: 'Administrator',
+  #       service_name: 'smb',
+  #       status: status: Metasploit::Model::Login::Status::UNTRIED
+  #     )
+  
+  
+  def create_credential_and_login(opts={})
+    return nil unless active_db?
+
+    if self.respond_to?(:[]) and self[:task]
+      opts[:task_id] ||= self[:task].record.id
+    end
+
+    core               = opts.fetch(:core, create_credential(opts))
+    access_level       = opts.fetch(:access_level, nil)
+    last_attempted_at  = opts.fetch(:last_attempted_at, nil)
+    status             = opts.fetch(:status, Metasploit::Model::Login::Status::UNTRIED)
+
+    login_object = nil
+    retry_transaction do
+      service_object = create_credential_service(opts)
+      login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
+
+      if opts[:task_id]
+        login_object.tasks << Mdm::Task.find(opts[:task_id])
+      end
+
+      login_object.access_level      = access_level if access_level
+      login_object.last_attempted_at = last_attempted_at if last_attempted_at
+      if status == Metasploit::Model::Login::Status::UNTRIED
+        if login_object.last_attempted_at.nil?
+          login_object.status = status
+        end
+      else
+        login_object.status = status
+      end
+      login_object.save!
+    end
+
+    login_object
   end
 
   # This method is responsible for creating {Metasploit::Credential::Core} objects.
