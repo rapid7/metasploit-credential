@@ -37,7 +37,7 @@ RSpec.describe Metasploit::Credential::Creation do
           import: {
             filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
           },
-          manual: {},
+          manual: {user_id: user.id},
           service: {
             module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
             address: service.host.address,
@@ -52,7 +52,6 @@ RSpec.describe Metasploit::Credential::Creation do
         }}
         let(:credential_data) {{
           workspace_id: workspace.id,
-          user_id: user.id,
           origin_type: origin_type,
           username: 'admin',
           private_data: 'password',
@@ -196,7 +195,7 @@ RSpec.describe Metasploit::Credential::Creation do
           import: {
             filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
           },
-          manual: {},
+          manual: {user_id: user.id},
           service: {
             module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
             address: service.host.address,
@@ -211,7 +210,6 @@ RSpec.describe Metasploit::Credential::Creation do
         }}
         let(:login_data) {{
           workspace_id: workspace.id,
-          user_id: user.id,
           origin_type: origin_type,
           username: 'admin',
           private_data: 'password',
