@@ -147,6 +147,8 @@ module Metasploit::Credential::Creation
   # which ties a {Metasploit::Credential::Core} to the `Mdm::Service` it is a valid
   # credential for.
   #
+  # NOTE: for origin_type: service it must be the same service your going to create a login for.
+  #
   # {Metasploit::Credential::Core} options
   # @option opts [String] :jtr_format The format for John the ripper to use to try and crack this
   # @option opts [Symbol] :origin_type The Origin type we are trying to create
