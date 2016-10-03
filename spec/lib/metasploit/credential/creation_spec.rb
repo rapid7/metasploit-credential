@@ -186,7 +186,6 @@ RSpec.describe Metasploit::Credential::Creation do
       session: Metasploit::Credential::Origin::Session
     }.each_pair do |origin_type, origin_class|
       context "Origin[#{origin_type}], Public[Username], Private[Password]" do
-        let(:service) { FactoryGirl.create(:mdm_service) }
         let!(:origin_data) {{
           cracked_password: {
             originating_core_id: FactoryGirl.create(

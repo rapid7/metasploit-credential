@@ -174,7 +174,7 @@ module Metasploit::Credential::Creation
   # @return [NilClass] if there is no active database connection
   # @return [Metasploit::Credential::Core]
   # @example Reporting a Bruteforced Credential and Login
-  #     create_credential(
+  #     create_credential_and_login(
   #       origin_type: :service,
   #       address: '192.168.1.100',
   #       port: 445,
