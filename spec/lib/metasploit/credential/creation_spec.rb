@@ -15,6 +15,358 @@ RSpec.describe Metasploit::Credential::Creation do
   let(:workspace) { FactoryGirl.create(:mdm_workspace) }
 
   subject(:test_object) { dummy_class.new }
+  
+  context '#create_credential' do
+    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    {
+      cracked_password: Metasploit::Credential::Origin::CrackedPassword,
+      import: Metasploit::Credential::Origin::Import,
+      manual: Metasploit::Credential::Origin::Manual,
+      service: Metasploit::Credential::Origin::Service,
+      session: Metasploit::Credential::Origin::Session
+    }.each_pair do |origin_type, origin_class|
+      context "Origin[#{origin_type}], Public[Username], Private[Password]" do
+        let(:service) { FactoryGirl.create(:mdm_service) }
+        let!(:origin_data) {{
+          cracked_password: {
+            originating_core_id: FactoryGirl.create(
+              :metasploit_credential_core, workspace: workspace, origin_factory: :metasploit_credential_origin_manual).id
+          },
+          import: {
+            filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
+          },
+          manual: {user_id: user.id},
+          service: {
+            module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
+            address: service.host.address,
+            port: service.port,
+            service_name: service.name,
+            protocol: service.proto
+          },
+          session: {
+            session_id: FactoryGirl.create(:mdm_session, workspace: workspace, host: service.host),
+            post_reference_name: FactoryGirl.generate(:metasploit_credential_origin_session_post_reference_name)
+          }
+        }}
+        let(:credential_data) {{
+          workspace_id: workspace.id,
+          origin_type: origin_type,
+          username: 'admin',
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id
+        }.merge(origin_data[origin_type])}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it "creates a Origin of type #{origin_type}" do
+          expect{ test_object.create_credential(credential_data) }.to change{ origin_class.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+      end
+    end
+    [
+      Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN,
+      Metasploit::Model::Realm::Key::DB2_DATABASE,
+      Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER,
+      Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE,
+      Metasploit::Model::Realm::Key::RSYNC_MODULE,
+      Metasploit::Model::Realm::Key::WILDCARD
+    ].each do |realm_type|
+      context "Origin[manual], Realm[#{realm_type}], Public[Username], Private[Password]" do
+        let(:credential_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          realm_key: realm_type,
+          realm_value: 'Some Value',
+          origin_type: :manual,
+          username: 'admin',
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it "creates a Realm with #{realm_type} key" do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Realm.where(key: realm_type).count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+      end
+    end
+    {
+      "Metasploit::Credential::Username" => 'admin',
+      "Metasploit::Credential::BlankUsername" => ''
+    }.each_pair do |public_type, public_value|
+      context "Origin[manual], Public[#{public_type}], Private[Password]" do
+        let(:credential_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          origin_type: :manual,
+          username: public_value,
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(type: public_type).count }.by(1)
+        end
+      end 
+    end
+    {
+      password: "Metasploit::Credential::Password",
+      blank_password: "Metasploit::Credential::BlankPassword",
+      nonreplayable_hash: "Metasploit::Credential::NonreplayableHash",
+      ntlm_hash: "Metasploit::Credential::NTLMHash",
+      postgres_md5: "Metasploit::Credential::PostgresMD5",
+      ssh_key: "Metasploit::Credential::SSHKey"
+    }.each_pair do |private_type, public_class|
+      context "Origin[manual], Public[Username], Private[#{private_type}]" do
+        let(:ssh_key) {
+          key_class = OpenSSL::PKey.const_get(:RSA)
+          key_class.generate(512).to_s
+        }
+        let(:private_data) { {
+          password: 'password',
+          blank_password: '',
+          nonreplayable_hash: '435ba65d2e46d35bc656086694868d1ab2c0f9fd',
+          ntlm_hash: 'aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0',
+          postgres_md5: 'md5ac4bbe016b808c3c0b816981f240dcae',
+          ssh_key: ssh_key
+        }}
+        let(:credential_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          origin_type: :manual,
+          username: 'admin',
+          private_data: private_data[private_type],
+          private_type: private_type,
+          workspace_id: workspace.id
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Private.where(type: public_class).count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+      end 
+    end
+  end
+  
+  context '#create_credential_and_login' do
+    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    {
+      cracked_password: Metasploit::Credential::Origin::CrackedPassword,
+      import: Metasploit::Credential::Origin::Import,
+      manual: Metasploit::Credential::Origin::Manual,
+      service: Metasploit::Credential::Origin::Service,
+      session: Metasploit::Credential::Origin::Session
+    }.each_pair do |origin_type, origin_class|
+      context "Origin[#{origin_type}], Public[Username], Private[Password]" do
+        let!(:origin_data) {{
+          cracked_password: {
+            originating_core_id: FactoryGirl.create(
+              :metasploit_credential_core, workspace: workspace, origin_factory: :metasploit_credential_origin_manual).id
+          },
+          import: {
+            filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
+          },
+          manual: {user_id: user.id},
+          service: {
+            module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
+            address: service.host.address,
+            port: service.port,
+            service_name: service.name,
+            protocol: service.proto
+          },
+          session: {
+            session_id: FactoryGirl.create(:mdm_session, workspace: workspace, host: service.host),
+            post_reference_name: FactoryGirl.generate(:metasploit_credential_origin_session_post_reference_name)
+          }
+        }}
+        let(:login_data) {{
+          workspace_id: workspace.id,
+          origin_type: origin_type,
+          username: 'admin',
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id,
+          address: service.host.address,
+          port: service.port,
+          service_name: service.name,
+          protocol: service.proto,
+          last_attempted_at: DateTime.current,
+          status: Metasploit::Model::Login::Status::SUCCESSFUL,
+        }.merge(origin_data[origin_type])}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it "creates a Origin of type #{origin_type}" do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ origin_class.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+        it 'creates a Login with status for the service' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
+        end
+      end
+    end
+    [
+      Metasploit::Model::Realm::Key::ACTIVE_DIRECTORY_DOMAIN,
+      Metasploit::Model::Realm::Key::DB2_DATABASE,
+      Metasploit::Model::Realm::Key::ORACLE_SYSTEM_IDENTIFIER,
+      Metasploit::Model::Realm::Key::POSTGRESQL_DATABASE,
+      Metasploit::Model::Realm::Key::RSYNC_MODULE,
+      Metasploit::Model::Realm::Key::WILDCARD
+    ].each do |realm_type|
+      context "Origin[manual], Realm[#{realm_type}], Public[Username], Private[Password]" do
+        let(:login_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          realm_key: realm_type,
+          realm_value: 'Some Value',
+          origin_type: :manual,
+          username: 'admin',
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id,
+          address: service.host.address,
+          port: service.port,
+          service_name: service.name,
+          protocol: service.proto,
+          last_attempted_at: DateTime.current,
+          status: Metasploit::Model::Login::Status::SUCCESSFUL,
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it "creates a Realm with #{realm_type} key" do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Realm.where(key: realm_type).count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+        it 'creates a Login with status for the service' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
+        end
+      end
+    end
+    
+    {
+      "Metasploit::Credential::Username" => 'admin',
+      "Metasploit::Credential::BlankUsername" => ''
+    }.each_pair do |public_type, public_value|
+      context "Origin[manual], Public[#{public_type}], Private[Password]" do
+        let(:login_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          origin_type: :manual,
+          username: public_value,
+          private_data: 'password',
+          private_type: :password,
+          workspace_id: workspace.id,
+          address: service.host.address,
+          port: service.port,
+          service_name: service.name,
+          protocol: service.proto,
+          last_attempted_at: DateTime.current,
+          status: Metasploit::Model::Login::Status::SUCCESSFUL,
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Private.where(data: 'password').count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Public.where(type: public_type).count }.by(1)
+        end
+        it 'creates a Login with status for the service' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
+        end
+      end 
+    end
+    {
+      password: "Metasploit::Credential::Password",
+      blank_password: "Metasploit::Credential::BlankPassword",
+      nonreplayable_hash: "Metasploit::Credential::NonreplayableHash",
+      ntlm_hash: "Metasploit::Credential::NTLMHash",
+      postgres_md5: "Metasploit::Credential::PostgresMD5",
+      ssh_key: "Metasploit::Credential::SSHKey"
+    }.each_pair do |private_type, public_class|
+      context "Origin[manual], Public[Username], Private[#{private_type}]" do
+        let(:ssh_key) {
+          key_class = OpenSSL::PKey.const_get(:RSA)
+          key_class.generate(512).to_s
+        }
+        let(:private_data) { {
+          password: 'password',
+          blank_password: '',
+          nonreplayable_hash: '435ba65d2e46d35bc656086694868d1ab2c0f9fd',
+          ntlm_hash: 'aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0',
+          postgres_md5: 'md5ac4bbe016b808c3c0b816981f240dcae',
+          ssh_key: ssh_key
+        }}
+        let(:login_data) {{
+          workspace_id: workspace.id,
+          user_id: user.id,
+          origin_type: :manual,
+          username: 'admin',
+          private_data: private_data[private_type],
+          private_type: private_type,
+          workspace_id: workspace.id,
+          address: service.host.address,
+          port: service.port,
+          service_name: service.name,
+          protocol: service.proto,
+          last_attempted_at: DateTime.current,
+          status: Metasploit::Model::Login::Status::SUCCESSFUL,
+        }}
+        it 'creates a credential core' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        end
+        it 'creates a Private with data \'password\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Private.where(type: public_class).count }.by(1)
+        end
+        it 'creates a Public with username \'username\'' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
+        end
+        it 'creates a Login with status for the service' do
+          expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
+        end
+      end 
+    end
+  end
 
   context '#create_cracked_credential' do
     let(:public) { FactoryGirl.create(:metasploit_credential_public) }
@@ -34,7 +386,7 @@ RSpec.describe Metasploit::Credential::Creation do
             username: public.username,
             password: password
         )
-      }.to change{Metasploit::Credential::Core.count}.by(1)
+      }.to change{ Metasploit::Credential::Core.count }.by(1)
       expect(Metasploit::Credential::Private.last).to be_a Metasploit::Credential::Password
     end
 
@@ -46,7 +398,7 @@ RSpec.describe Metasploit::Credential::Creation do
           username: public.username,
           password: password
         )
-      }.to change{Metasploit::Credential::Core.count}.by(1)
+      }.to change{ Metasploit::Credential::Core.count }.by(1)
       expect(Metasploit::Credential::Core.last.realm).to eq(realm)
     end
 
@@ -85,7 +437,7 @@ RSpec.describe Metasploit::Credential::Creation do
       opts = {
           filename: "test_import.xml",
       }
-      expect { test_object.create_credential_origin_import(opts)}.to change{Metasploit::Credential::Origin::Import.count}.by(1)
+      expect { test_object.create_credential_origin_import(opts)}.to change{ Metasploit::Credential::Origin::Import.count }.by(1)
     end
 
     it 'should return nil if there is no database connection' do
@@ -100,7 +452,7 @@ RSpec.describe Metasploit::Credential::Creation do
             task_id: task.id
         }
         test_object.create_credential_origin_import(opts)
-        expect { test_object.create_credential_origin_import(opts)}.to_not change{Metasploit::Credential::Origin::Import.count}
+        expect { test_object.create_credential_origin_import(opts)}.to_not change{ Metasploit::Credential::Origin::Import.count }
       end
     end
 
@@ -119,7 +471,7 @@ RSpec.describe Metasploit::Credential::Creation do
       opts = {
           user_id: user.id
       }
-      expect { test_object.create_credential_origin_manual(opts)}.to change{Metasploit::Credential::Origin::Manual.count}.by(1)
+      expect { test_object.create_credential_origin_manual(opts)}.to change{ Metasploit::Credential::Origin::Manual.count }.by(1)
     end
 
     it 'should return nil if there is no database connection' do
@@ -133,7 +485,7 @@ RSpec.describe Metasploit::Credential::Creation do
             user_id: user.id
         }
         test_object.create_credential_origin_manual(opts)
-        expect { test_object.create_credential_origin_manual(opts)}.to_not change{Metasploit::Credential::Origin::Manual.count}
+        expect { test_object.create_credential_origin_manual(opts)}.to_not change{ Metasploit::Credential::Origin::Manual.count }
       end
     end
 
@@ -173,7 +525,7 @@ RSpec.describe Metasploit::Credential::Creation do
           workspace_id: workspace.id,
           origin_type: :service
       }
-      expect { test_object.create_credential_origin_service(opts)}.to change{Metasploit::Credential::Origin::Service.count}.by(1)
+      expect { test_object.create_credential_origin_service(opts)}.to change{ Metasploit::Credential::Origin::Service.count }.by(1)
     end
 
     it 'should return nil if there is no database connection' do
@@ -194,7 +546,7 @@ RSpec.describe Metasploit::Credential::Creation do
             origin_type: :service
         }
         FactoryGirl.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
-        expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Host.count}
+        expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Host.count }
       end
     end
 
@@ -209,7 +561,7 @@ RSpec.describe Metasploit::Credential::Creation do
             workspace_id: workspace.id,
             origin_type: :service
         }
-        expect { test_object.create_credential_origin_service(opts)}.to change{Mdm::Host.count}.by(1)
+        expect { test_object.create_credential_origin_service(opts)}.to change{Mdm::Host.count }.by(1)
       end
     end
 
@@ -226,7 +578,7 @@ RSpec.describe Metasploit::Credential::Creation do
         }
         host = FactoryGirl.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
         FactoryGirl.create(:mdm_service, host_id: host.id, port: opts[:port], proto: opts[:protocol])
-        expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Service.count}
+        expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Service.count }
       end
     end
 
@@ -241,7 +593,7 @@ RSpec.describe Metasploit::Credential::Creation do
             workspace_id: workspace.id,
             origin_type: :service
         }
-        expect { test_object.create_credential_origin_service(opts)}.to change{Mdm::Service.count}.by(1)
+        expect { test_object.create_credential_origin_service(opts)}.to change{Mdm::Service.count }.by(1)
       end
     end
 
@@ -257,7 +609,7 @@ RSpec.describe Metasploit::Credential::Creation do
             origin_type: :service
         }
         test_object.create_credential_origin_service(opts)
-        expect { test_object.create_credential_origin_service(opts)}.to_not change{Metasploit::Credential::Origin::Service.count}
+        expect { test_object.create_credential_origin_service(opts)}.to_not change{ Metasploit::Credential::Origin::Service.count }
       end
     end
 
@@ -275,7 +627,7 @@ RSpec.describe Metasploit::Credential::Creation do
           post_reference_name: 'windows/gather/hashdump',
           session_id: session.id
       }
-      expect { test_object.create_credential_origin_session(opts)}.to change{Metasploit::Credential::Origin::Session.count}.by(1)
+      expect { test_object.create_credential_origin_session(opts)}.to change{ Metasploit::Credential::Origin::Session.count }.by(1)
     end
 
     it 'should return nil if there is no database connection' do
@@ -290,7 +642,7 @@ RSpec.describe Metasploit::Credential::Creation do
             session_id: session.id
         }
         test_object.create_credential_origin_session(opts)
-        expect { test_object.create_credential_origin_session(opts)}.to_not change{Metasploit::Credential::Origin::Session.count}
+        expect { test_object.create_credential_origin_session(opts)}.to_not change{ Metasploit::Credential::Origin::Session.count }
       end
     end
 
@@ -359,7 +711,7 @@ RSpec.describe Metasploit::Credential::Creation do
           post_reference_name: 'windows/gather/hashdump',
           session_id: session.id
       }
-      expect{test_object.create_credential_origin(opts)}.to raise_error ArgumentError, "Unknown Origin Type "
+      expect{ test_object.create_credential_origin(opts)}.to raise_error ArgumentError, "Unknown Origin Type "
     end
 
     it 'raises an exception if given an invalid origin type' do
@@ -368,7 +720,7 @@ RSpec.describe Metasploit::Credential::Creation do
           post_reference_name: 'windows/gather/hashdump',
           session_id: session.id
       }
-      expect{test_object.create_credential_origin(opts)}.to raise_error ArgumentError, "Unknown Origin Type aaaaa"
+      expect{ test_object.create_credential_origin(opts)}.to raise_error ArgumentError, "Unknown Origin Type aaaaa"
     end
   end
 
@@ -378,7 +730,7 @@ RSpec.describe Metasploit::Credential::Creation do
           realm_key: 'Active Directory Domain',
           realm_value: 'contosso'
       }
-      expect { test_object.create_credential_realm(opts)}.to change{Metasploit::Credential::Realm.count}.by(1)
+      expect { test_object.create_credential_realm(opts)}.to change{ Metasploit::Credential::Realm.count }.by(1)
     end
 
     it 'should return nil if there is no database connection' do
@@ -393,7 +745,7 @@ RSpec.describe Metasploit::Credential::Creation do
             realm_value: 'contosso'
         }
         test_object.create_credential_realm(opts)
-        expect { test_object.create_credential_realm(opts)}.to_not change{Metasploit::Credential::Realm.count}
+        expect { test_object.create_credential_realm(opts)}.to_not change{ Metasploit::Credential::Realm.count }
       end
     end
 
@@ -424,7 +776,7 @@ RSpec.describe Metasploit::Credential::Creation do
             private_data: 'password1',
             private_type: :password
         }
-        expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::Password.count}.by(1)
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::Password.count }.by(1)
       end
     end
 
@@ -434,7 +786,7 @@ RSpec.describe Metasploit::Credential::Creation do
             private_data: OpenSSL::PKey::RSA.generate(2048).to_s,
             private_type: :ssh_key
         }
-        expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::SSHKey.count}.by(1)
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::SSHKey.count }.by(1)
       end
     end
 
@@ -444,7 +796,7 @@ RSpec.describe Metasploit::Credential::Creation do
             private_data: Metasploit::Credential::NTLMHash.data_from_password_data('password1'),
             private_type: :ntlm_hash
         }
-        expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::NTLMHash.count}.by(1)
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::NTLMHash.count }.by(1)
       end
     end
 
@@ -454,7 +806,7 @@ RSpec.describe Metasploit::Credential::Creation do
             private_data: '10b222970537b97919db36ec757370d2',
             private_type: :nonreplayable_hash
         }
-        expect{ test_object.create_credential_private(opts) }.to change{Metasploit::Credential::NonreplayableHash.count}.by(1)
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::NonreplayableHash.count }.by(1)
       end
     end
 
@@ -467,23 +819,6 @@ RSpec.describe Metasploit::Credential::Creation do
         expect(test_object.create_credential_private(opts)).to be_kind_of Metasploit::Credential::BlankPassword
       end
     end
-  end
-
-  context '#create_credential' do
-
-    it 'associates the new Metasploit::Credential::Core with a task if passed' do
-      opts = {
-          origin_type: :manual,
-           user_id: user.id,
-          username: 'username',
-          private_data: 'password',
-          workspace_id: workspace.id,
-          task_id: task.id
-      }
-      core = test_object.create_credential(opts)
-      expect(core.tasks).to include(task)
-    end
-
   end
 
   context '#create_credential_core' do
@@ -512,7 +847,7 @@ RSpec.describe Metasploit::Credential::Creation do
           realm: realm,
           workspace_id: workspace.id
       }
-      expect{test_object.create_credential_core(opts)}.to change{Metasploit::Credential::Core.count}.by(1)
+      expect{ test_object.create_credential_core(opts)}.to change{ Metasploit::Credential::Core.count }.by(1)
     end
     it 'associates the new Metasploit::Credential::Core with a task if passed' do
       opts = {
@@ -546,7 +881,7 @@ RSpec.describe Metasploit::Credential::Creation do
         last_attempted_at: DateTime.current,
         status: Metasploit::Model::Login::Status::SUCCESSFUL,
       }
-      expect{test_object.create_credential_login(login_data)}.to change{Metasploit::Credential::Login.count}.by(1)
+      expect{ test_object.create_credential_login(login_data) }.to change{ Metasploit::Credential::Login.count }.by(1)
     end
     it "associates the Metasploit::Credential::Core with a task if passed" do
       login_data = {
