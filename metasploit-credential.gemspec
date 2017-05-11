@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = s.files.grep(/spec/)
   s.require_paths = %w{app/models app/validators lib}
 
-  s.required_ruby_version = '>= 2.1'
+  s.required_ruby_version = '>= 2.2.0'
 
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern'
