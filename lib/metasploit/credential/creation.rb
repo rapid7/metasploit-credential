@@ -1,3 +1,5 @@
+require 'rex/socket'
+
 # Implements a set of "convenience methods" for creating credentials and related portions of the object graph.  Creates
 # {Metasploit::Credential::Core} objects and their attendant relationships as well as {Metasploit::Credential::Login}
 # objects and their attendant `Mdm::Host` and `Mdm::Service` objects.
@@ -116,6 +118,7 @@ module Metasploit::Credential::Creation
     else
       origin = create_credential_origin(opts)
     end
+    return nil if origin.nil?
 
     core_opts = {
         origin: origin,
@@ -125,7 +128,7 @@ module Metasploit::Credential::Creation
     if opts.has_key?(:realm_key) && opts.has_key?(:realm_value)
       core_opts[:realm] = create_credential_realm(opts)
     end
-    
+
     if opts.has_key?(:private_type) && opts.has_key?(:private_data)
       core_opts[:private] = create_credential_private(opts)
     end
@@ -140,7 +143,7 @@ module Metasploit::Credential::Creation
 
     create_credential_core(core_opts)
   end
-  
+
   # This method is responsible for creation {Metasploit::Credential::Core} and
   # {Metasploit::Credential::Login}.
   # This method is responsible for creating a {Metasploit::Credential::Login} object
@@ -188,8 +191,6 @@ module Metasploit::Credential::Creation
   #       service_name: 'smb',
   #       status: status: Metasploit::Model::Login::Status::UNTRIED
   #     )
-  
-  
   def create_credential_and_login(opts={})
     return nil unless active_db?
 
@@ -205,6 +206,7 @@ module Metasploit::Credential::Creation
     login_object = nil
     retry_transaction do
       service_object = create_credential_service(opts)
+      return nil if service_object.nil?
       login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
 
       if opts[:task_id]
@@ -297,6 +299,7 @@ module Metasploit::Credential::Creation
     login_object = nil
     retry_transaction do
       service_object = create_credential_service(opts)
+      return nil if service_object.nil?
       login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
 
       if opts[:task_id]
@@ -419,13 +422,12 @@ module Metasploit::Credential::Creation
   def create_credential_origin_service(opts={})
     return nil unless active_db?
     module_fullname  = opts.fetch(:module_fullname)
-
     service_object = create_credential_service(opts)
+    return nil if service_object.nil?
 
     retry_transaction do
       Metasploit::Credential::Origin::Service.where(service_id: service_object.id, module_full_name: module_fullname).first_or_create!
     end
-
   end
 
   # This method is responsible for creating {Metasploit::Credential::Origin::Session} objects.
@@ -547,6 +549,7 @@ module Metasploit::Credential::Creation
   def create_credential_service(opts={})
     return nil unless active_db?
     address          = opts.fetch(:address)
+    return nil unless Rex::Socket.is_ipv4?(address) || Rex::Socket.is_ipv6?(address)
     port             = opts.fetch(:port)
     service_name     = opts.fetch(:service_name)
     protocol         = opts.fetch(:protocol)
@@ -577,6 +580,7 @@ module Metasploit::Credential::Creation
   def invalidate_login(opts = {})
     return nil unless active_db?
     address     = opts.fetch(:address)
+    return nil unless Rex::Socket.is_ipv4?(address) || Rex::Socket.is_ipv6?(address)
     port        = opts.fetch(:port)
     protocol    = opts.fetch(:protocol)
     public      = opts.fetch(:username, nil)

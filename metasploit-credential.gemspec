@@ -33,6 +33,8 @@ Gem::Specification.new do |s|
   # Required for supporting the en masse importation of SSH Keys
   s.add_runtime_dependency 'rubyzip'
 
+  s.add_runtime_dependency 'rex-socket'
+
   if RUBY_PLATFORM =~ /java/
     s.add_runtime_dependency 'jdbc-postgres'
     s.add_runtime_dependency 'activerecord-jdbcpostgresql-adapter'
