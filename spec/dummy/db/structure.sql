@@ -466,7 +466,8 @@ CREATE TABLE hosts (
     host_detail_count integer DEFAULT 0,
     exploit_attempt_count integer DEFAULT 0,
     cred_count integer DEFAULT 0,
-    detected_arch character varying
+    detected_arch character varying,
+    os_family character varying
 );
 
 
@@ -4091,6 +4092,8 @@ INSERT INTO schema_migrations (version) VALUES ('20161004165612');
 INSERT INTO schema_migrations (version) VALUES ('20161107153145');
 
 INSERT INTO schema_migrations (version) VALUES ('20161107203710');
+
+INSERT INTO schema_migrations (version) VALUES ('20161227212223');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
