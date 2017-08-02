@@ -224,7 +224,7 @@ class Metasploit::Credential::Importer::Core
       end
       if all_creds_valid
         core_opts.each do |item|
-          if Metasploit::Credential::Core.where(private:item[:private]).blank?
+          if Metasploit::Credential::Core.where(public:item[:public],private:item[:private]).blank?
             create_credential_core(item)
           end
         end
