@@ -3,13 +3,13 @@ group: stable
 cache: bundler
 language: ruby
 addons:
-  postgresql: '9.3'
+  postgresql: '9.6'
   apt:
     packages:
       - libpcap-dev
       - graphviz
 rvm:
-  - 2.3.3
+  - 2.4.3
 before_script:
   - cp spec/dummy/config/database.yml.travis spec/dummy/config/database.yml
   - bundle exec rake --version
