@@ -11,7 +11,7 @@ class Metasploit::Credential::Origin::Service < ActiveRecord::Base
   # Regular expression that matches any `Mdm::Module::Detail#fullname` for {#module_full_name} where
   # `Mdm::Module::Detail#mtype` is `'auxiliary'` or `'exploit'` and the remainder is a valid
   # `Mdm::Module::Detail#refname` (it does not contain a `'\'` and is lower case alphanumeric).
-  MODULE_FULL_NAME_REGEXP = /\A(?<module_type>auxiliary|exploit)\/(?<reference_name>[\-0-9A-Z_a-z]+(?:\/[\-0-9A-Z_a-z]+)*)\Z/
+  MODULE_FULL_NAME_REGEXP = /\A(?<module_type>auxiliary|exploit|post)\/(?<reference_name>[\-0-9A-Z_a-z]+(?:\/[\-0-9A-Z_a-z]+)*)\Z/
 
   #
   # Associations
