@@ -118,7 +118,7 @@ RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
             end
 
             it 'allows value' do
-              expect(service_origin).not_to allow_value(module_full_name).for(:module_full_name)
+              expect(service_origin).to allow_value(module_full_name).for(:module_full_name)
             end
           end
         end
