@@ -11,12 +11,10 @@ gemspec
 gem 'net-ssh'
 
 group :development do
-  # markdown formatting for yard
-  gem 'kramdown', platforms: :jruby
   # Entity-Relationship diagrams for developers that need to access database using SQL directly.
   gem 'rails-erd'
   # markdown formatting for yard
-  gem 'redcarpet', platforms: :ruby
+  gem 'redcarpet'
   # documentation
   # 0.8.7.4 has a bug where setters are not documented when @!attribute is used
   gem 'yard', '< 0.8.7.4'
