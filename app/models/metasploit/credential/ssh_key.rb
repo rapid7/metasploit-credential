@@ -84,7 +84,11 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
       filename = "#{self.class}#data"
       passphrase = nil
 
-      Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
+      begin
+        Net::SSH::KeyFactory.load_data_private_key(data, passphrase, ask_passphrase, filename)
+      rescue OpenSSL::PKey::PKeyError => error
+        raise ArgumentError.new(error)
+      end
     end
   end
 
