@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   klass = Metasploit::Credential::NTLMHash
 
   factory :metasploit_credential_ntlm_hash,

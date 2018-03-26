@@ -13,7 +13,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
 
         let(:login) do
-          FactoryGirl.build(
+          FactoryBot.build(
               :metasploit_credential_login,
               access_level: written_access_level
           )
@@ -87,14 +87,14 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
     context 'metasploit_credential_login' do
       subject(:metasploit_credential_login) do
-        FactoryGirl.build(:metasploit_credential_login)
+        FactoryBot.build(:metasploit_credential_login)
       end
 
       it { is_expected.to be_valid }
 
       context '#status' do
         subject(:metasploit_credential_login) do
-          FactoryGirl.build(
+          FactoryBot.build(
               :metasploit_credential_login,
               status: status
           )
@@ -185,7 +185,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       before(:example) do
         # validate_uniqueness_of will use Metasploit::Credential::Login#service_id and not trigger service_id non-null
         # constraint.
-        FactoryGirl.create(
+        FactoryBot.create(
             :metasploit_credential_login
         )
       end
@@ -208,7 +208,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       #
 
       let(:login) do
-        FactoryGirl.build(
+        FactoryBot.build(
             :metasploit_credential_login,
             last_attempted_at: last_attempted_at,
             status: status
@@ -298,7 +298,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
       end
 
       let(:login) do
-        FactoryGirl.build(
+        FactoryBot.build(
             :metasploit_credential_login,
             core: core,
             service: service
@@ -315,13 +315,13 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
       context 'with #core' do
         let(:core) do
-          FactoryGirl.build(:metasploit_credential_core)
+          FactoryBot.build(:metasploit_credential_core)
         end
 
         context 'with Metasploit::Credential::Core#workspace' do
           context 'with #service' do
             let(:service) do
-              FactoryGirl.build(
+              FactoryBot.build(
                   :mdm_service,
                   host: host
               )
@@ -329,7 +329,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
             context 'with Mdm::Service#host' do
               let(:host) do
-                FactoryGirl.build(
+                FactoryBot.build(
                     :mdm_host,
                     workspace: workspace
                 )
@@ -346,7 +346,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
                 context 'different than #workspace' do
                   let(:workspace) do
-                    FactoryGirl.build(:mdm_workspace)
+                    FactoryBot.build(:mdm_workspace)
                   end
 
                   it { is_expected.to include(error) }
@@ -389,7 +389,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
           context 'with #service' do
             let(:service) do
-              FactoryGirl.build(
+              FactoryBot.build(
                   :mdm_service,
                   host: host
               )
@@ -397,7 +397,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
             context 'with Mdm::Service#host' do
               let(:host) do
-                FactoryGirl.build(
+                FactoryBot.build(
                     :mdm_host,
                     workspace: workspace
                 )
@@ -405,7 +405,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
               context 'with Mdm::Host#workspace' do
                 let(:workspace) do
-                  FactoryGirl.build(:mdm_workspace)
+                  FactoryBot.build(:mdm_workspace)
                 end
 
                 it { is_expected.to include(error) }
@@ -446,7 +446,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
         context 'with #service' do
           let(:service) do
-            FactoryGirl.build(
+            FactoryBot.build(
                 :mdm_service,
                 host: host
             )
@@ -454,7 +454,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
           context 'with Mdm::Service#host' do
             let(:host) do
-              FactoryGirl.build(
+              FactoryBot.build(
                   :mdm_host,
                   workspace: workspace
               )
@@ -462,7 +462,7 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
             context 'with Mdm::Host#workspace' do
               let(:workspace) do
-                FactoryGirl.build(:mdm_workspace)
+                FactoryBot.build(:mdm_workspace)
               end
 
               it { is_expected.to include(error) }
@@ -501,11 +501,11 @@ RSpec.describe Metasploit::Credential::Login, type: :model do
 
 
     context "::in_workspace_with_hosts_and_services" do
-      let(:service){ FactoryGirl.create :mdm_service }
-      let(:origin){ FactoryGirl.create :metasploit_credential_origin_service, service: service}
-      let(:core){ FactoryGirl.create :metasploit_credential_core, workspace: service.host.workspace, origin: origin}
+      let(:service){ FactoryBot.create :mdm_service }
+      let(:origin){ FactoryBot.create :metasploit_credential_origin_service, service: service}
+      let(:core){ FactoryBot.create :metasploit_credential_core, workspace: service.host.workspace, origin: origin}
 
-      subject(:login){ FactoryGirl.create :metasploit_credential_login, core: core}
+      subject(:login){ FactoryBot.create :metasploit_credential_login, core: core}
 
       it 'should find the right objects' do
         expect(Metasploit::Credential::Login.in_workspace_including_hosts_and_services(service.host.workspace)).to include(login)

@@ -13,7 +13,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
   context 'factories' do
     context 'metasploit_credential_dsa_key' do
       subject(:metasploit_credential_dsa_key) do
-        FactoryGirl.build(:metasploit_credential_dsa_key)
+        FactoryBot.build(:metasploit_credential_dsa_key)
       end
 
       it { is_expected.to be_valid }
@@ -26,7 +26,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
     context 'metasploit_credential_rsa_key' do
       subject(:metasploit_credential_rsa_key) do
-        FactoryGirl.build(:metasploit_credential_rsa_key)
+        FactoryBot.build(:metasploit_credential_rsa_key)
       end
 
       it { is_expected.to be_valid }
@@ -39,7 +39,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
     context 'metasploit_credential_ssh_key' do
       subject(:metasploit_credential_ssh_key) do
-        FactoryGirl.build(:metasploit_credential_ssh_key)
+        FactoryBot.build(:metasploit_credential_ssh_key)
       end
 
       it { is_expected.to be_valid }
@@ -55,7 +55,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
       end
 
       let(:ssh_key) do
-        FactoryGirl.build(:metasploit_credential_ssh_key)
+        FactoryBot.build(:metasploit_credential_ssh_key)
       end
 
       context '#private' do
@@ -217,7 +217,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
   context '#encrypted?' do
     subject(:ssh_key) do
-      FactoryGirl.build(
+      FactoryBot.build(
           :metasploit_credential_ssh_key,
           data: data
       )
@@ -289,7 +289,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
     #
 
     let(:ssh_key) do
-      FactoryGirl.build(
+      FactoryBot.build(
           :metasploit_credential_ssh_key,
           data: data
       )
@@ -322,7 +322,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             specify {
               expect {
                 openssl_pkey_pkey
-              }.to raise_error(ArgumentError)
+              }.to raise_error(OpenSSL::PKey::PKeyError)
             }
           end
 
@@ -347,7 +347,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
         specify {
           expect {
             openssl_pkey_pkey
-          }.to raise_error(ArgumentError)
+          }.to raise_error(OpenSSL::PKey::PKeyError)
         }
       end
     end
@@ -362,7 +362,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
     context 'with DSA key' do
       let(:ssh_key) do
-        FactoryGirl.build(:metasploit_credential_dsa_key)
+        FactoryBot.build(:metasploit_credential_dsa_key)
       end
 
       it { is_expected.to be_a OpenSSL::PKey::DSA }
@@ -370,7 +370,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
     context 'with RSA key' do
       let(:ssh_key) do
-        FactoryGirl.build(:metasploit_credential_rsa_key)
+        FactoryBot.build(:metasploit_credential_rsa_key)
       end
 
       it { is_expected.to be_a OpenSSL::PKey::RSA }
@@ -383,7 +383,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
   context '#private?' do
     subject(:ssh_key) do
-      FactoryGirl.build(
+      FactoryBot.build(
           :metasploit_credential_ssh_key,
           data: data
       )

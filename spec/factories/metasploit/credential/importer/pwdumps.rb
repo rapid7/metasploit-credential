@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_importer_pwdump,
           class: Metasploit::Credential::Importer::Pwdump do
     filename "pwdump-import-#{Time.now.to_i}"
-    origin {FactoryGirl.build :metasploit_credential_origin_import }
-    input { FactoryGirl.generate(:wellformed_pwdump) }
+    origin {FactoryBot.build :metasploit_credential_origin_import }
+    input { FactoryBot.generate(:wellformed_pwdump) }
   end
 
   # Represents a file that should do an error-free import

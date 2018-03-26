@@ -1,5 +1,5 @@
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_private,
           class: Metasploit::Credential::Private do
     data { generate :metasploit_credential_private_data }

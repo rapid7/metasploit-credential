@@ -4,7 +4,7 @@ RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
 
 
   subject(:service_origin) do
-    FactoryGirl.build(:metasploit_credential_origin_service)
+    FactoryBot.build(:metasploit_credential_origin_service)
   end
 
   it_should_behave_like 'Metasploit::Concern.run'
@@ -33,7 +33,7 @@ RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
   context 'factories' do
     context 'metasploit_credential_origin_service' do
       subject(:metasploit_credential_origin_service) do
-        FactoryGirl.build(:metasploit_credential_origin_service)
+        FactoryBot.build(:metasploit_credential_origin_service)
       end
 
       it { is_expected.to be_valid }
@@ -153,7 +153,7 @@ RSpec.describe Metasploit::Credential::Origin::Service, type: :model do
       context do
         # example to sample for service_id
         before(:example) do
-          FactoryGirl.create(:metasploit_credential_origin_service)
+          FactoryBot.create(:metasploit_credential_origin_service)
         end
 
         it { is_expected.to validate_uniqueness_of(:module_full_name).scoped_to(:service_id) }

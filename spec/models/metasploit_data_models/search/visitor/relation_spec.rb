@@ -76,7 +76,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:matching_private) {
-          FactoryGirl.create(
+          FactoryBot.create(
               private_factory,
               matching_private_attributes
           )
@@ -91,7 +91,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:matching_public) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_username,
               username: matching_public_username
           )
@@ -102,7 +102,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:matching_realm) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_realm,
               key: matching_realm_key,
               value: matching_realm_value
@@ -126,7 +126,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:non_matching_private) {
-          FactoryGirl.create(
+          FactoryBot.create(
               private_factory,
               non_matching_private_attributes
           )
@@ -137,7 +137,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:non_matching_public) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_username,
               username: non_matching_public_username
           )
@@ -148,7 +148,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:non_matching_realm) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_realm,
               key: non_matching_realm_key,
               value: non_matching_realm_value
@@ -177,7 +177,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         #
 
         let!(:matching_login) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_login,
               access_level: matching_login_access_level,
               core: matching_record,
@@ -186,7 +186,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let!(:matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_core,
               private: matching_private,
               public: matching_public,
@@ -195,7 +195,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let!(:non_matching_login) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_login,
               access_level: non_matching_login_access_level,
               core: non_matching_record,
@@ -204,7 +204,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let!(:non_matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_core,
               private: non_matching_private,
               public: non_matching_public,
@@ -299,13 +299,13 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:matching_credential_core) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_core
           )
         }
 
         let(:matching_host) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :mdm_host,
               address: matching_host_address,
               name: matching_host_name,
@@ -337,7 +337,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:matching_service) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :mdm_service,
               host: matching_host,
               info: matching_service_info,
@@ -372,13 +372,13 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:non_matching_credential_core) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_core
           )
         }
 
         let(:non_matching_host) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :mdm_host,
               address: non_matching_host_address,
               name: non_matching_host_name,
@@ -410,7 +410,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let(:non_matching_service) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :mdm_service,
               host: non_matching_host,
               info: non_matching_service_info,
@@ -441,7 +441,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         #
 
         let!(:matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_login,
               access_level: matching_access_level,
               core: matching_credential_core,
@@ -450,7 +450,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         }
 
         let!(:non_matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_login,
               access_level: non_matching_access_level,
               core: non_matching_credential_core,
@@ -627,14 +627,14 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
           #
 
           let!(:matching_record) {
-            FactoryGirl.create(
+            FactoryBot.create(
                 factory,
                 matching_attributes
             )
           }
 
           let!(:non_matching_record) {
-            FactoryGirl.create(
+            FactoryBot.create(
                 factory,
                 non_matching_attributes
             )
@@ -732,7 +732,7 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
 
           let!(:metasploit_credential_private_by_class) {
             metasploit_private_factories.each_with_object({}) { |factory, instance_by_class|
-              instance = FactoryGirl.create(factory)
+              instance = FactoryBot.create(factory)
               instance_by_class[instance.class] = instance
             }
           }
@@ -793,25 +793,25 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
 
           let(:metasploit_credential_privates_by_class) {
             {
-                Metasploit::Credential::NonreplayableHash => FactoryGirl.create_list(
+                Metasploit::Credential::NonreplayableHash => FactoryBot.create_list(
                     :metasploit_credential_nonreplayable_hash,
                     2
                 ),
-                Metasploit::Credential::NTLMHash => FactoryGirl.create_list(
+                Metasploit::Credential::NTLMHash => FactoryBot.create_list(
                     :metasploit_credential_ntlm_hash,
                     2
                 ),
                 Metasploit::Credential::Password => [
-                    FactoryGirl.create(
+                    FactoryBot.create(
                         :metasploit_credential_password,
                         data: 'alices_password'
                     ),
-                    FactoryGirl.create(
+                    FactoryBot.create(
                         :metasploit_credential_password,
                         data: 'bobs_password'
                     )
                 ],
-                Metasploit::Credential::SSHKey => FactoryGirl.create_list(
+                Metasploit::Credential::SSHKey => FactoryBot.create_list(
                     :metasploit_credential_ssh_key,
                     2
                 )
@@ -854,14 +854,14 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         #
 
         let!(:matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_username,
               username: matching_username
           )
         }
 
         let!(:non_matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_username,
               username: non_matching_username
           )
@@ -897,14 +897,14 @@ RSpec.describe MetasploitDataModels::Search::Visitor::Relation, type: :model do
         #
 
         let!(:matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_realm,
               value: matching_value
           )
         }
 
         let!(:non_matching_record) {
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_realm,
               value: non_matching_value
           )

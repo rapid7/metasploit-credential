@@ -27,7 +27,7 @@ RSpec.describe Metasploit::Credential::Origin::Session, type: :model do
 
 
       subject(:metasploit_credential_origin_session) do
-        FactoryGirl.build(:metasploit_credential_origin_session)
+        FactoryBot.build(:metasploit_credential_origin_session)
       end
 
       it { is_expected.to be_valid }
@@ -39,7 +39,7 @@ RSpec.describe Metasploit::Credential::Origin::Session, type: :model do
 
 
       before(:example) do
-        FactoryGirl.create(:metasploit_credential_origin_session)
+        FactoryBot.create(:metasploit_credential_origin_session)
       end
 
       it { is_expected.to validate_presence_of :post_reference_name }

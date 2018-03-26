@@ -85,7 +85,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
   end
 
   describe "#line_for_login" do
-    let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core, service: service) }
+    let(:login){ FactoryBot.create(:metasploit_credential_login, core: core, service: service) }
     let(:result_hash) { core_exporter.line_for_login(login) }
 
     it 'should produce values in the proper order' do
@@ -402,8 +402,8 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
       end
 
       describe "when there ARE SSH keys in the dataset" do
-        let(:private_with_key){ FactoryGirl.create(:metasploit_credential_ssh_key)}
-        let!(:core_with_key){ FactoryGirl.create(:metasploit_credential_core,
+        let(:private_with_key){ FactoryBot.create(:metasploit_credential_ssh_key)}
+        let!(:core_with_key){ FactoryBot.create(:metasploit_credential_core,
                                                  origin: origin,
                                                  public: public1,
                                                  private: private_with_key,

@@ -28,7 +28,7 @@ RSpec.describe Metasploit::Credential::Origin::Import, type: :model do
 
 
     subject(:metasploit_credential_origin_import) do
-      FactoryGirl.build(:metasploit_credential_origin_import)
+      FactoryBot.build(:metasploit_credential_origin_import)
     end
 
     it { is_expected.to be_valid }

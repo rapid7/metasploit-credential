@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   long_form_headers  = 'username,private_type,private_data,realm_key,realm_value,host_address,service_port,service_name,service_protocol,status,access_level,last_attempted_at'
   short_form_headers = 'username,private_data'
   login_status       = Metasploit::Model::Login::Status::ALL.select {|x| x != Metasploit::Model::Login::Status::UNTRIED }.sample
@@ -7,7 +7,7 @@ FactoryGirl.define do
 
   factory :metasploit_credential_core_importer,
           class: Metasploit::Credential::Importer::Core do
-            origin { FactoryGirl.build :metasploit_credential_origin_import }
+            origin { FactoryBot.build :metasploit_credential_origin_import }
             input  { generate(:well_formed_csv_compliant_header) }
   end
 

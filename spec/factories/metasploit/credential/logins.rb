@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_login,
           class: Metasploit::Credential::Login do
     transient do
       host {
-        FactoryGirl.build(
+        FactoryBot.build(
           :mdm_host, workspace: workspace
         )
       }
@@ -20,7 +20,7 @@ FactoryGirl.define do
       end
     }
     service {
-      FactoryGirl.build(
+      FactoryBot.build(
           :mdm_service,
           host: host
       )

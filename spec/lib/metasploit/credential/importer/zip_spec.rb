@@ -2,8 +2,8 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
 
   include_context 'metasploit_credential_importer_zip_file'
 
-  let(:workspace){FactoryGirl.create(:mdm_workspace)}
-  subject(:zip_importer){ FactoryGirl.build :metasploit_credential_importer_zip, workspace: workspace }
+  let(:workspace){FactoryBot.create(:mdm_workspace)}
+  subject(:zip_importer){ FactoryBot.build :metasploit_credential_importer_zip, workspace: workspace }
 
   describe "validations" do
     DUMMY_ZIP_PATH = "/tmp/import-test-dummy.zip"
@@ -40,7 +40,7 @@ RSpec.describe Metasploit::Credential::Importer::Zip do
       end
 
       before(:example) do
-        zip_importer.input = FactoryGirl.generate :metasploit_credential_importer_zip_file_without_manifest
+        zip_importer.input = FactoryBot.generate :metasploit_credential_importer_zip_file_without_manifest
       end
 
       it { is_expected.not_to be_valid }

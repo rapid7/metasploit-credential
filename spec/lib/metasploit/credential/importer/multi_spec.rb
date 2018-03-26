@@ -6,12 +6,12 @@ RSpec.describe Metasploit::Credential::Importer::Multi do
   INVALID_CSV_FILE = 'malformed.csv'
   VALID_CSV_FILE   = 'well-formed.csv'
 
-  let(:import_origin){ FactoryGirl.create :metasploit_credential_origin_import }
-  let(:supported_file){ FactoryGirl.generate :metasploit_credential_importer_zip_file }
+  let(:import_origin){ FactoryBot.create :metasploit_credential_origin_import }
+  let(:supported_file){ FactoryBot.generate :metasploit_credential_importer_zip_file }
   let(:unsupported_file){ File.open("#{Dir.tmpdir}/#{UNSUPPORTED_FILE}", 'wb') }
 
-  let(:invalid_csv){ FactoryGirl.generate(:malformed_csv)}
-  let(:valid_csv){ FactoryGirl.generate(:well_formed_csv_compliant_header)}
+  let(:invalid_csv){ FactoryBot.generate(:malformed_csv)}
+  let(:valid_csv){ FactoryBot.generate(:well_formed_csv_compliant_header)}
 
   let(:valid_csv_file) do
     File.open("#{Dir.tmpdir}/#{VALID_CSV_FILE}", 'w') do |file|

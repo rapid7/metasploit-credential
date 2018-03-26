@@ -5,11 +5,6 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
-# This isn't in gemspec because metasploit-framework has its own patched version of 'net/ssh' that it needs to use
-# instead of this gem.
-# Metasploit::Credential::SSHKey validation and helper methods
-gem 'net-ssh'
-
 group :development do
   # Entity-Relationship diagrams for developers that need to access database using SQL directly.
   gem 'rails-erd'
@@ -27,10 +22,9 @@ group :development, :test do
     # Uploads simplecov reports to coveralls.io
   gem 'coveralls', require: false
   # supplies factories for producing model instance for specs
-  # Version 4.1.0 or newer is needed to support generate calls without the 'FactoryGirl.' in factory definitions syntax.
-  gem 'factory_girl'
+  gem 'factory_bot'
   # auto-load factories from spec/factories
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   # jquery-rails is used by the dummy application
   gem 'jquery-rails'
   # add matchers from shoulda, such as validates_presence_of, which are useful for testing validations, and have_db_*

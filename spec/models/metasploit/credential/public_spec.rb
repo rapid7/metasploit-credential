@@ -16,7 +16,7 @@ RSpec.describe Metasploit::Credential::Public, type: :model do
   context 'factories' do
     context 'metasploit_credential_public' do
       subject(:metasploit_credential_public) do
-        FactoryGirl.build(:metasploit_credential_public)
+        FactoryBot.build(:metasploit_credential_public)
       end
 
       it { is_expected.to be_valid }
