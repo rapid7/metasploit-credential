@@ -1,8 +1,8 @@
 RSpec.describe Metasploit::Credential::Importer::Core do
 
-  let(:workspace){FactoryGirl.create(:mdm_workspace)}
+  let(:workspace){FactoryBot.create(:mdm_workspace)}
 
-  subject(:core_csv_importer){FactoryGirl.build(:metasploit_credential_core_importer, workspace:workspace)}
+  subject(:core_csv_importer){FactoryBot.build(:metasploit_credential_core_importer, workspace:workspace)}
 
   # CSV objects are IOs
   after(:example) do
@@ -13,7 +13,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
     describe "short-form imports" do
       describe "with well-formed CSV data" do
         before(:example) do
-          core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
+          core_csv_importer.input = FactoryBot.generate :short_well_formed_csv
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
@@ -26,7 +26,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         end
 
         before(:example) do
-          core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
+          core_csv_importer.input = FactoryBot.generate :short_well_formed_csv
           core_csv_importer.private_credential_type = "Metasploit::Credential::SSHKey"
         end
 
@@ -44,7 +44,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
         end
 
         before(:example) do
-          core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv_non_compliant_header
+          core_csv_importer.input = FactoryBot.generate :short_well_formed_csv_non_compliant_header
           core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
         end
 
@@ -65,7 +65,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
         describe "with data that includes a missing Public (username)" do
           before(:example) do
-            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_public
+            core_csv_importer.input = FactoryBot.generate :well_formed_csv_compliant_header_missing_public
           end
 
           it 'should create a new Metasploit::Credential::Username for each unique Public in the import' do
@@ -75,7 +75,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
         describe "with data that includes a missing Private" do
           before(:example) do
-            core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_missing_private
+            core_csv_importer.input = FactoryBot.generate :well_formed_csv_compliant_header_missing_private
           end
 
           it 'should create a new Metasploit::Credential::Private for each unique Private in the import' do
@@ -98,11 +98,11 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
           before(:example) do
             core         = Metasploit::Credential::Core.new
-            core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
-            core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
-            core.realm   = FactoryGirl.create(:metasploit_credential_realm, key: preexisting_cred_data[:realm_key],
+            core.public  = FactoryBot.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
+            core.private = FactoryBot.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
+            core.realm   = FactoryBot.create(:metasploit_credential_realm, key: preexisting_cred_data[:realm_key],
                                                                             value: preexisting_cred_data[:realm_value])
-            core.origin    = FactoryGirl.create(:metasploit_credential_origin_import)
+            core.origin    = FactoryBot.create(:metasploit_credential_origin_import)
             core.workspace = workspace
             core.save!
           end
@@ -118,7 +118,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           end
 
           before(:example) do
-            core_csv_importer.input = FactoryGirl.generate(:well_formed_csv_non_compliant_header)
+            core_csv_importer.input = FactoryBot.generate(:well_formed_csv_non_compliant_header)
           end
 
           it { is_expected.not_to be_valid }
@@ -135,7 +135,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           end
 
           before(:example) do
-            core_csv_importer.input = FactoryGirl.generate(:malformed_csv)
+            core_csv_importer.input = FactoryBot.generate(:malformed_csv)
           end
 
           it { is_expected.to be_invalid }
@@ -152,7 +152,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           end
 
           before(:example) do
-            core_csv_importer.input = FactoryGirl.generate(:empty_core_csv)
+            core_csv_importer.input = FactoryBot.generate(:empty_core_csv)
           end
 
           it { is_expected.to be_invalid }
@@ -178,7 +178,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
     describe "short-form imports" do
       before(:example) do
         core_csv_importer.private_credential_type = "Metasploit::Credential::Password"
-        core_csv_importer.input = FactoryGirl.generate :short_well_formed_csv
+        core_csv_importer.input = FactoryBot.generate :short_well_formed_csv
       end
 
       describe "when the data in the CSV is all new" do
@@ -204,9 +204,9 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
         before(:example) do
           core         = Metasploit::Credential::Core.new
-          core.public  = FactoryGirl.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
-          core.private = FactoryGirl.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
-          core.origin  = FactoryGirl.create(:metasploit_credential_origin_import)
+          core.public  = FactoryBot.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
+          core.private = FactoryBot.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
+          core.origin  = FactoryBot.create(:metasploit_credential_origin_import)
           core.workspace = workspace
           core.save!
         end
@@ -297,7 +297,7 @@ RSpec.describe Metasploit::Credential::Importer::Core do
 
     context "when there are Logins in the input" do
       before(:example) do
-        core_csv_importer.input = FactoryGirl.generate :well_formed_csv_compliant_header_with_service_info
+        core_csv_importer.input = FactoryBot.generate :well_formed_csv_compliant_header_with_service_info
       end
 
       it 'should create Logins' do

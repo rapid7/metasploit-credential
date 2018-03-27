@@ -6,20 +6,20 @@ RSpec.describe Metasploit::Credential::Creation do
     end
   }
 
-  let(:session) { FactoryGirl.create(:mdm_session) }
+  let(:session) { FactoryBot.create(:mdm_session) }
 
-  let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace)}
+  let(:task) { FactoryBot.create(:mdm_task, workspace: workspace)}
 
-  let(:user) { FactoryGirl.create(:mdm_user)}
+  let(:user) { FactoryBot.create(:mdm_user)}
 
-  let(:workspace) { FactoryGirl.create(:mdm_workspace) }
+  let(:workspace) { FactoryBot.create(:mdm_workspace) }
 
   subject(:test_object) { dummy_class.new }
-  
+
   context '#create_credential' do
-    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
-    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
-    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:workspace) { FactoryBot.create(:mdm_workspace) }
+    let(:service) { FactoryBot.create(:mdm_service, host: FactoryBot.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryBot.create(:mdm_task, workspace: workspace) }
     {
       cracked_password: Metasploit::Credential::Origin::CrackedPassword,
       import: Metasploit::Credential::Origin::Import,
@@ -28,26 +28,26 @@ RSpec.describe Metasploit::Credential::Creation do
       session: Metasploit::Credential::Origin::Session
     }.each_pair do |origin_type, origin_class|
       context "Origin[#{origin_type}], Public[Username], Private[Password]" do
-        let(:service) { FactoryGirl.create(:mdm_service) }
+        let(:service) { FactoryBot.create(:mdm_service) }
         let!(:origin_data) {{
           cracked_password: {
-            originating_core_id: FactoryGirl.create(
+            originating_core_id: FactoryBot.create(
               :metasploit_credential_core, workspace: workspace, origin_factory: :metasploit_credential_origin_manual).id
           },
           import: {
-            filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
+            filename: FactoryBot.generate(:metasploit_credential_origin_import_filename)
           },
           manual: {user_id: user.id},
           service: {
-            module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
+            module_fullname: "exploit/" + FactoryBot.generate(:metasploit_credential_origin_service_reference_name),
             address: service.host.address,
             port: service.port,
             service_name: service.name,
             protocol: service.proto
           },
           session: {
-            session_id: FactoryGirl.create(:mdm_session, workspace: workspace, host: service.host),
-            post_reference_name: FactoryGirl.generate(:metasploit_credential_origin_session_post_reference_name)
+            session_id: FactoryBot.create(:mdm_session, workspace: workspace, host: service.host),
+            post_reference_name: FactoryBot.generate(:metasploit_credential_origin_session_post_reference_name)
           }
         }}
         let(:credential_data) {{
@@ -129,7 +129,7 @@ RSpec.describe Metasploit::Credential::Creation do
         it 'creates a Public with username \'username\'' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(type: public_type).count }.by(1)
         end
-      end 
+      end
     end
     {
       password: "Metasploit::Credential::Password",
@@ -170,14 +170,14 @@ RSpec.describe Metasploit::Credential::Creation do
         it 'creates a Public with username \'username\'' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Public.where(username: 'admin').count }.by(1)
         end
-      end 
+      end
     end
   end
-  
+
   context '#create_credential_and_login' do
-    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
-    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
-    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:workspace) { FactoryBot.create(:mdm_workspace) }
+    let(:service) { FactoryBot.create(:mdm_service, host: FactoryBot.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryBot.create(:mdm_task, workspace: workspace) }
     {
       cracked_password: Metasploit::Credential::Origin::CrackedPassword,
       import: Metasploit::Credential::Origin::Import,
@@ -188,23 +188,23 @@ RSpec.describe Metasploit::Credential::Creation do
       context "Origin[#{origin_type}], Public[Username], Private[Password]" do
         let!(:origin_data) {{
           cracked_password: {
-            originating_core_id: FactoryGirl.create(
+            originating_core_id: FactoryBot.create(
               :metasploit_credential_core, workspace: workspace, origin_factory: :metasploit_credential_origin_manual).id
           },
           import: {
-            filename: FactoryGirl.generate(:metasploit_credential_origin_import_filename)
+            filename: FactoryBot.generate(:metasploit_credential_origin_import_filename)
           },
           manual: {user_id: user.id},
           service: {
-            module_fullname: "exploit/" + FactoryGirl.generate(:metasploit_credential_origin_service_reference_name),
+            module_fullname: "exploit/" + FactoryBot.generate(:metasploit_credential_origin_service_reference_name),
             address: service.host.address,
             port: service.port,
             service_name: service.name,
             protocol: service.proto
           },
           session: {
-            session_id: FactoryGirl.create(:mdm_session, workspace: workspace, host: service.host),
-            post_reference_name: FactoryGirl.generate(:metasploit_credential_origin_session_post_reference_name)
+            session_id: FactoryBot.create(:mdm_session, workspace: workspace, host: service.host),
+            post_reference_name: FactoryBot.generate(:metasploit_credential_origin_session_post_reference_name)
           }
         }}
         let(:login_data) {{
@@ -281,7 +281,7 @@ RSpec.describe Metasploit::Credential::Creation do
         end
       end
     end
-    
+
     {
       "Metasploit::Credential::Username" => 'admin',
       "Metasploit::Credential::BlankUsername" => ''
@@ -314,7 +314,7 @@ RSpec.describe Metasploit::Credential::Creation do
         it 'creates a Login with status for the service' do
           expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
         end
-      end 
+      end
     end
     {
       password: "Metasploit::Credential::Password",
@@ -364,19 +364,19 @@ RSpec.describe Metasploit::Credential::Creation do
         it 'creates a Login with status for the service' do
           expect{ test_object.create_credential_and_login(login_data) }.to change{ Metasploit::Credential::Login.where(service_id: service.id, status: login_data[:status]).count }.by(1)
         end
-      end 
+      end
     end
   end
 
   context '#create_cracked_credential' do
-    let(:public) { FactoryGirl.create(:metasploit_credential_public) }
-    let(:hash) { FactoryGirl.create(:metasploit_credential_nonreplayable_hash) }
-    let(:origin) { FactoryGirl.create(:metasploit_credential_origin_manual) }
+    let(:public) { FactoryBot.create(:metasploit_credential_public) }
+    let(:hash) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+    let(:origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
     let(:password) { "omgwtfbbq" }
-    let(:realm) { FactoryGirl.create(:metasploit_credential_realm) }
+    let(:realm) { FactoryBot.create(:metasploit_credential_realm) }
 
     let!(:old_core) do
-      FactoryGirl.create(:metasploit_credential_core, public: public, private: hash, realm: realm, workspace: workspace, origin: origin)
+      FactoryBot.create(:metasploit_credential_core, public: public, private: hash, realm: realm, workspace: workspace, origin: origin)
     end
 
     it 'creates a Core' do
@@ -403,11 +403,11 @@ RSpec.describe Metasploit::Credential::Creation do
     end
 
     context 'when previous core has logins' do
-      let(:host) { FactoryGirl.create(:mdm_host, workspace: workspace) }
-      let(:service) { FactoryGirl.create(:mdm_service, host: host) }
+      let(:host) { FactoryBot.create(:mdm_host, workspace: workspace) }
+      let(:service) { FactoryBot.create(:mdm_service, host: host) }
 
       before do
-        FactoryGirl.create(:metasploit_credential_login,
+        FactoryBot.create(:metasploit_credential_login,
                            service: service,
                            core: old_core,
                            status: Metasploit::Model::Login::Status::UNTRIED
@@ -545,7 +545,7 @@ RSpec.describe Metasploit::Credential::Creation do
             workspace_id: workspace.id,
             origin_type: :service
         }
-        FactoryGirl.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
+        FactoryBot.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
         expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Host.count }
       end
     end
@@ -576,8 +576,8 @@ RSpec.describe Metasploit::Credential::Creation do
             workspace_id: workspace.id,
             origin_type: :service
         }
-        host = FactoryGirl.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
-        FactoryGirl.create(:mdm_service, host_id: host.id, port: opts[:port], proto: opts[:protocol])
+        host = FactoryBot.create(:mdm_host, address: opts[:address], workspace_id: opts[:workspace_id])
+        FactoryBot.create(:mdm_service, host_id: host.id, port: opts[:port], proto: opts[:protocol])
         expect { test_object.create_credential_origin_service(opts)}.to_not change{Mdm::Service.count }
       end
     end
@@ -822,12 +822,12 @@ RSpec.describe Metasploit::Credential::Creation do
   end
 
   context '#create_credential_core' do
-    let(:origin)    { FactoryGirl.create(:metasploit_credential_origin_service) }
-    let(:public)    { FactoryGirl.create(:metasploit_credential_public)}
-    let(:private)   { FactoryGirl.create(:metasploit_credential_password)}
-    let(:realm)     { FactoryGirl.create(:metasploit_credential_realm)}
+    let(:origin)    { FactoryBot.create(:metasploit_credential_origin_service) }
+    let(:public)    { FactoryBot.create(:metasploit_credential_public)}
+    let(:private)   { FactoryBot.create(:metasploit_credential_password)}
+    let(:realm)     { FactoryBot.create(:metasploit_credential_realm)}
     let(:workspace) { origin.service.host.workspace }
-    let(:task)      { FactoryGirl.create(:mdm_task, workspace: workspace) }
+    let(:task)      { FactoryBot.create(:mdm_task, workspace: workspace) }
 
     it 'raises a KeyError if any required option is missing' do
       opts = {}
@@ -865,10 +865,10 @@ RSpec.describe Metasploit::Credential::Creation do
   end
 
   context '#create_credential_login' do
-    let(:workspace) { FactoryGirl.create(:mdm_workspace) }
-    let(:service) { FactoryGirl.create(:mdm_service, host: FactoryGirl.create(:mdm_host, workspace: workspace)) }
-    let(:task) { FactoryGirl.create(:mdm_task, workspace: workspace) }
-    let(:credential_core) { FactoryGirl.create(:metasploit_credential_core_manual, workspace: workspace) }
+    let(:workspace) { FactoryBot.create(:mdm_workspace) }
+    let(:service) { FactoryBot.create(:mdm_service, host: FactoryBot.create(:mdm_host, workspace: workspace)) }
+    let(:task) { FactoryBot.create(:mdm_task, workspace: workspace) }
+    let(:credential_core) { FactoryBot.create(:metasploit_credential_core_manual, workspace: workspace) }
 
     it 'creates a Metasploit::Credential::Login' do
       login_data = {
@@ -905,7 +905,7 @@ RSpec.describe Metasploit::Credential::Creation do
   context '#invalidate_login' do
 
     context 'when an untried login exists' do
-      let(:untried_login) { FactoryGirl.create(:metasploit_credential_login, status: Metasploit::Model::Login::Status::UNTRIED)}
+      let(:untried_login) { FactoryBot.create(:metasploit_credential_login, status: Metasploit::Model::Login::Status::UNTRIED)}
 
       let(:opts) {{
         address: untried_login.service.host.address.to_s,
@@ -928,16 +928,16 @@ RSpec.describe Metasploit::Credential::Creation do
 
       context 'when a login exists on the same service for a different credential' do
         let(:other_origin) {
-          FactoryGirl.create(:metasploit_credential_origin_manual)
+          FactoryBot.create(:metasploit_credential_origin_manual)
         }
         let(:other_core) {
-          FactoryGirl.create(:metasploit_credential_core,
+          FactoryBot.create(:metasploit_credential_core,
             workspace: untried_login.core.workspace,
             origin: other_origin
           )
         }
         let(:other_login) {
-          FactoryGirl.create(:metasploit_credential_login,
+          FactoryBot.create(:metasploit_credential_login,
             status: Metasploit::Model::Login::Status::UNTRIED,
             service: untried_login.service,
             core: other_core

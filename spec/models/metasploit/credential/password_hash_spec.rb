@@ -6,7 +6,7 @@ RSpec.describe Metasploit::Credential::PasswordHash, type: :model do
   context 'factories' do
     context 'metasploit_credential_password_hash' do
       subject(:metasploit_credential_password_hash) do
-        FactoryGirl.build(:metasploit_credential_password_hash)
+        FactoryBot.build(:metasploit_credential_password_hash)
       end
 
       it { is_expected.to be_valid }

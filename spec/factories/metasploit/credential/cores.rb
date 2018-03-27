@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_core,
           class: Metasploit::Credential::Core do
     transient do
@@ -9,20 +9,20 @@ FactoryGirl.define do
 
     association :public, factory: :metasploit_credential_public
 
-    origin { FactoryGirl.build(origin_factory) }
-    private { FactoryGirl.build(private_factory) }
-    realm { FactoryGirl.build(realm_factory) }
+    origin { FactoryBot.build(origin_factory) }
+    private { FactoryBot.build(private_factory) }
+    realm { FactoryBot.build(realm_factory) }
 
     workspace {
       case origin
         when Metasploit::Credential::Origin::Import
-          FactoryGirl.build(:mdm_workspace)
+          FactoryBot.build(:mdm_workspace)
         when Metasploit::Credential::Origin::Manual
           user = origin.user
 
           # an admin can use workspaces it is not a member of
           if user.admin
-            FactoryGirl.build(:mdm_workspace)
+            FactoryBot.build(:mdm_workspace)
           else
             origin.user.workspaces.sample
           end

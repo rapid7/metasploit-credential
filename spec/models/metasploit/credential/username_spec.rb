@@ -15,7 +15,7 @@ RSpec.describe Metasploit::Credential::Username, type: :model do
 
   context 'validations' do
     context 'username' do
-      subject { FactoryGirl.build(:metasploit_credential_username) }
+      subject { FactoryBot.build(:metasploit_credential_username) }
       it { is_expected.to validate_presence_of :username }
       it { is_expected.to validate_uniqueness_of :username }
     end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_origin_service,
           class: Metasploit::Credential::Origin::Service do
     transient do

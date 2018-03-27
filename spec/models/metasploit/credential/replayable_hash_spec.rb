@@ -6,7 +6,7 @@ RSpec.describe Metasploit::Credential::ReplayableHash, type: :model do
   context 'factories' do
     context 'metasploit_credential_replayable_hash' do
       subject(:metasploit_credential_replayable_hash) do
-        FactoryGirl.build(:metasploit_credential_replayable_hash)
+        FactoryBot.build(:metasploit_credential_replayable_hash)
       end
 
       it { is_expected.to be_valid }

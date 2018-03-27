@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :metasploit_credential_realm,
           class: Metasploit::Credential::Realm do

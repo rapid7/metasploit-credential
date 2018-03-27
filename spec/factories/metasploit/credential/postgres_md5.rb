@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   klass = Metasploit::Credential::PostgresMD5
 
   factory :metasploit_credential_postgres_md5,

@@ -38,7 +38,7 @@ RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
         end
 
         let(:postgres_md5) do
-          FactoryGirl.build(
+          FactoryBot.build(
             :metasploit_credential_postgres_md5,
             data: given_data
           )
@@ -82,7 +82,7 @@ RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
   context 'factories' do
     context 'metasploit_credential_ntlm_hash' do
       subject(:metasploit_credential_postgres_md5) do
-        FactoryGirl.build(:metasploit_credential_postgres_md5)
+        FactoryBot.build(:metasploit_credential_postgres_md5)
       end
 
       it { is_expected.to be_valid }
@@ -98,7 +98,7 @@ RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
       let(:data) { "md5#{SecureRandom.hex(16)}" }
 
       let(:postgres_md5) do
-        FactoryGirl.build(
+        FactoryBot.build(
           :metasploit_credential_postgres_md5,
           data: data
         )

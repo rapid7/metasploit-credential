@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_origin_import,
           class: Metasploit::Credential::Origin::Import do
     association :task, factory: :mdm_task

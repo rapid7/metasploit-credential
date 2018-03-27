@@ -25,7 +25,7 @@ RSpec.describe Metasploit::Credential::Origin::Manual, type: :model do
   context 'factories' do
     context 'metasploit_credential_origin_manual' do
       subject(:metasploit_credential_origin_manual) do
-        FactoryGirl.build(:metasploit_credential_origin_manual)
+        FactoryBot.build(:metasploit_credential_origin_manual)
       end
 
       it { is_expected.to be_valid }

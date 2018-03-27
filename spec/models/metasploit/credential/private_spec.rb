@@ -17,7 +17,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
   context 'factories' do
     context 'metasploit_credential_private' do
       subject(:metasploit_credential_private) do
-        FactoryGirl.build(:metasploit_credential_private)
+        FactoryBot.build(:metasploit_credential_private)
       end
 
       it { is_expected.to be_valid }
@@ -44,7 +44,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
         end
 
         let(:new_private) do
-          FactoryGirl.build(
+          FactoryBot.build(
               :metasploit_credential_private,
               data: data,
               type: type
@@ -56,7 +56,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
         #
 
         let!(:existent_private) do
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_private
           )
         end
@@ -84,7 +84,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
 
           context 'without same #type' do
             let(:type) do
-              FactoryGirl.generate :metasploit_credential_private_type
+              FactoryBot.generate :metasploit_credential_private_type
             end
 
             it { is_expected.not_to include(error) }
@@ -93,7 +93,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
 
         context 'without same #data' do
           let(:data) do
-            FactoryGirl.generate :metasploit_credential_private_data
+            FactoryBot.generate :metasploit_credential_private_data
           end
 
           context 'with same #type' do
@@ -106,7 +106,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
 
           context 'without same #type' do
             let(:type) do
-              FactoryGirl.generate :metasploit_credential_private_type
+              FactoryBot.generate :metasploit_credential_private_type
             end
 
             it { is_expected.not_to include(error) }

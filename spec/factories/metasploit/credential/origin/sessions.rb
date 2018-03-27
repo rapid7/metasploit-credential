@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_origin_session,
           class: Metasploit::Credential::Origin::Session do
     association :session, factory: :mdm_session

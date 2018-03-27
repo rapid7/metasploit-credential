@@ -52,12 +52,12 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
     #
 
     let(:first_workspace) {
-      FactoryGirl.create(:mdm_workspace)
+      FactoryBot.create(:mdm_workspace)
     }
 
     let(:origin) {
       # use an origin where the workspace does not need to correlate
-      FactoryGirl.create(:metasploit_credential_origin_manual)
+      FactoryBot.create(:metasploit_credential_origin_manual)
     }
 
     let(:factory_name) {
@@ -85,7 +85,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
     }
 
     let(:second_metasploit_credential_core) {
-      FactoryGirl.build( factory_name, second_factory_options)
+      FactoryBot.build( factory_name, second_factory_options)
     }
 
     #
@@ -93,7 +93,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
     #
 
     let!(:first_metasploit_credential_core) {
-      FactoryGirl.create(factory_name, first_factory_options)
+      FactoryBot.create(factory_name, first_factory_options)
     }
   end
 
@@ -101,23 +101,23 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
     context 'indices' do
       context 'foreign keys' do
         let(:first_private) {
-          FactoryGirl.create(:metasploit_credential_private)
+          FactoryBot.create(:metasploit_credential_private)
         }
 
         let(:second_public) {
-          FactoryGirl.create(:metasploit_credential_username)
+          FactoryBot.create(:metasploit_credential_username)
         }
 
         let(:second_private) {
-          FactoryGirl.create(:metasploit_credential_private)
+          FactoryBot.create(:metasploit_credential_private)
         }
 
         let(:second_realm) {
-          FactoryGirl.create(:metasploit_credential_realm)
+          FactoryBot.create(:metasploit_credential_realm)
         }
 
         let(:second_workspace) {
-          FactoryGirl.create(:mdm_workspace)
+          FactoryBot.create(:mdm_workspace)
         }
 
         shared_examples_for 'potential collision' do |options={}|
@@ -190,7 +190,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
@@ -220,7 +220,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           options.assert_valid_keys(:collision, :private, :public, :workspace)
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
@@ -252,7 +252,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           let(:second_public) {
@@ -280,11 +280,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           let(:second_private) {
@@ -308,11 +308,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           options.assert_valid_keys(:collision, :private, :public, :realm, :workspace)
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           context_with_correlation(options, :workspace) do
@@ -589,23 +589,23 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
       context 'of uniqueness' do
         let(:first_private) {
-          FactoryGirl.create(:metasploit_credential_private)
+          FactoryBot.create(:metasploit_credential_private)
         }
 
         let(:second_public) {
-          FactoryGirl.create(:metasploit_credential_username)
+          FactoryBot.create(:metasploit_credential_username)
         }
 
         let(:second_private) {
-          FactoryGirl.create(:metasploit_credential_private)
+          FactoryBot.create(:metasploit_credential_private)
         }
 
         let(:second_realm) {
-          FactoryGirl.create(:metasploit_credential_realm)
+          FactoryBot.create(:metasploit_credential_realm)
         }
 
         let(:second_workspace) {
-          FactoryGirl.create(:mdm_workspace)
+          FactoryBot.create(:mdm_workspace)
         }
 
         shared_examples_for 'potential collision' do |options={}|
@@ -682,7 +682,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
@@ -717,7 +717,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:second_realm) {
@@ -746,7 +746,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           let(:second_public) {
@@ -775,11 +775,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           let(:second_private) {
@@ -804,11 +804,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           options.assert_valid_keys(:collision, :private, :public, :realm, :workspace)
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           context_with_correlation(options, :workspace) do
@@ -1095,11 +1095,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
           }
 
           let(:first_public) {
-            FactoryGirl.create(:metasploit_credential_username)
+            FactoryBot.create(:metasploit_credential_username)
           }
 
           let(:first_realm) {
-            FactoryGirl.create(:metasploit_credential_realm)
+            FactoryBot.create(:metasploit_credential_realm)
           }
 
           let(:second_private) {
@@ -1175,7 +1175,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
             context 'with same workspace without realm with public without private' do
               let(:second_public) {
-                FactoryGirl.create(:metasploit_credential_public)
+                FactoryBot.create(:metasploit_credential_public)
               }
 
               let(:second_private) {
@@ -1187,7 +1187,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
             context 'with same workspace without realm with public with same private' do
               let(:second_public) {
-                FactoryGirl.create(:metasploit_credential_public)
+                FactoryBot.create(:metasploit_credential_public)
               }
 
               it { is_expected.to be_valid }
@@ -1195,7 +1195,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
             context 'with same workspace with realm without public with same private' do
               let(:second_realm) {
-                FactoryGirl.create(:metasploit_credential_realm)
+                FactoryBot.create(:metasploit_credential_realm)
               }
 
               it { is_expected.to be_valid }
@@ -1213,7 +1213,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
             context 'with workspace without realm with same public with private' do
               let(:second_private) {
-                FactoryGirl.create(:metasploit_credential_private)
+                FactoryBot.create(:metasploit_credential_private)
               }
 
               it { is_expected.to be_valid }
@@ -1221,11 +1221,11 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
 
             context 'with workspace with realm without public with private' do
               let(:second_private) {
-                FactoryGirl.create(:metasploit_credential_private)
+                FactoryBot.create(:metasploit_credential_private)
               }
 
               let(:second_realm) {
-                FactoryGirl.create(:metasploit_credential_realm)
+                FactoryBot.create(:metasploit_credential_realm)
               }
 
               it { is_expected.to be_valid}
@@ -1243,7 +1243,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
               }
 
               let(:second_realm) {
-                FactoryGirl.create(:metasploit_credential_realm)
+                FactoryBot.create(:metasploit_credential_realm)
               }
 
               it { is_expected.to be_valid }
@@ -1261,7 +1261,7 @@ RSpec.shared_examples_for 'Metasploit::Credential::CoreValidations' do
               }
 
               let(:second_public) {
-                FactoryGirl.create(:metasploit_credential_public)
+                FactoryBot.create(:metasploit_credential_public)
               }
 
               it { is_expected.to be_valid }

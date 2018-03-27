@@ -3,9 +3,9 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
 
   subject(:exporter){ Metasploit::Credential::Exporter::Pwdump.new}
 
-  let(:public) { FactoryGirl.create(:metasploit_credential_username)}
-  let(:core){ FactoryGirl.create :metasploit_credential_core, public: public }
-  let(:login){ FactoryGirl.create(:metasploit_credential_login, core: core) }
+  let(:public) { FactoryBot.create(:metasploit_credential_username)}
+  let(:core){ FactoryBot.create :metasploit_credential_core, public: public }
+  let(:login){ FactoryBot.create(:metasploit_credential_login, core: core) }
 
   describe "formatting" do
     describe "associated Mdm::Service objects" do
@@ -16,7 +16,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     end
 
     describe "plaintext passwords" do
-      let(:private){ FactoryGirl.build :metasploit_credential_password }
+      let(:private){ FactoryBot.build :metasploit_credential_password }
 
       before(:example) do
         core.private = private
@@ -38,7 +38,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     end
 
     describe "non-replayable" do
-      let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash }
+      let(:private){ FactoryBot.build :metasploit_credential_nonreplayable_hash }
 
       before(:example) do
         core.private = private
@@ -60,7 +60,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     end
 
     describe "NTLM" do
-      let(:private){ FactoryGirl.build :metasploit_credential_ntlm_hash }
+      let(:private){ FactoryBot.build :metasploit_credential_ntlm_hash }
 
       before(:example) do
         core.private = private
@@ -82,7 +82,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     end
 
     describe "PostgresMD5" do
-      let(:private){ FactoryGirl.build :metasploit_credential_postgres_md5 }
+      let(:private){ FactoryBot.build :metasploit_credential_postgres_md5 }
 
       before(:example) do
         core.private = private
@@ -107,7 +107,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
     describe "SMB net hashes" do
       describe "v1" do
         describe "netlm" do
-          let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netlm' }
+          let(:private){ FactoryBot.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netlm' }
 
           before(:example) do
             core.private = private
@@ -119,7 +119,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         end
 
         describe "netntlm" do
-          let(:private){ FactoryGirl.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netntlm' }
+          let(:private){ FactoryBot.build :metasploit_credential_nonreplayable_hash, jtr_type: 'netntlm' }
 
           before(:example) do
             core.private = private
@@ -133,7 +133,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
 
       describe "v2" do
         describe "netlmv2" do
-          let(:private){ FactoryGirl.build :metasploit_credential_non_replayable_hash, jtr_type: 'netlmv2' }
+          let(:private){ FactoryBot.build :metasploit_credential_non_replayable_hash, jtr_type: 'netlmv2' }
 
           before(:example) do
             core.private = private
@@ -145,7 +145,7 @@ RSpec.describe Metasploit::Credential::Exporter::Pwdump do
         end
 
         describe "netntlmv2" do
-          let(:private){ FactoryGirl.build :metasploit_credential_non_replayable_hash, jtr_type: 'netntlmv2' }
+          let(:private){ FactoryBot.build :metasploit_credential_non_replayable_hash, jtr_type: 'netntlmv2' }
 
           before(:example) do
             core.private = private

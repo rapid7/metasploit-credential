@@ -35,14 +35,8 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'rex-socket'
 
-  if RUBY_PLATFORM =~ /java/
-    s.add_runtime_dependency 'jdbc-postgres'
-    s.add_runtime_dependency 'activerecord-jdbcpostgresql-adapter'
+  s.add_runtime_dependency 'net-ssh'
 
-    s.platform = Gem::Platform::JAVA
-  else
-    s.add_runtime_dependency 'pg'
-
-    s.platform = Gem::Platform::RUBY
-  end
+  s.add_runtime_dependency 'pg', '~> 0.15'
+  s.platform = Gem::Platform::RUBY
 end

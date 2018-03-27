@@ -84,7 +84,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
         end
 
         let(:ntlm_hash) do
-          FactoryGirl.build(
+          FactoryBot.build(
               :metasploit_credential_ntlm_hash,
               data: given_data
           )
@@ -128,7 +128,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
   context 'factories' do
     context 'metasploit_credential_ntlm_hash' do
       subject(:metasploit_credential_ntlm_hash) do
-        FactoryGirl.build(:metasploit_credential_ntlm_hash)
+        FactoryBot.build(:metasploit_credential_ntlm_hash)
       end
 
       it { is_expected.to be_valid }
@@ -162,14 +162,14 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
       end
 
       let(:ntlm_hash) do
-        FactoryGirl.build(
+        FactoryBot.build(
             :metasploit_credential_ntlm_hash,
             data: data
         )
       end
 
       let(:password_data) do
-        FactoryGirl.generate :metasploit_credential_password_data
+        FactoryBot.generate :metasploit_credential_password_data
       end
 
       #
@@ -216,7 +216,7 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
     end
 
     let(:password_data) do
-      FactoryGirl.generate :metasploit_credential_password_data
+      FactoryBot.generate :metasploit_credential_password_data
     end
 
     it 'calls lan_manager_hex_digest_from_password_data' do

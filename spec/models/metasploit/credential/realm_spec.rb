@@ -17,7 +17,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
   context 'factories' do
     context 'metasploit_credential_active_directory_domain' do
       subject(:metasploit_credential_active_directory_domain) do
-        FactoryGirl.build(:metasploit_credential_active_directory_domain)
+        FactoryBot.build(:metasploit_credential_active_directory_domain)
       end
 
       it { is_expected.to be_valid }
@@ -35,7 +35,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
     context 'metasplit_credential_oracle_system_identifier' do
       subject(:metasploit_credential_oracle_system_identifier) do
-        FactoryGirl.build(:metasploit_credential_oracle_system_identifier)
+        FactoryBot.build(:metasploit_credential_oracle_system_identifier)
       end
 
       it { is_expected.to be_valid }
@@ -53,7 +53,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
     context 'metasploit_credential_postgresql_database' do
       subject(:metasploit_credential_postgresql_database) do
-        FactoryGirl.build(:metasploit_credential_postgresql_database)
+        FactoryBot.build(:metasploit_credential_postgresql_database)
       end
 
       it { is_expected.to be_valid }
@@ -71,7 +71,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
     context 'metasploit_credential_realm' do
       subject(:metasploit_credential_realm) do
-        FactoryGirl.build(:metasploit_credential_realm)
+        FactoryBot.build(:metasploit_credential_realm)
       end
 
       it { is_expected.to be_valid }
@@ -121,7 +121,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         end
 
         let(:new_realm) do
-          FactoryGirl.build(
+          FactoryBot.build(
               :metasploit_credential_realm,
               key: key,
               value: value
@@ -133,7 +133,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
         #
 
         let!(:existent_realm) do
-          FactoryGirl.create(
+          FactoryBot.create(
               :metasploit_credential_realm
           )
         end
@@ -161,7 +161,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
           context 'without same #value' do
             let(:value) do
-              FactoryGirl.generate :metasploit_credential_realm_value
+              FactoryBot.generate :metasploit_credential_realm_value
             end
 
             it { is_expected.not_to include(error) }
@@ -170,7 +170,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
         context 'without same #key' do
           let(:key) do
-            FactoryGirl.generate :metasploit_credential_realm_key
+            FactoryBot.generate :metasploit_credential_realm_key
           end
 
           context 'with same #value' do
@@ -183,7 +183,7 @@ RSpec.describe Metasploit::Credential::Realm, type: :model do
 
           context 'without same #value' do
             let(:value) do
-              FactoryGirl.generate :metasploit_credential_realm_value
+              FactoryBot.generate :metasploit_credential_realm_value
             end
 
             it { is_expected.not_to include(error) }

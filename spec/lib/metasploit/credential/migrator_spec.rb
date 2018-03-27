@@ -4,9 +4,9 @@ require 'tempfile'
 RSpec.describe Metasploit::Credential::Migrator do
 
 
-  let(:workspace){ FactoryGirl.create(:mdm_workspace) }
-  let(:host){ FactoryGirl.create(:mdm_host, workspace: workspace)}
-  let(:service){ FactoryGirl.create(:mdm_service, host: host)}
+  let(:workspace){ FactoryBot.create(:mdm_workspace) }
+  let(:host){ FactoryBot.create(:mdm_host, workspace: workspace)}
+  let(:service){ FactoryBot.create(:mdm_service, host: host)}
 
 
   subject(:migrator){ Metasploit::Credential::Migrator.new(workspace) }
@@ -38,17 +38,17 @@ RSpec.describe Metasploit::Credential::Migrator do
 
     describe "when there are Mdm::Cred objects present in the workspace" do
 
-      let(:host1){ FactoryGirl.create(:mdm_host, workspace: workspace)}
-      let(:host2){ FactoryGirl.create(:mdm_host, workspace: workspace)}
-      let(:host3){ FactoryGirl.create(:mdm_host, workspace: workspace)}
+      let(:host1){ FactoryBot.create(:mdm_host, workspace: workspace)}
+      let(:host2){ FactoryBot.create(:mdm_host, workspace: workspace)}
+      let(:host3){ FactoryBot.create(:mdm_host, workspace: workspace)}
 
-      let(:service1){ FactoryGirl.create(:mdm_service, host: host1)}
-      let(:service2){ FactoryGirl.create(:mdm_service, host: host2)}
-      let(:service3){ FactoryGirl.create(:mdm_service, host: host3)}
+      let(:service1){ FactoryBot.create(:mdm_service, host: host1)}
+      let(:service2){ FactoryBot.create(:mdm_service, host: host2)}
+      let(:service3){ FactoryBot.create(:mdm_service, host: host3)}
 
-      let!(:cred1){ FactoryGirl.create(:mdm_cred, service: service1)}
-      let!(:cred2){ FactoryGirl.create(:mdm_cred, service: service2)}
-      let!(:cred3){ FactoryGirl.create(:mdm_cred, service: service3)}
+      let!(:cred1){ FactoryBot.create(:mdm_cred, service: service1)}
+      let!(:cred2){ FactoryBot.create(:mdm_cred, service: service2)}
+      let!(:cred3){ FactoryBot.create(:mdm_cred, service: service3)}
 
       it 'should migrate them into Metasploit::Credential::Core objects' do
         expect{migrator.convert_creds_in_workspace(workspace)}.to change(Metasploit::Credential::Core, :count).from(0).to(3)
@@ -78,10 +78,10 @@ RSpec.describe Metasploit::Credential::Migrator do
     describe "creating the proper kinds of Private objects" do
       describe "when an Mdm::Cred is an SMB hash" do
         let(:cred) do
-          FactoryGirl.create(:mdm_cred,
+          FactoryBot.create(:mdm_cred,
                              service: service,
                              ptype: 'smb_hash',
-                             pass: FactoryGirl.build(:metasploit_credential_ntlm_hash, password_data: 'f00b4rawesomesauc3!').data
+                             pass: FactoryBot.build(:metasploit_credential_ntlm_hash, password_data: 'f00b4rawesomesauc3!').data
           )
         end
 
@@ -95,7 +95,7 @@ RSpec.describe Metasploit::Credential::Migrator do
       end
 
       describe "when an Mdm::Cred is an SSH key" do
-        let(:ssh_key_content){ FactoryGirl.build(:metasploit_credential_ssh_key).data }
+        let(:ssh_key_content){ FactoryBot.build(:metasploit_credential_ssh_key).data }
 
         context "when Cred#pass points to a file system path" do
 
@@ -107,7 +107,7 @@ RSpec.describe Metasploit::Credential::Migrator do
           end
 
           let(:cred) do
-            FactoryGirl.create(:mdm_cred,
+            FactoryBot.create(:mdm_cred,
                              service: service,
                              ptype: 'ssh_key',
                              pass: path_to_ssh_key
@@ -125,7 +125,7 @@ RSpec.describe Metasploit::Credential::Migrator do
 
         context "when Cred#pass just straight up contains the private key" do
           let(:cred) do
-            FactoryGirl.create(:mdm_cred,
+            FactoryBot.create(:mdm_cred,
                                service: service,
                                ptype: 'ssh_key',
                                pass: ssh_key_content
@@ -143,7 +143,7 @@ RSpec.describe Metasploit::Credential::Migrator do
 
         context "when Cred#pass is just total garbage" do
           let(:cred) do
-            FactoryGirl.create(:mdm_cred,
+            FactoryBot.create(:mdm_cred,
                                service: service,
                                ptype: 'ssh_key',
                                pass: '#YOLOSWAG'
@@ -163,10 +163,10 @@ RSpec.describe Metasploit::Credential::Migrator do
 
       describe "when an Mdm::Cred is a password" do
         let(:cred) do
-          FactoryGirl.create(:mdm_cred,
+          FactoryBot.create(:mdm_cred,
                              service: service,
                              ptype: 'password',
-                             pass: FactoryGirl.build(:metasploit_credential_password, data: 'f00b4rawesomesauc3!').data
+                             pass: FactoryBot.build(:metasploit_credential_password, data: 'f00b4rawesomesauc3!').data
           )
         end
 
@@ -181,10 +181,10 @@ RSpec.describe Metasploit::Credential::Migrator do
 
       describe "when an Mdm::Cred is another kind of hash" do
         let(:cred) do
-          FactoryGirl.create(:mdm_cred,
+          FactoryBot.create(:mdm_cred,
                              service: service,
                              ptype: 'salted_sha1_hash',
-                             pass: FactoryGirl.build(:metasploit_credential_nonreplayable_hash, password_data: 'f00b4rawesomesauc3!').data
+                             pass: FactoryBot.build(:metasploit_credential_nonreplayable_hash, password_data: 'f00b4rawesomesauc3!').data
           )
         end
 

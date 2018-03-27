@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_ssh_key,
           class: Metasploit::Credential::SSHKey do
     transient do

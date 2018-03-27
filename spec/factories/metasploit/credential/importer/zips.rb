@@ -4,11 +4,11 @@
 
 require 'zip'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_importer_zip,
           class: Metasploit::Credential::Importer::Zip do
     input { generate :metasploit_credential_importer_zip_file }
-    origin {FactoryGirl.build :metasploit_credential_origin_import }
+    origin {FactoryBot.build :metasploit_credential_origin_import }
   end
 
 
@@ -29,12 +29,12 @@ FactoryGirl.define do
 
     # Create keys
     key_data = 5.times.collect do
-      FactoryGirl.build(:metasploit_credential_ssh_key).data
+      FactoryBot.build(:metasploit_credential_ssh_key).data
     end
 
     # associate keys with usernames
     csv_hash = key_data.inject({}) do |hash, data|
-      username = FactoryGirl.generate(:metasploit_credential_public_username)
+      username = FactoryBot.generate(:metasploit_credential_public_username)
       hash[username] = data
       hash
     end
@@ -77,12 +77,12 @@ FactoryGirl.define do
 
     # Create keys
     key_data = 5.times.collect do
-      FactoryGirl.build(:metasploit_credential_ssh_key).data
+      FactoryBot.build(:metasploit_credential_ssh_key).data
     end
 
     # associate keys with usernames
     csv_hash = key_data.inject({}) do |hash, data|
-      username = FactoryGirl.generate(:metasploit_credential_public_username)
+      username = FactoryBot.generate(:metasploit_credential_public_username)
       hash[username] = data
       hash
     end
@@ -121,12 +121,12 @@ FactoryGirl.define do
 
     # Create keys
     key_data = 5.times.collect do
-      FactoryGirl.build(:metasploit_credential_ssh_key).data
+      FactoryBot.build(:metasploit_credential_ssh_key).data
     end
 
     # associate keys with usernames
     csv_hash = key_data.inject({}) do |hash, data|
-      username = FactoryGirl.generate(:metasploit_credential_public_username)
+      username = FactoryBot.generate(:metasploit_credential_public_username)
       hash[username] = data
       hash
     end

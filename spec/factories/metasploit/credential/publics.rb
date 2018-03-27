@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :metasploit_credential_public,
           class: Metasploit::Credential::Username do
     transient do
@@ -17,7 +17,7 @@ FactoryGirl.define do
       }
     end
 
-    initialize_with { FactoryGirl.build(public_factory, username: username) }
+    initialize_with { FactoryBot.build(public_factory, username: username) }
   end
 
   sequence :metasploit_credential_public_username do |n|

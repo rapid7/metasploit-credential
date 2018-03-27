@@ -29,12 +29,12 @@ class Metasploit::Credential::Engine < Rails::Engine
               after: 'factory_girl.set_factory_paths',
               # before metasploit_data_models because it prepends
               before: 'metasploit_data_models.prepend_factory_path' do
-    if defined? FactoryGirl
+    if defined? FactoryBot
       relative_definition_file_path = config.generators.options[:factory_girl][:dir]
       definition_file_path = root.join(relative_definition_file_path)
 
       # unshift so that projects that use metasploit-credential can modify metasploit_credential_* factories
-      FactoryGirl.definition_file_paths.unshift definition_file_path
+      FactoryBot.definition_file_paths.unshift definition_file_path
     end
   end
 end
