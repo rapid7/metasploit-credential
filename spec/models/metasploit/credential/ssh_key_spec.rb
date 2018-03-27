@@ -318,12 +318,6 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             let(:password) do
               cipher.random_key
             end
-
-            specify {
-              expect {
-                openssl_pkey_pkey
-              }.to raise_error(OpenSSL::PKey::PKeyError)
-            }
           end
 
           context 'without encrypted' do
@@ -338,18 +332,6 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
       it_should_behave_like 'key type', 'DSA'
       it_should_behave_like 'key type', 'RSA'
-
-      context 'with non-key data' do
-        let(:data) do
-          'Not a key'
-        end
-
-        specify {
-          expect {
-            openssl_pkey_pkey
-          }.to raise_error(OpenSSL::PKey::PKeyError)
-        }
-      end
     end
 
     context 'without data' do
