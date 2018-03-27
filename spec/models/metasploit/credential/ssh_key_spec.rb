@@ -306,20 +306,6 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
             OpenSSL::PKey.const_get(key_type).new(key_size)
           end
 
-          context 'with encrypted' do
-            let(:cipher) do
-              OpenSSL::Cipher.new('AES-128-CBC')
-            end
-
-            let(:data) do
-              unencrypted_key.to_pem(cipher, password)
-            end
-
-            let(:password) do
-              cipher.random_key
-            end
-          end
-
           context 'without encrypted' do
             let(:data) do
               unencrypted_key.to_pem
