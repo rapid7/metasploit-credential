@@ -35,25 +35,25 @@ FactoryBot.define do
 
     factory :metasploit_credential_core_import do
       transient do
-        origin_factory :metasploit_credential_origin_import
+        origin_factory { :metasploit_credential_origin_import }
       end
     end
 
     factory :metasploit_credential_core_manual do
       transient do
-        origin_factory :metasploit_credential_origin_manual
+        origin_factory { :metasploit_credential_origin_manual }
       end
     end
 
     factory :metasploit_credential_core_service do
       transient do
-        origin_factory :metasploit_credential_origin_service
+        origin_factory { :metasploit_credential_origin_service }
       end
     end
 
     factory :metasploit_credential_core_session do
       transient do
-        origin_factory :metasploit_credential_origin_session
+        origin_factory { :metasploit_credential_origin_session }
       end
     end
   end

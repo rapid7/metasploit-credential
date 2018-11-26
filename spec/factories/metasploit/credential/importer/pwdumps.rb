@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :metasploit_credential_importer_pwdump,
           class: Metasploit::Credential::Importer::Pwdump do
-    filename "pwdump-import-#{Time.now.to_i}"
+    filename { "pwdump-import-#{Time.now.to_i}" }
     origin {FactoryBot.build :metasploit_credential_origin_import }
     input { FactoryBot.generate(:wellformed_pwdump) }
   end
