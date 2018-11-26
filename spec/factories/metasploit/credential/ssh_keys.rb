@@ -14,13 +14,13 @@ FactoryBot.define do
 
     factory :metasploit_credential_dsa_key do
       transient do
-        key_type :DSA
+        key_type { :DSA }
       end
     end
 
     factory :metasploit_credential_rsa_key do
       transient do
-        key_type :RSA
+        key_type { :RSA }
       end
     end
   end
