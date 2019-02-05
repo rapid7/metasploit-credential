@@ -27,6 +27,10 @@ group :development, :test do
   gem 'factory_bot_rails'
   # jquery-rails is used by the dummy application
   gem 'jquery-rails'
+  # Used by the Metasploit data model, etc.
+  # bound to 0.20 for Activerecord 4.2.8 deprecation warnings:
+  # https://github.com/ged/ruby-pg/commit/c90ac644e861857ae75638eb6954b1cb49617090
+  gem 'pg', '0.20.0'
   # add matchers from shoulda, such as validates_presence_of, which are useful for testing validations, and have_db_*
   # for testing database columns and indicies.
   gem 'shoulda-matchers'

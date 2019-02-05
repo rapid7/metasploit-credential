@@ -37,6 +37,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'net-ssh'
 
-  s.add_runtime_dependency 'pg', '~> 0.15'
+  s.add_runtime_dependency 'pg'
   s.platform = Gem::Platform::RUBY
 end
