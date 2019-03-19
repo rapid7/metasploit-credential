@@ -1,4 +1,4 @@
-class UniqueMetasploitCredentialCoresWithRealmId < ActiveRecord::Migration
+class UniqueMetasploitCredentialCoresWithRealmId < ActiveRecord::Migration[4.2]
   #
   # CONSTANTS
   #

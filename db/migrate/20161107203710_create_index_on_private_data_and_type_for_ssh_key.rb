@@ -1,4 +1,4 @@
-class CreateIndexOnPrivateDataAndTypeForSshKey < ActiveRecord::Migration
+class CreateIndexOnPrivateDataAndTypeForSshKey < ActiveRecord::Migration[4.2]
   def up
     sql =<<ENDL
 CREATE UNIQUE INDEX "index_metasploit_credential_privates_on_type_and_data_sshkey" ON

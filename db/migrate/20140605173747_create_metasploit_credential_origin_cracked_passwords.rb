@@ -1,4 +1,4 @@
-class CreateMetasploitCredentialOriginCrackedPasswords < ActiveRecord::Migration
+class CreateMetasploitCredentialOriginCrackedPasswords < ActiveRecord::Migration[4.2]
   def change
     create_table :metasploit_credential_origin_cracked_passwords do |t|
 

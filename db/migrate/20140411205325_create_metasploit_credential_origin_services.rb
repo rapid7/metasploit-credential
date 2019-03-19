@@ -1,4 +1,4 @@
-class CreateMetasploitCredentialOriginServices < ActiveRecord::Migration
+class CreateMetasploitCredentialOriginServices < ActiveRecord::Migration[4.2]
   def change
     create_table :metasploit_credential_origin_services do |t|
       #

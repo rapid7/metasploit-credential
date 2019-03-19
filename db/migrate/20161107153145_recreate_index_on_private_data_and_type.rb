@@ -1,4 +1,4 @@
-class RecreateIndexOnPrivateDataAndType < ActiveRecord::Migration
+class RecreateIndexOnPrivateDataAndType < ActiveRecord::Migration[4.2]
   def change
     remove_index :metasploit_credential_privates, [:type, :data]
     

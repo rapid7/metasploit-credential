@@ -1,4 +1,4 @@
-class CreateMetasploitCredentialLogins < ActiveRecord::Migration
+class CreateMetasploitCredentialLogins < ActiveRecord::Migration[4.2]
   def change
     create_table :metasploit_credential_logins do |t|
       #
