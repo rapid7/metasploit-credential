@@ -195,7 +195,7 @@ GEM
     tins (1.20.2)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    yard (0.8.7.3)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -215,7 +215,7 @@ DEPENDENCIES
   rspec-rails
   shoulda-matchers
   simplecov
-  yard (< 0.8.7.4)
+  yard (< 0.9.21)
 
 BUNDLED WITH
    1.17.1

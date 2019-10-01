@@ -12,7 +12,7 @@ group :development do
   gem 'redcarpet'
   # documentation
   # 0.8.7.4 has a bug where setters are not documented when @!attribute is used
-  gem 'yard', '< 0.8.7.4'
+  gem 'yard', '< 0.9.21'
 
 end
 
