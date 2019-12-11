@@ -25,7 +25,7 @@ module Metasploit::Credential::CoreValidations
                       :public_id
                   ]
               },
-              if: '!realm.present? && !public.present? && private.present?'
+              if: -> { !realm.present? && !public.present? && private.present? }
     # replicates 'unique_public_metasploit_credential_cores' index
     validates :public_id,
               uniqueness: {
@@ -37,7 +37,7 @@ module Metasploit::Credential::CoreValidations
                       :private_id
                   ]
               },
-              if: '!realm.present? && public.present? && !private.present?'
+              if: -> { !realm.present? && public.present? && !private.present? }
     # replicates 'unique_realmless_metasploit_credential_cores' index
     validates :private_id,
               uniqueness: {
@@ -49,7 +49,7 @@ module Metasploit::Credential::CoreValidations
                       :public_id
                   ]
               },
-              if: '!realm.present? && public.present? && private.present?'
+              if: -> { !realm.present? && public.present? && private.present? }
     # replicates 'unique_publicless_metasploit_credential_cores' index
     validates :private_id,
               uniqueness: {
@@ -61,7 +61,7 @@ module Metasploit::Credential::CoreValidations
                       :public_id
                   ]
               },
-              if: 'realm.present? && !public.present? && private.present?'
+              if: -> { realm.present? && !public.present? && private.present? }
     # replicates 'unique_privateless_metasploit_credential_cores' index
     validates :public_id,
               uniqueness: {
@@ -73,7 +73,7 @@ module Metasploit::Credential::CoreValidations
                       :private_id
                   ]
               },
-              if: 'realm.present? && public.present? && !private.present?'
+              if: -> { realm.present? && public.present? && !private.present? }
     # replicates 'unique_complete_metasploit_credential_cores' index
     validates :private_id,
               uniqueness: {
@@ -84,7 +84,7 @@ module Metasploit::Credential::CoreValidations
                       :public_id
                   ]
               },
-              if: 'realm.present? && public.present? && private.present?'
+              if: -> { realm.present? && public.present? && private.present? }
     validates :workspace,
               presence: true
 
