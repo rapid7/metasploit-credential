@@ -276,6 +276,7 @@ module Metasploit::Credential::Creation
   # @option opts [DateTime] :last_attempted_at The last time this Login was attempted
   # @option opts [Metasploit::Credential::Core] :core The {Metasploit::Credential::Core} to link this login to
   # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Login to
+  # @option opts [String] :service_id The ID of an `Mdm::Service` to link this login to
   # @option opts [String] :service_name The service name to use for the `Mdm::Service`
   # @option opts [String] :status The status for the Login object
   # @option opts [String] :protocol The protocol type of the `Mdm::Service` to link this Login to
@@ -298,7 +299,8 @@ module Metasploit::Credential::Creation
 
     login_object = nil
     retry_transaction do
-      service_object = create_credential_service(opts)
+      service_object = Mdm::Service.where(id: opts[:service_id]).first if opts[:service_id]
+      service_object = create_credential_service(opts) if service_object.nil?
       return nil if service_object.nil?
       login_object = Metasploit::Credential::Login.where(core_id: core.id, service_id: service_object.id).first_or_initialize
 
