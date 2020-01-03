@@ -2,7 +2,7 @@
 # disclosed, such as a {Metasploit::Credential::Password password}, password hash, or key file.
 #
 # Uses Single Table Inheritance to store subclass name in {#type} per Rails convention.
-class Metasploit::Credential::Private < ActiveRecord::Base
+class Metasploit::Credential::Private < ApplicationRecord
   include Metasploit::Model::Search
 
   #

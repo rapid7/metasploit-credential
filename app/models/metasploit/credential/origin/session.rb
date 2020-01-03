@@ -3,7 +3,7 @@
 # {Metasploit::Credential::Origin::Service#module_full_name auxiliary or exploit modules} that gather credentials
 # directly from a {Metasploit::Credential::Origin::Service#service service} without the need for a separate post module
 # or even a session.
-class Metasploit::Credential::Origin::Session < ActiveRecord::Base
+class Metasploit::Credential::Origin::Session < ApplicationRecord
   #
   # Associations
   #

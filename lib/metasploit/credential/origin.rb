@@ -8,7 +8,7 @@ module Metasploit::Credential::Origin
   autoload :Service
   autoload :Session
 
-  # The prefix for table name of `ActiveRecord::Base` subclasses in the namespace.
+  # The prefix for table name of `ApplicationRecord` subclasses in the namespace.
   #
   # @return [String] `'metasploit_credential_origin_'`
   def self.table_name_prefix

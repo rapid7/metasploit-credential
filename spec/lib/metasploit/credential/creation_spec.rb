@@ -382,7 +382,7 @@ RSpec.describe Metasploit::Credential::Creation do
     it 'creates a Core' do
       expect {
         test_object.create_cracked_credential(
-            core_id: old_core,
+            core_id: old_core.id,
             username: public.username,
             password: password
         )

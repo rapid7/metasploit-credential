@@ -3,7 +3,7 @@
 # for `Metasploit::Credential::Core`s derived after a {Metasploit::Credential::Origin::Session#session session} is
 # gained and a {Metasploit::Credential::Origin::Session#post_reference_name post module} is run from the session to
 # gather credentials.
-class Metasploit::Credential::Origin::Service < ActiveRecord::Base
+class Metasploit::Credential::Origin::Service < ApplicationRecord
   #
   # CONSTANTS
   #

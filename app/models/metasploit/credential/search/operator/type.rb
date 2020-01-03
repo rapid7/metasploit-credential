@@ -24,7 +24,7 @@ class Metasploit::Credential::Search::Operator::Type < Metasploit::Model::Search
   # Instance Methods
   #
 
-  # Defaults to `:type` as all STI tables in `ActiveRecord::Base` use `type` as teh type attribute by default.  Override
+  # Defaults to `:type` as all STI tables in `ApplicationRecord` use `type` as teh type attribute by default.  Override
   # to search foreign key types, which are prefixed with the association name.
   #
   # @return [Symbol]

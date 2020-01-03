@@ -11,7 +11,7 @@ def active_record?
   inheritance_tree = object.inheritance_tree
   inheritance_titles = inheritance_tree.map(&:title)
 
-  inheritance_titles.include? 'ActiveRecord::Base'
+  inheritance_titles.include? 'ApplicationRecord'
 end
 
 def cluster_roots

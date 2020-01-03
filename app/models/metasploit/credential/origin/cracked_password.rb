@@ -1,5 +1,5 @@
 # An origin for {#cores core credentials} that were cracked from a {#originating_core core credentials}
-class Metasploit::Credential::Origin::CrackedPassword < ActiveRecord::Base
+class Metasploit::Credential::Origin::CrackedPassword < ApplicationRecord
 
   #
   # Associations

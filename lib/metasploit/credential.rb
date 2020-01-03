@@ -52,7 +52,7 @@ module Metasploit
     autoload :Text
     autoload :Username
 
-    # The prefix for all `ActiveRecord::Base#table_name`s for `ActiveRecord::Base` subclasses under this namespace.
+    # The prefix for all `ApplicationRecord#table_name`s for `ApplicationRecord` subclasses under this namespace.
     #
     # @return [String] `'metasploit_credential_'`
     def self.table_name_prefix

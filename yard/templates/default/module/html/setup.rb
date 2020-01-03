@@ -36,7 +36,7 @@ end
 
 # The root classes from which to generate the cluster
 #
-# @return [Array<Class<ActiveRecord::Base>>]
+# @return [Array<Class<ApplicationRecord>>]
 def cluster_roots
   namespace_domain_models
 end
@@ -59,7 +59,7 @@ def domain_models
     subclass = subclass_queue.pop
     superclass = subclass.superclass
 
-    unless superclass == ActiveRecord::Base || cluster.include?(superclass)
+    unless superclass == ApplicationRecord || cluster.include?(superclass)
       cluster.add superclass
       subclass_queue << superclass
     end
@@ -90,7 +90,7 @@ end
 def namespace_domain_models
   Metasploit::Credential::Engine.instance.eager_load!
 
-  ActiveRecord::Base.descendants.select { |klass|
+  ApplicationRecord.descendants.select { |klass|
     klass.parents.any? { |parent|
       parent.name == object.title
     }

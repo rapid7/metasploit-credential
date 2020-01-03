@@ -1,6 +1,6 @@
 # The realm in which a {Metasploit::Credential::Public} can be used to authenticate or from which a
 # {Metasploit::Credential::Private} was looted.
-class Metasploit::Credential::Realm < ActiveRecord::Base
+class Metasploit::Credential::Realm < ApplicationRecord
   extend ActiveSupport::Autoload
 
   include Metasploit::Model::Search

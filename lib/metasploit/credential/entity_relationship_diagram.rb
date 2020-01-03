@@ -36,16 +36,16 @@ module Metasploit::Credential::EntityRelationshipDiagram
   # Class Methods
   #
 
-  # All {cluster clusters} of classes that are reachable through belongs_to from each ActiveRecord::Base descendant
+  # All {cluster clusters} of classes that are reachable through belongs_to from each ApplicationRecord descendant
   #
-  # @return [Hash{Class<ActiveRecord::Base> => Set<Class<ActiveRecord::Base>>}] Maps entry point to cluster to its
+  # @return [Hash{Class<ApplicationRecord> => Set<Class<ApplicationRecord>>}] Maps entry point to cluster to its
   #   cluster.
   def self.cluster_by_class
     cluster_by_class = {}
 
     Metasploit::Credential::Engine.instance.eager_load!
 
-    ActiveRecord::Base.descendants.each do |klass|
+    ApplicationRecord.descendants.each do |klass|
       klass_cluster = cluster(klass)
       cluster_by_class[klass] = klass_cluster
     end
@@ -55,9 +55,9 @@ module Metasploit::Credential::EntityRelationshipDiagram
 
   # Cluster of classes that are reachable through belongs_to from `classes`.
   #
-  # @param classes [Array<Class<ActiveRecord::Base>>] classes that must be in cluster.  All other classes in the
+  # @param classes [Array<Class<ApplicationRecord>>] classes that must be in cluster.  All other classes in the
   #   returned cluster will be classes to which `classes` belong directly or indirectly.
-  # @return [Set<Class<ActiveRecord::Base>>]
+  # @return [Set<Class<ApplicationRecord>>]
   def self.cluster(*classes)
     class_queue = classes.dup
     visited_class_set = Set.new
@@ -122,10 +122,10 @@ module Metasploit::Credential::EntityRelationshipDiagram
 
   # Set of largest clusters from {cluster_by_class}.
   #
-  # @return [Array<Set<Class<ActiveRecord::Base>>>]
+  # @return [Array<Set<Class<ApplicationRecord>>>]
   def self.maximal_clusters
     clusters = cluster_by_class.values
-    unique_clusters = clusters.uniq
+    unique_clusters = clusters.distinct
 
     maximal_clusters = unique_clusters.dup
     cluster_queue = unique_clusters.dup
@@ -152,11 +152,11 @@ module Metasploit::Credential::EntityRelationshipDiagram
 
   # Calculates the target classes for a polymorphic `belongs_to`.
   #
-  # @return [Array<ActiveRecord::Base>]
+  # @return [Array<ApplicationRecord>]
   def self.polymorphic_classes(belongs_to_reflection)
     name = belongs_to_reflection.name
 
-    ActiveRecord::Base.descendants.each_with_object([]) { |descendant, target_classes|
+    ApplicationRecord.descendants.each_with_object([]) { |descendant, target_classes|
       has_many_reflections = descendant.reflect_on_all_associations(:has_many)
 
       has_many_reflections.each do |has_many_reflection|
