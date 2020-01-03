@@ -30,14 +30,14 @@ group :development, :test do
   # Used by the Metasploit data model, etc.
   # bound to 0.20 for Activerecord 4.2.8 deprecation warnings:
   # https://github.com/ged/ruby-pg/commit/c90ac644e861857ae75638eb6954b1cb49617090
-  gem 'pg', '0.20.0'
+  gem 'pg'
   # add matchers from shoulda, such as validates_presence_of, which are useful for testing validations, and have_db_*
   # for testing database columns and indicies.
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
   # dummy app
-  gem 'rails', '~> 4.2.6'
+  gem 'rails', '~> 5.2.2'
   # running documentation generation tasks and rspec tasks
   gem 'rake'
   # unit testing framework with rails integration
