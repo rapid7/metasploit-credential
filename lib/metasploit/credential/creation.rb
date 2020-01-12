@@ -550,7 +550,7 @@ module Metasploit::Credential::Creation
   # @return [Mdm::Service]
   def create_credential_service(opts={})
     return nil unless active_db?
-    address          = opts.fetch(:address)
+    address          = opts.fetch(:address, nil)
     return nil unless Rex::Socket.is_ipv4?(address) || Rex::Socket.is_ipv6?(address)
     port             = opts.fetch(:port)
     service_name     = opts.fetch(:service_name)
