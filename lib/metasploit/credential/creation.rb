@@ -8,7 +8,7 @@ module Metasploit::Credential::Creation
   # Returns true if ActiveRecord has an active database connection, false otherwise.
   # @return [Boolean]
   def active_db?
-    ActiveRecord::Base.connected?
+    ApplicationRecord.connected?
   end
 
   # This method takes a few simple parameters and creates a new username/password

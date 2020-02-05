@@ -1,5 +1,5 @@
 # A publicly disclosed credential, i.e. a {#username}.
-class Metasploit::Credential::Public < ActiveRecord::Base
+class Metasploit::Credential::Public < ApplicationRecord
   include Metasploit::Model::Search
 
   #

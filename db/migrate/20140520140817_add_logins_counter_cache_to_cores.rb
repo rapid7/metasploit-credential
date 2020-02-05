@@ -1,4 +1,4 @@
-class AddLoginsCounterCacheToCores < ActiveRecord::Migration
+class AddLoginsCounterCacheToCores < ActiveRecord::Migration[4.2]
   def self.up
     add_column :metasploit_credential_cores, :logins_count, :integer, :default => 0
 

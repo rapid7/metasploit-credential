@@ -3,7 +3,7 @@
 # used.
 #
 # A core credential must always have an {#origin}, but only needs 1 of {#private}, {#public}, or {#realm} set.
-class Metasploit::Credential::Core < ActiveRecord::Base
+class Metasploit::Credential::Core < ApplicationRecord
   include Metasploit::Model::Search
   include Metasploit::Credential::CoreValidations
 
@@ -16,7 +16,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,
-                          -> { uniq },
+                          -> { distinct },
                           class_name: "Mdm::Task",
                           join_table: "credential_cores_tasks"
 
@@ -127,7 +127,7 @@ class Metasploit::Credential::Core < ActiveRecord::Base
   #
   # @method origins(origin_class)
   # @scope Metasploit::Credential::Core
-  # @param origin_class [ActiveRecord::Base] the Origin class to look up
+  # @param origin_class [ApplicationRecord] the Origin class to look up
   # @param table_alias [String] an alias for the JOINed table, defaults to the table name
   # @return [ActiveRecord::Relation] scoped to that origin
   scope :origins, lambda { |origin_class, table_alias=nil|

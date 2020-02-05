@@ -1,4 +1,4 @@
-class AddTypetoPublic < ActiveRecord::Migration
+class AddTypetoPublic < ActiveRecord::Migration[4.2]
   def change
     change_table :metasploit_credential_publics do |t|
       #

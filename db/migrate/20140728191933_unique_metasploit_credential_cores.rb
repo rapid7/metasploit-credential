@@ -1,4 +1,4 @@
-class UniqueMetasploitCredentialCores < ActiveRecord::Migration
+class UniqueMetasploitCredentialCores < ActiveRecord::Migration[4.2]
   def down
     execute 'DROP INDEX unique_complete_metasploit_credential_cores'
     execute 'DROP INDEX unique_private_metasploit_credential_cores'

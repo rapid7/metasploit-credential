@@ -1,5 +1,5 @@
 # An origin for {#cores core credentials} that were imported by a {#task} from a {#filename file}.
-class Metasploit::Credential::Origin::Import < ActiveRecord::Base
+class Metasploit::Credential::Origin::Import < ApplicationRecord
   #
   # Associations
   #

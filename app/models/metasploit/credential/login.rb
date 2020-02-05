@@ -1,5 +1,5 @@
 # The use of a {#core core credential} against a {#service service}.
-class Metasploit::Credential::Login < ActiveRecord::Base
+class Metasploit::Credential::Login < ApplicationRecord
   extend ActiveSupport::Autoload
 
   include Metasploit::Model::Search
@@ -13,7 +13,7 @@ class Metasploit::Credential::Login < ActiveRecord::Base
   #
   #   @return [ActiveRecord::Relation<Mdm::Task>]
   has_and_belongs_to_many :tasks,
-                          -> { uniq },
+                          -> { distinct },
                           class_name: "Mdm::Task", 
                           join_table: "credential_logins_tasks"
 

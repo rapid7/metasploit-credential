@@ -1,5 +1,5 @@
 # Origin of {#cores core credentials} that are manually entered by a {#user}.
-class Metasploit::Credential::Origin::Manual < ActiveRecord::Base
+class Metasploit::Credential::Origin::Manual < ApplicationRecord
   #
   # Associations
   #
