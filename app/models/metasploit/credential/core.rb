@@ -276,8 +276,8 @@ class Metasploit::Credential::Core < ApplicationRecord
   # @param host_id [Integer]
   # @return [String]
   def self.cores_from_host(host_id)
-    left = origin_service_host_id(host_id).ast
-    right = origin_session_host_id(host_id).ast
+    left = origin_service_host_id(host_id).arel.ast
+    right = origin_session_host_id(host_id).arel.ast
 
     Arel::Nodes::UnionAll.new(
       left,
