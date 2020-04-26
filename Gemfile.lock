@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metasploit-credential (4.0.0)
+    metasploit-credential (4.0.1)
       metasploit-concern
       metasploit-model
       metasploit_data_models (>= 3.0.0)
