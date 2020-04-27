@@ -154,7 +154,7 @@ class Metasploit::Credential::Exporter::Pwdump
   # @param hash_array [Array<Metasploit::Credential::Login>]
   # @return [Fixnum]
   def service_count_for_hashes(hash_array)
-    hash_array.collect(&:service).collect(&:id).distinct.size
+    hash_array.collect(&:service).collect(&:id).uniq.size
   end
 
   private
