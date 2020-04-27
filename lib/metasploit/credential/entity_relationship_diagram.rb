@@ -125,7 +125,7 @@ module Metasploit::Credential::EntityRelationshipDiagram
   # @return [Array<Set<Class<ApplicationRecord>>>]
   def self.maximal_clusters
     clusters = cluster_by_class.values
-    unique_clusters = clusters.distinct
+    unique_clusters = clusters.uniq
 
     maximal_clusters = unique_clusters.dup
     cluster_queue = unique_clusters.dup
