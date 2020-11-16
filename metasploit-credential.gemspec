@@ -7,8 +7,8 @@ require 'metasploit/credential/version'
 Gem::Specification.new do |s|
   s.name        = 'metasploit-credential'
   s.version     = Metasploit::Credential::VERSION
-  s.authors     = ['Luke Imhoff', 'Trevor Rosen']
-  s.email       = ['luke_imhoff@rapid7.com', 'trevor_rosen@rapid7.com']
+  s.authors     = ['Metasploit Hackers']
+  s.email       = ['msfdev@metasploit.com']
   s.homepage    = 'https://github.com/rapid7/metasploit-credential'
   s.license     = 'BSD-3-clause'
   s.summary     = 'Credential models for metasploit-framework and Metasploit Pro'
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = s.files.grep(/spec/)
   s.require_paths = %w{app/models app/validators lib}
 
-  s.required_ruby_version = '>= 2.2.0'
+  s.required_ruby_version = '>= 2.4.0'
 
   # patching inverse association in Mdm models.
   s.add_runtime_dependency 'metasploit-concern'

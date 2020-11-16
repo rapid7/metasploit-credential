@@ -29,7 +29,7 @@ RSpec.describe Metasploit::Credential::Exporter::Core do
   describe "#export!" do
     it 'should create the zipfile' do
       core_exporter.export!
-      expect(File.exists?(core_exporter.output_zipfile_path)).to eq(true)
+      expect(File.exist?(core_exporter.output_zipfile_path)).to eq(true)
     end
 
     it 'should output to a directory whose name contains the standardized identifier' do
