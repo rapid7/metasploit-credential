@@ -55,8 +55,7 @@ RSpec.describe Metasploit::Credential::Creation do
           origin_type: origin_type,
           username: 'admin',
           private_data: 'password',
-          private_type: :password,
-          workspace_id: workspace.id
+          private_type: :password
         }.merge(origin_data[origin_type])}
         it 'creates a credential core' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
@@ -89,8 +88,7 @@ RSpec.describe Metasploit::Credential::Creation do
           origin_type: :manual,
           username: 'admin',
           private_data: 'password',
-          private_type: :password,
-          workspace_id: workspace.id
+          private_type: :password
         }}
         it 'creates a credential core' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
@@ -117,8 +115,7 @@ RSpec.describe Metasploit::Credential::Creation do
           origin_type: :manual,
           username: public_value,
           private_data: 'password',
-          private_type: :password,
-          workspace_id: workspace.id
+          private_type: :password
         }}
         it 'creates a credential core' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
@@ -158,8 +155,7 @@ RSpec.describe Metasploit::Credential::Creation do
           origin_type: :manual,
           username: 'admin',
           private_data: private_data[private_type],
-          private_type: private_type,
-          workspace_id: workspace.id
+          private_type: private_type
         }}
         it 'creates a credential core' do
           expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::Core.count }.by(1)
@@ -213,7 +209,6 @@ RSpec.describe Metasploit::Credential::Creation do
           username: 'admin',
           private_data: 'password',
           private_type: :password,
-          workspace_id: workspace.id,
           address: service.host.address,
           port: service.port,
           service_name: service.name,
@@ -256,7 +251,6 @@ RSpec.describe Metasploit::Credential::Creation do
           username: 'admin',
           private_data: 'password',
           private_type: :password,
-          workspace_id: workspace.id,
           address: service.host.address,
           port: service.port,
           service_name: service.name,
@@ -294,7 +288,6 @@ RSpec.describe Metasploit::Credential::Creation do
           username: public_value,
           private_data: 'password',
           private_type: :password,
-          workspace_id: workspace.id,
           address: service.host.address,
           port: service.port,
           service_name: service.name,
@@ -344,7 +337,6 @@ RSpec.describe Metasploit::Credential::Creation do
           username: 'admin',
           private_data: private_data[private_type],
           private_type: private_type,
-          workspace_id: workspace.id,
           address: service.host.address,
           port: service.port,
           service_name: service.name,
