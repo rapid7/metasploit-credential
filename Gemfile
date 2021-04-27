@@ -18,8 +18,6 @@ end
 group :development, :test do
   # Hash password for Metasploit::Credential::PasswordHash factories
   gem 'bcrypt'
-    # Uploads simplecov reports to coveralls.io
-  gem 'coveralls', require: false
   # supplies factories for producing model instance for specs
   gem 'factory_bot'
   # auto-load factories from spec/factories

@@ -1,4 +1,4 @@
-# Metasploit::Credential [![Build Status](https://travis-ci.org/rapid7/metasploit-credential.svg?branch=master)](https://travis-ci.org/rapid7/metasploit-credential)[![Code Climate](https://codeclimate.com/github/rapid7/metasploit-credential.png)](https://codeclimate.com/github/rapid7/metasploit-credential)[![Dependency Status](https://gemnasium.com/rapid7/metasploit-credential.svg)](https://gemnasium.com/rapid7/metasploit-credential)[![Gem Version](https://badge.fury.io/rb/metasploit-credential.svg)](http://badge.fury.io/rb/metasploit-credential)[![Inline docs](http://inch-ci.org/github/rapid7/metasploit-credential.svg)](http://inch-ci.org/github/rapid7/metasploit-credential)[![PullReview stats](https://www.pullreview.com/github/rapid7/metasploit-credential/badges/master.svg)](https://www.pullreview.com/github/rapid7/metasploit-credential/reviews/master)
+# Metasploit::Credential [![Build Status](https://github.com/rapid7/metasploit-credential/actions/workflows/verify.yml/badge.svg)](https://github.com/rapid7/metasploit-credential/actions/workflows/verify.yml)[![Code Climate](https://codeclimate.com/github/rapid7/metasploit-credential.png)](https://codeclimate.com/github/rapid7/metasploit-credential)[![Dependency Status](https://gemnasium.com/rapid7/metasploit-credential.svg)](https://gemnasium.com/rapid7/metasploit-credential)[![Gem Version](https://badge.fury.io/rb/metasploit-credential.svg)](http://badge.fury.io/rb/metasploit-credential)[![Inline docs](http://inch-ci.org/github/rapid7/metasploit-credential.svg)](http://inch-ci.org/github/rapid7/metasploit-credential)[![PullReview stats](https://www.pullreview.com/github/rapid7/metasploit-credential/badges/master.svg)](https://www.pullreview.com/github/rapid7/metasploit-credential/reviews/master)
 
 ## Versioning
 
@@ -98,7 +98,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ### Dependencies
 
 Remove your `Gemfile.lock` so you test with the latest compatible dependencies as will be done on
-[travis-ci](https://travis-ci.org/rapid7/metasploit-credential)
+[github actions](https://github.com/rapid7/metasploit-credential/actions/workflows/verify.yml)
 
     rm Gemfile.lock
     bundle install
