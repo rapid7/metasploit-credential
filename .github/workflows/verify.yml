@@ -75,3 +75,11 @@ jobs:
           # git diff --exit-code spec/dummy/db/structure.sql
           bundle exec rake spec
           bundle exec rake yard
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ matrix.ruby }}
+          path: |
+            coverage/
+          retention-days: 1
