@@ -9,6 +9,7 @@ RSpec.describe Metasploit::Credential::Public, type: :model do
     end
 
     context 'indices' do
+      # Test change
       it { is_expected.to have_db_index(:username).unique(true) }
     end
   end
