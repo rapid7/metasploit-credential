@@ -110,7 +110,7 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
       begin
         openssl_pkey_pkey
       rescue ArgumentError, OpenSSL::PKey::PKeyError => error
-        errors[:data] << "#{error.class} #{error}"
+        errors.add(:data, "#{error.class} #{error}")
       end
     end
   end
