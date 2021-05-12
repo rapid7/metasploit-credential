@@ -52,6 +52,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Private, nil]
   belongs_to :private,
              class_name: 'Metasploit::Credential::Private',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute public
@@ -60,6 +61,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Public, nil]
   belongs_to :public,
              class_name: 'Metasploit::Credential::Public',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute realm
@@ -69,6 +71,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Realm, nil]
   belongs_to :realm,
              class_name: 'Metasploit::Credential::Realm',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute workspace

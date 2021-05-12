@@ -19,6 +19,7 @@ class Metasploit::Credential::Origin::Import < ApplicationRecord
   #   @return [Mdm::Task]
   belongs_to :task,
              class_name: 'Mdm::Task',
+             optional: true,
              inverse_of: :import_credential_origins
 
   #
