@@ -208,7 +208,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   scope :originating_host_id, ->(host_id) {
     where(
       Metasploit::Credential::Core[:id].in(
-        Metasploit::Credential::Core.cores_from_host(host_id)
+        self.cores_from_host(host_id)
       )
     )
   }
