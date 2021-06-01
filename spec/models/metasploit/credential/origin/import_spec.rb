@@ -3,8 +3,7 @@ RSpec.describe Metasploit::Credential::Origin::Import, type: :model do
 
   context 'associations' do
     it { is_expected.to have_many(:cores).class_name('Metasploit::Credential::Core').dependent(:destroy) }
-    it { expect(described_class.reflect_on_association(:task).macro).to eq(:belongs_to) }
-    it { expect(described_class.reflect_on_association(:task).class_name).to eq('Mdm::Task') }
+    it { is_expected.to belong_to(:task).optional.class_name('Mdm::Task') }
   end
 
   context 'database' do
