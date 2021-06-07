@@ -52,6 +52,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Private, nil]
   belongs_to :private,
              class_name: 'Metasploit::Credential::Private',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute public
@@ -60,6 +61,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Public, nil]
   belongs_to :public,
              class_name: 'Metasploit::Credential::Public',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute realm
@@ -69,6 +71,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   #   @return [Metasploit::Credential::Realm, nil]
   belongs_to :realm,
              class_name: 'Metasploit::Credential::Realm',
+             optional: true,
              inverse_of: :cores
 
   # @!attribute workspace
@@ -205,7 +208,7 @@ class Metasploit::Credential::Core < ApplicationRecord
   scope :originating_host_id, ->(host_id) {
     where(
       Metasploit::Credential::Core[:id].in(
-        Metasploit::Credential::Core.cores_from_host(host_id)
+        self.cores_from_host(host_id)
       )
     )
   }

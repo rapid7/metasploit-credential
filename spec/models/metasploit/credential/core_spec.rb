@@ -72,9 +72,9 @@ RSpec.describe Metasploit::Credential::Core, type: :model do
     it { is_expected.to have_and_belong_to_many(:tasks).class_name('Mdm::Task') }
     it { is_expected.to have_many(:logins).class_name('Metasploit::Credential::Login').dependent(:destroy) }
     it { is_expected.to belong_to(:origin) }
-    it { is_expected.to belong_to(:private).class_name('Metasploit::Credential::Private') }
-    it { is_expected.to belong_to(:public).class_name('Metasploit::Credential::Public') }
-    it { is_expected.to belong_to(:realm).class_name('Metasploit::Credential::Realm') }
+    it { is_expected.to belong_to(:private).optional.class_name('Metasploit::Credential::Private') }
+    it { is_expected.to belong_to(:public).optional.class_name('Metasploit::Credential::Public') }
+    it { is_expected.to belong_to(:realm).optional.class_name('Metasploit::Credential::Realm') }
     it { is_expected.to belong_to(:workspace).class_name('Mdm::Workspace') }
   end
 
