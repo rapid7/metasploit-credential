@@ -215,6 +215,31 @@ RSpec.describe Metasploit::Credential::Importer::Core do
           expect{core_csv_importer.import!}.to change(Metasploit::Credential::Core, :count).from(1).to(2)
         end
       end
+
+      describe "when the data in the CSV contains a duplicate from another workspace" do
+        let(:preexisting_cred_data) do
+          core_csv_importer.csv_object.gets
+          row = core_csv_importer.csv_object.first
+          core_csv_importer.csv_object.rewind
+          {
+            username: row['username'],
+            private_data: row['private_data'],
+          }
+        end
+
+        before(:example) do
+          core         = Metasploit::Credential::Core.new
+          core.public  = FactoryBot.create(:metasploit_credential_username, username: preexisting_cred_data[:username])
+          core.private = FactoryBot.create(:metasploit_credential_password, data: preexisting_cred_data[:private_data])
+          core.origin  = FactoryBot.create(:metasploit_credential_origin_import)
+          core.workspace = FactoryBot.create(:mdm_workspace)
+          core.save!
+        end
+
+        it 'should create a new Metasploit::Credential::Core for each row in the import' do
+          expect{core_csv_importer.import!}.to change(Metasploit::Credential::Core, :count).from(1).to(3)
+        end
+      end
     end
   end
 
