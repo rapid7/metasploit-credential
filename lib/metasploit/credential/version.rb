@@ -3,7 +3,7 @@
 module Metasploit
   module Credential
     # VERSION is managed by GemRelease
-    VERSION = '5.0.4'
+    VERSION = '5.0.5'
 
     # @return [String]
     #
