@@ -7,7 +7,7 @@ RSpec.describe Metasploit::Credential::SSHKey, type: :model do
 
   let(:key_size) do
     # key size tuned for speed.  DO NOT use for production, it is below current recommended key size of 2048
-    512
+    1024
   end
 
   context 'factories' do

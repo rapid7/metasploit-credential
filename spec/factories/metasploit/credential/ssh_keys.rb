@@ -4,7 +4,7 @@ FactoryBot.define do
     transient do
       key_type { generate :metasploit_credential_ssh_key_key_type }
       # key size tuned for speed.  DO NOT use for production, it is below current recommended key size of 2048
-      key_size { 512 }
+      key_size { 1024 }
     end
 
     data {

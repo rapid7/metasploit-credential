@@ -1,5 +1,22 @@
 require 'net/ntlm'
 
+# TODO: Revert once available in rubyntlm
+# https://github.com/WinRb/rubyntlm/pull/51
+module Net
+  module NTLM
+    class << self
+      def apply_des(plain, keys)
+        keys.map {|k|
+          dec = OpenSSL::Cipher.new("des-cbc").encrypt
+          dec.padding = 0
+          dec.key = k
+          dec.update(plain) + dec.final
+        }
+      end
+    end
+  end
+end
+
 # A {Metasploit::Credential::PasswordHash password hash} that can be {Metasploit::Credential::ReplayableHash replayed}
 # to authenticate to SMB.  It is composed of two hash hex digests (where the hash bytes are printed as a
 # hexadecimal string where 2 characters represent a byte of the original hash with the high nibble first): (1)
