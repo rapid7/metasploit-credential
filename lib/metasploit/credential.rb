@@ -35,6 +35,7 @@ module Metasploit
     autoload :EntityRelationshipDiagram
     autoload :Exporter
     autoload :Importer
+    autoload :KrbEncKey
     autoload :Login
     autoload :Migrator
     autoload :NonreplayableHash

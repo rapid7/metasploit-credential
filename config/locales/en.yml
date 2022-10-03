@@ -56,6 +56,7 @@ en:
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
+      metasploit/credential/krb5_enc_key: 'Krb5 enc key'
     errors:
       models:
         metasploit/credential/core:
@@ -78,11 +79,18 @@ en:
           attributes:
             data:
               format: "is not in the NTLMHash data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>, where each hex digest is 32 lowercase hexadecimal characters."
+        metasploit/credential/krb_enc_key:
+          attributes:
+            data:
+              invalid_data_attribute: "has invalid attribute %{attribute}."
+              missing_enctype: "is missing enctype."
+              missing_key: "is missing key."
         metasploit/credential/ssh_key:
           attributes:
             data:
               encrypted: "is encrypted, but Metasploit::Credential::SSHKey only supports unencrypred private keys."
               not_private: "is not a private key."
+
   errors:
     messages:
       nil: "can't be nil, but it can be blank"

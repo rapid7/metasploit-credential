@@ -811,6 +811,16 @@ RSpec.describe Metasploit::Credential::Creation do
         expect(test_object.create_credential_private(opts)).to be_kind_of Metasploit::Credential::BlankPassword
       end
     end
+
+    context 'when :private_type is krb_enc_key' do
+      it 'creates a Metasploit::Credential::KrbEncKey' do
+        opts = {
+          private_data: FactoryBot.generate(:metasploit_credential_krb_enc_key_aes256),
+          private_type: :krb_enc_key
+        }
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::KrbEncKey.count }.by(1)
+      end
+    end
   end
 
   context '#create_credential_core' do

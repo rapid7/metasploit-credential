@@ -1,6 +1,8 @@
 # Bundler
 /.bundle/
 
+Gemfile.lock
+
 # OS X thumbnails
 .DS_Store
 

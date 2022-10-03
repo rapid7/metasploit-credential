@@ -63,6 +63,9 @@ FactoryBot.define do
       :metasploit_credential_nonreplayable_hash,
       :metasploit_credential_ntlm_hash,
       :metasploit_credential_ssh_key
+      # TODO: krb_enc_key isn'ta dded here; As the tests for invalid_login assume the private_key is a string and
+      #   crashes when the krb_enc_key data hash
+      # :metasploit_credential_krb_enc_key
   ]
   sequence :metasploit_credential_core_private_factory, metasploit_credential_core_private_factories.cycle
 
