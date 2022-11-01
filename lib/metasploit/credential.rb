@@ -36,6 +36,7 @@ module Metasploit
     autoload :Exporter
     autoload :Importer
     autoload :KrbEncKey
+    autoload :KrbTicket
     autoload :Login
     autoload :Migrator
     autoload :NonreplayableHash

@@ -821,6 +821,16 @@ RSpec.describe Metasploit::Credential::Creation do
         expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::KrbEncKey.count }.by(1)
       end
     end
+
+    context 'when :private_type is krb_ticket' do
+      it 'creates a Metasploit::Credential::KrbTicket' do
+        opts = {
+          private_data: FactoryBot.build(:metasploit_credential_krb_ticket, :with_tgt).data,
+          private_type: :krb_ticket
+        }
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::KrbTicket.count }.by(1)
+      end
+    end
   end
 
   context '#create_credential_core' do

@@ -20,6 +20,39 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   ]
   private_constant :ACCEPTABLE_DATA_ATTRIBUTES
 
+  # https://www.iana.org/assignments/kerberos-parameters/kerberos-parameters.xhtml
+  ENCTYPE_NAMES = (Hash.new { |_hash, enctype| "unassigned-#{enctype}" }).merge({
+    0 => 'reserved-0',
+    1 => 'des-cbc-crc',
+    2 => 'des-cbc-md4',
+    3 => 'des-cbc-md5',
+    4 => 'reserved-4',
+    5 => 'des3-cbc-md5',
+    6 => 'reserved-6',
+    7 => 'des3-cbc-sha1',
+    8 => 'unassigned-8',
+    9 => 'dsaWithSHA1-CmsOID',
+    10 => 'md5WithRSAEncryption-CmsOID',
+    11 => 'sha1WithRSAEncryption-CmsOID',
+    12 => 'rc2CBC-EnvOID',
+    13 => 'rsaEncryption-EnvOID',
+    14 => 'rsaES-OAEP-ENV-OID',
+    15 => 'des-ede3-cbc-Env-OID',
+    16 => 'des3-cbc-sha1-kd',
+    17 => 'aes128-cts-hmac-sha1-96',
+    18 => 'aes256-cts-hmac-sha1-96',
+    19 => 'aes128-cts-hmac-sha256-128',
+    20 => 'aes256-cts-hmac-sha384-192',
+    21 => 'unassigned-21',
+    22 => 'unassigned-22',
+    23 => 'rc4-hmac',
+    24 => 'rc4-hmac-exp',
+    25 => 'camellia128-cts-cmac',
+    26 => 'camellia256-cts-cmac',
+    65 => 'subkey-keymaterial'
+  })
+  private_constant :ENCTYPE_NAMES
+
   #
   # Attributes
   #
@@ -69,7 +102,7 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   #
   # @return [String]
   def to_s
-    "#{enctype}:#{key.unpack1('H*')}"
+    "#{ENCTYPE_NAMES[enctype]}:#{key.unpack1('H*')}"
   end
 
   private

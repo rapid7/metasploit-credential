@@ -135,6 +135,7 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
                               Metasploit::Credential::Password
                               Metasploit::Credential::SSHKey
                               Metasploit::Credential::KrbEncKey
+                              Metasploit::Credential::KrbTicket
                             }
     end
   end

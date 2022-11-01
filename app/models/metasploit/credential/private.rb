@@ -74,6 +74,7 @@ class Metasploit::Credential::Private < ApplicationRecord
                 Metasploit::Credential::Password
                 Metasploit::Credential::SSHKey
                 Metasploit::Credential::KrbEncKey
+                Metasploit::Credential::KrbTicket
               }
 
   #
@@ -82,9 +83,12 @@ class Metasploit::Credential::Private < ApplicationRecord
 
   validates :data,
             non_nil: true,
-            # Skip the uniqueness check for KrbEncKey to avoid a crash where the Hash is incorrectly cast to a string
+            # Skip the uniqueness check for KrbEncKey/KrbTicket to avoid a crash where the Hash is incorrectly cast to a string
             # when attempting to query the database
-            unless: -> { self.class == Metasploit::Credential::KrbEncKey },
+            unless: -> do
+              self.class == Metasploit::Credential::KrbEncKey ||
+                self.class == Metasploit::Credential::KrbTicket
+            end,
             uniqueness: {
                 scope: :type
             }

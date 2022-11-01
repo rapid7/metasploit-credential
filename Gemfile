@@ -33,6 +33,8 @@ group :development, :test do
   gem 'shoulda-matchers'
   # code coverage of tests
   gem 'simplecov', :require => false
+  # testing time-dependant code
+  gem 'timecop'
   # dummy app
   gem 'rails'
   # running documentation generation tasks and rspec tasks
