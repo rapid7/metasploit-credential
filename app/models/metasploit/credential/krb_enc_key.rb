@@ -1,8 +1,7 @@
 require 'json'
 
 # A {Metasploit::Credential::PasswordHash password hash} that cannot be replayed to authenticate to other services.
-# Contrast with {Metasploit::Credential::ReplayableHash}.  {#data} is any password hash, such as those recovered from
-# `/etc/passwd` or `/etc/shadow`.
+# {#data} is a serialized ruby hash with the keys defined in {Metasploit::Credential::KrbEncKey::ACCEPTABLE_DATA_ATTRIBUTES}
 #
 # This class contains information relevant to a Kerberos EncryptionKey https://www.rfc-editor.org/rfc/rfc4120.html#section-5.2.9
 # which is used to encrypt/decrypt arbitrary Kerberos protocol message data - such as the AS-REP krbtgt ticket and enc-part.

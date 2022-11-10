@@ -153,7 +153,7 @@ RSpec.describe Metasploit::Credential::KrbEncKey, type: :model do
           super().without(:enctype)
         end
 
-        it { is_expected.to include('is missing enctype.') }
+        it { is_expected.to include('is missing enctype') }
       end
 
       context "when the key is missing" do
@@ -161,7 +161,7 @@ RSpec.describe Metasploit::Credential::KrbEncKey, type: :model do
           super().without(:key)
         end
 
-        it { is_expected.to include('is missing key.') }
+        it { is_expected.to include('is missing key') }
       end
 
       context 'when invalid keys are present' do
@@ -169,7 +169,7 @@ RSpec.describe Metasploit::Credential::KrbEncKey, type: :model do
           super().merge({ ky: 123, slt: 'abc' })
         end
 
-        it { is_expected.to include('has invalid attribute ky.', 'has invalid attribute slt.') }
+        it { is_expected.to include('has invalid attribute ky', 'has invalid attribute slt') }
       end
     end
   end

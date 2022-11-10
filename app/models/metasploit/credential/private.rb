@@ -10,7 +10,7 @@ class Metasploit::Credential::Private < ApplicationRecord
   #
 
   # @!attribute cores
-  #    The {Metasploit::Credential::Core core credentials} that combine this private credential with its
+  #   The {Metasploit::Credential::Core core credentials} that combine this private credential with its
   #   {Metasploit::Credential::Public public credential} and/or {Metasploit::Credential::Realm realm}.
   #
   #   @return [ActiveRecord::Relation<Metasploit::Credential::Core>]
@@ -82,7 +82,9 @@ class Metasploit::Credential::Private < ApplicationRecord
   #
 
   validates :data,
-            non_nil: true,
+            non_nil: true
+
+  validates :data,
             # Skip the uniqueness check for KrbEncKey/KrbTicket to avoid a crash where the Hash is incorrectly cast to a string
             # when attempting to query the database
             unless: -> do

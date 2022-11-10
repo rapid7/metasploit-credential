@@ -82,16 +82,16 @@ en:
         metasploit/credential/krb_enc_key:
           attributes:
             data:
-              invalid_data_attribute: "has invalid attribute %{attribute}."
-              missing_enctype: "is missing enctype."
-              missing_key: "is missing key."
+              invalid_data_attribute: "has invalid attribute %{attribute}"
+              missing_enctype: "is missing enctype"
+              missing_key: "is missing key"
         metasploit/credential/krb_ticket:
           attributes:
             data:
-              invalid_data_attribute: "has invalid attribute %{attribute}."
-              missing_type: "is missing type."
-              missing_value: "is missing value."
-              missing_endtime: "is missing endtime."
+              invalid_data_attribute: "has invalid attribute %{attribute}"
+              missing_type: "is missing type"
+              missing_value: "is missing value"
+              missing_sname: "is missing sname"
         metasploit/credential/ssh_key:
           attributes:
             data:

@@ -3,9 +3,13 @@ RSpec.shared_examples_for 'a KrbTicket' do
 
   describe '#data' do
     it 'has a data hash' do
-      expect(subject.data.keys - %i[ type value endtime ]).to be_empty
+      expect(subject.data.keys - %i[ type value starttime authtime endtime sname ]).to be_empty
       expect(subject.data[:type]).to eq(expected[:type])
       expect(subject.data[:value]).to match(expected[:value])
+      expect(subject.data[:sname]).to match(expected[:sname])
+      require 'pry'; binding.pry
+      expect(subject.data[:starttime]).to match(expected[:starttime])
+      expect(subject.data[:authtime]).to match(expected[:authtime])
       expect(subject.data[:endtime]).to match(expected[:endtime])
     end
   end
@@ -19,6 +23,18 @@ RSpec.shared_examples_for 'a KrbTicket' do
   describe '#value' do
     it 'has a value' do
       expect(subject.value).to eq(subject.data[:value])
+    end
+  end
+
+  describe '#authtime' do
+    it 'has an authtime' do
+      expect(subject.authtime).to eq(subject.data[:authtime])
+    end
+  end
+
+  describe '#starttime' do
+    it 'has an starttime' do
+      expect(subject.starttime).to eq(subject.data[:starttime])
     end
   end
 
@@ -54,7 +70,7 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
   end
 
   before do
-    Timecop.freeze(Time.local(1990))
+    Timecop.freeze(Time.local(1990).utc)
   end
 
   after do
@@ -71,8 +87,11 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
         {
           type: :tgt,
           value: /\w+/,
+          sname: /krbtgt\/.*/,
+          authtime: nil,
+          starttime: Time.now.utc,
           endtime: Time.now.utc + 1.days,
-          to_s: /tgt:ccache:\w+/
+          to_s: /tgt:(?<sname>[\w.\/]+):ccache:(?<ticket_value>[\w.\/]+)/
         }
       end
     end
@@ -88,8 +107,11 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
         {
           type: :tgs,
           value: /\w+/,
+          sname: /.*\/.*/,
+          authtime: nil,
+          starttime: Time.now.utc,
           endtime: Time.now.utc + 1.days,
-          to_s: /tgs:ccache:\w+/
+          to_s: /tgs:(?<sname>[\w.\/]+):ccache:(?<ticket_value>[\w.\/]+)/
         }
       end
     end
@@ -133,7 +155,7 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
           super().without(:type)
         end
 
-        it { is_expected.to include('is missing type.') }
+        it { is_expected.to include('is missing type') }
       end
 
       context "when the value is missing" do
@@ -141,15 +163,15 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
           super().without(:value)
         end
 
-        it { is_expected.to include('is missing value.') }
+        it { is_expected.to include('is missing value') }
       end
 
-      context "when the endtime is missing" do
+      context "when the sname is missing" do
         let(:data) do
-          super().without(:endtime)
+          super().without(:sname)
         end
 
-        it { is_expected.to include('is missing endtime.') }
+        it { is_expected.to include('is missing sname') }
       end
 
       context 'when invalid keys are present' do
@@ -157,7 +179,7 @@ RSpec.describe Metasploit::Credential::KrbTicket, type: :model do
           super().merge({ typ: 123, end_time: 'abc' })
         end
 
-        it { is_expected.to include('has invalid attribute typ.', 'has invalid attribute end_time.') }
+        it { is_expected.to include('has invalid attribute typ', 'has invalid attribute end_time') }
       end
     end
   end
