@@ -1,9 +1,13 @@
+
 source "https://rubygems.org"
 
 # Declare your gem's dependencies in metasploit-credential.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.
 gemspec
+
+gem 'metasploit-concern', git: 'https://github.com/jmartin-r7/metasploit-concern', branch: 'add-support-for-rails-7'
+gem 'metasploit_data_models', git: 'https://github.com/jmartin-r7/metasploit_data_models', branch: 'add-support-for-rails-7'
 
 group :development do
   # Entity-Relationship diagrams for developers that need to access database using SQL directly.
