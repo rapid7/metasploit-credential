@@ -56,6 +56,8 @@ module Dummy
     config.active_record.schema_format = :sql
 
     config.autoloader = :zeitwerk
+
+    ActiveRecord.legacy_connection_handling = false
   end
 end
 
