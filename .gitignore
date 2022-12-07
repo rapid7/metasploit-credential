@@ -15,6 +15,11 @@
 /pkg/
 *.gem
 
+# https://github.com/rapid7/metasploit_data_models/blob/f2887d79c84452522493d1531d3f658ee6da9213/.gitignore#L14
+# Don't check in these files as this is a gem
+.rvmrc
+Gemfile.lock
+
 # simplecov
 /coverage
 
