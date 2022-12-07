@@ -73,6 +73,7 @@ class Metasploit::Credential::Private < ApplicationRecord
                 Metasploit::Credential::NTLMHash
                 Metasploit::Credential::Password
                 Metasploit::Credential::SSHKey
+                Metasploit::Credential::KrbEncKey
               }
 
   #

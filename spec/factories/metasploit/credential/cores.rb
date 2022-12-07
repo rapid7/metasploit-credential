@@ -62,7 +62,8 @@ FactoryBot.define do
       :metasploit_credential_password,
       :metasploit_credential_nonreplayable_hash,
       :metasploit_credential_ntlm_hash,
-      :metasploit_credential_ssh_key
+      :metasploit_credential_ssh_key,
+      :metasploit_credential_krb_enc_key
   ]
   sequence :metasploit_credential_core_private_factory, metasploit_credential_core_private_factories.cycle
 

@@ -56,6 +56,7 @@ en:
     models:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
+      metasploit/credential/krb_enc_key: 'Krb enc key'
     errors:
       models:
         metasploit/credential/core:
@@ -78,6 +79,10 @@ en:
           attributes:
             data:
               format: "is not in the NTLMHash data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>, where each hex digest is 32 lowercase hexadecimal characters."
+        metasploit/credential/krb_enc_key:
+          attributes:
+            data:
+              format: "is not in the KrbEncKey data format of 'msf_krbenckey:<ENCTYPE>:<KEY>:<SALT>', where the key and salt are in hexadecimal characters"
         metasploit/credential/ssh_key:
           attributes:
             data:
