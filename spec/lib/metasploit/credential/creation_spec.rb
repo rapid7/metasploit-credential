@@ -134,12 +134,20 @@ RSpec.describe Metasploit::Credential::Creation do
       nonreplayable_hash: "Metasploit::Credential::NonreplayableHash",
       ntlm_hash: "Metasploit::Credential::NTLMHash",
       postgres_md5: "Metasploit::Credential::PostgresMD5",
-      ssh_key: "Metasploit::Credential::SSHKey"
+      ssh_key: "Metasploit::Credential::SSHKey",
+      krb_enc_key: "Metasploit::Credential::KrbEncKey",
+      pkcs12: "Metasploit::Credential::Pkcs12"
     }.each_pair do |private_type, public_class|
       context "Origin[manual], Public[Username], Private[#{private_type}]" do
         let(:ssh_key) {
           key_class = OpenSSL::PKey.const_get(:RSA)
           key_class.generate(512).to_s
+        }
+        let(:krb_enc_key) {
+          FactoryBot.build(:metasploit_credential_krb_enc_key).data
+        }
+        let(:pkcs12) {
+          FactoryBot.build(:metasploit_credential_pkcs12).data
         }
         let(:private_data) { {
           password: 'password',
@@ -147,7 +155,9 @@ RSpec.describe Metasploit::Credential::Creation do
           nonreplayable_hash: '435ba65d2e46d35bc656086694868d1ab2c0f9fd',
           ntlm_hash: 'aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0',
           postgres_md5: 'md5ac4bbe016b808c3c0b816981f240dcae',
-          ssh_key: ssh_key
+          ssh_key: ssh_key,
+          krb_enc_key: krb_enc_key,
+          pkcs12: pkcs12
         }}
         let(:credential_data) {{
           workspace_id: workspace.id,
@@ -819,6 +829,16 @@ RSpec.describe Metasploit::Credential::Creation do
           private_type: :krb_enc_key
         }
         expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::KrbEncKey.count }.by(1)
+      end
+    end
+
+    context 'when :private_type is pkcs12' do
+      it 'creates a Metasploit::Credential::Pkcs12' do
+        opts = {
+          private_data: FactoryBot.build(:metasploit_credential_pkcs12).data,
+          private_type: :pkcs12
+        }
+        expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::Pkcs12.count }.by(1)
       end
     end
   end

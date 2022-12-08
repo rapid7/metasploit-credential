@@ -479,6 +479,8 @@ module Metasploit::Credential::Creation
           private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
         when :ssh_key
           private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
+        when :pkcs12
+          private_object = Metasploit::Credential::Pkcs12.where(data: private_data).first_or_create
         when :krb_enc_key
           private_object = Metasploit::Credential::KrbEncKey.where(data: private_data).first_or_create
         when :ntlm_hash
