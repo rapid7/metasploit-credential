@@ -12,7 +12,7 @@ group :development do
   gem 'redcarpet'
   gem 'yard'
   gem 'e2mmap'
-
+  gem 'pry-byebug'
 end
 
 group :development, :test do

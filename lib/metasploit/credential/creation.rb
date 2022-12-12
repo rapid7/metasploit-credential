@@ -462,6 +462,7 @@ module Metasploit::Credential::Creation
   # @return [Metasploit::Credential::SSHKey] if the private_type was :ssh_key
   # @return [Metasploit::Credential::NTLMHash] if the private_type was :ntlm_hash
   # @return [Metasploit::Credential::NonreplayableHash] if the private_type was :nonreplayable_hash
+  # @return [Metasploit::Credential::KrbEncKey] if the private_type was :krb_enc_key
   def create_credential_private(opts={})
     return nil unless active_db?
     private_data = opts.fetch(:private_data)
@@ -478,6 +479,8 @@ module Metasploit::Credential::Creation
           private_object = Metasploit::Credential::Password.where(data: private_data).first_or_create
         when :ssh_key
           private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
+        when :krb_enc_key
+          private_object = Metasploit::Credential::KrbEncKey.where(data: private_data).first_or_create
         when :ntlm_hash
           private_object = Metasploit::Credential::NTLMHash.where(data: private_data).first_or_create
           private_object.jtr_format = 'nt,lm'
