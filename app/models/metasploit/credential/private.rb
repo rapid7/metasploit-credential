@@ -74,6 +74,7 @@ class Metasploit::Credential::Private < ApplicationRecord
                 Metasploit::Credential::Password
                 Metasploit::Credential::SSHKey
                 Metasploit::Credential::KrbEncKey
+                Metasploit::Credential::Pkcs12
               }
 
   #

@@ -57,6 +57,7 @@ en:
       metasploit/credential/ntlm_hash: "NTLM hash"
       metasploit/credential/ssh_key: "SSH key"
       metasploit/credential/krb_enc_key: 'Krb enc key'
+      metasploit/credential/pkcs12: 'Pkcs12 (pfx)'
     errors:
       models:
         metasploit/credential/core:
@@ -83,10 +84,14 @@ en:
           attributes:
             data:
               format: "is not in the KrbEncKey data format of 'msf_krbenckey:<ENCTYPE>:<KEY>:<SALT>', where the key and salt are in hexadecimal characters"
+        metasploit/credential/pkcs12:
+          attributes:
+            data:
+              format: "is not a Base64 encoded pkcs12 file without a password"
         metasploit/credential/ssh_key:
           attributes:
             data:
-              encrypted: "is encrypted, but Metasploit::Credential::SSHKey only supports unencrypred private keys."
+              encrypted: "is encrypted, but Metasploit::Credential::SSHKey only supports unencrypted private keys."
               not_private: "is not a private key."
   errors:
     messages:

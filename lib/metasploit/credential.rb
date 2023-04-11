@@ -43,6 +43,7 @@ module Metasploit
     autoload :Origin
     autoload :Password
     autoload :PasswordHash
+    autoload :Pkcs12
     autoload :PostgresMD5
     autoload :Private
     autoload :Public
