@@ -204,13 +204,15 @@ class Metasploit::Credential::Importer::Core
 
         username     = row['username'].present? ? row['username'] : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
+    
+        private_data = private_data.downcase if @private_credential_type.constantize == Metasploit::Credential::NTLMHash
 
         public_object = create_public_from_field(username)
 
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
         else
-          private_object_for_row = @private_credential_type.constantize.where(data: row['private_data']).first_or_create
+          private_object_for_row = @private_credential_type.constantize.where(data: private_data).first_or_create
         end
 
         # need to check private_object_for_row.valid? to raise a user facing message if any cred had invalid private
