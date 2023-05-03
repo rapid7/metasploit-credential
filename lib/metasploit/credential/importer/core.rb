@@ -116,6 +116,7 @@ class Metasploit::Credential::Importer::Core
         private_class = row['private_type'].present? ? row['private_type'].constantize : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
 
+        private_data = private_data.downcase if @private_credential_type.constantize == Metasploit::Credential::NTLMHash
 
         if realms[realm_value].nil?
           realms[realm_value]  = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
@@ -204,7 +205,7 @@ class Metasploit::Credential::Importer::Core
 
         username     = row['username'].present? ? row['username'] : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
-    
+
         private_data = private_data.downcase if @private_credential_type.constantize == Metasploit::Credential::NTLMHash
 
         public_object = create_public_from_field(username)
