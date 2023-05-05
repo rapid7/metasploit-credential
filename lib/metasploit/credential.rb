@@ -28,6 +28,7 @@ module Metasploit
 
     autoload :BlankPassword
     autoload :BlankUsername
+    autoload :CaseInsensitiveSerializer
     autoload :Core
     autoload :CoreValidations
     autoload :Creation
