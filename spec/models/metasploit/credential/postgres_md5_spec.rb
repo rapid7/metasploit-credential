@@ -119,4 +119,30 @@ RSpec.describe Metasploit::Credential::PostgresMD5, type: :model do
     end
   end
 
+  context 'serialization' do
+    context '#first_or_create' do
+      let(:data) { "md5#{SecureRandom.hex(16)}" }
+      let(:upcase_data) {data.upcase}
+
+      context 'creates a new instance that stores case-insensitive value' do
+        it 'creates case insensitive data' do
+          expect{ Metasploit::Credential::PostgresMD5.where(data: data).first_or_create }.to change{Metasploit::Credential::PostgresMD5.count}.by(1)
+          expect{ Metasploit::Credential::PostgresMD5.where(data: upcase_data).first_or_create }.not_to change{Metasploit::Credential::PostgresMD5.count}
+        end
+      end
+
+      context 'finds an existing case insensitive match' do
+        let(:postgres_md5) do
+          FactoryBot.build(
+            :metasploit_credential_postgres_md5,
+            data: upcase_data
+          )
+        end
+
+        it 'successfully looks up credential in case insensitive way' do
+          expect( postgres_md5.data ).to eq(data)
+        end
+      end
+    end
+  end
 end

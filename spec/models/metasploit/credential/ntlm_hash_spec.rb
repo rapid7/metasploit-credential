@@ -397,5 +397,29 @@ RSpec.describe Metasploit::Credential::NTLMHash, type: :model do
     end
   end
 
+  context 'serialization' do
+    context '#first_or_create' do
+      let(:data) { 'aad3b435b51404eeaad3b435b51404ee:4dc0249ad90ab626362050195893c788' }
+      let(:upcase_data) {data.upcase}
 
+      context 'creates a new instance that stores case-insensitive value' do
+        it 'creates case insensitive data' do
+          expect{ Metasploit::Credential::NTLMHash.where(data: data).first_or_create }.to change{Metasploit::Credential::NTLMHash.count}.by(1)
+          expect{ Metasploit::Credential::NTLMHash.where(data: upcase_data).first_or_create }.not_to change{Metasploit::Credential::NTLMHash.count}
+        end
+      end
+
+      context 'finds an existing case insensitive match' do
+        let(:ntlm_hash) do
+          FactoryBot.build(
+              :metasploit_credential_ntlm_hash,
+              data: upcase_data
+          )
+        end
+        it 'successfully looks up credential in case insensitive way' do
+          expect( ntlm_hash.data ).to eq(data)
+        end
+      end
+    end
+  end
 end
