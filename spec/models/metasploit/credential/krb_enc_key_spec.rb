@@ -148,4 +148,30 @@ RSpec.describe Metasploit::Credential::KrbEncKey, type: :model do
       end
     end
   end
+
+  context 'serialization' do
+    context '#first_or_create' do
+      let(:data) { 'msf_krbenckey:23:e22e04519aa757d12f1219c4f31252f4:' }
+      let(:upcase_data) {data.upcase}
+
+      context 'creates a new instance that stores case-insensitive value' do
+        it 'creates case insensitive data' do
+          expect{ Metasploit::Credential::KrbEncKey.where(data: data).first_or_create }.to change{Metasploit::Credential::KrbEncKey.count}.by(1)
+          expect{ Metasploit::Credential::KrbEncKey.where(data: upcase_data).first_or_create }.not_to change{Metasploit::Credential::KrbEncKey.count}
+        end
+      end
+
+      context 'finds an existing case insensitive match' do
+        let(:krb_enc_key) do
+          FactoryBot.build(
+              :metasploit_credential_krb_enc_key,
+              data: upcase_data
+          )
+        end
+        it 'successfully looks up credential in case insensitive way' do
+          expect( krb_enc_key.data ).to eq(data)
+        end
+      end
+    end
+  end
 end

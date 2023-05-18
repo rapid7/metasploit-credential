@@ -178,6 +178,37 @@ RSpec.describe Metasploit::Credential::Creation do
         end
       end
     end
+    context 'deletion and creation' do
+      let(:private_data) { 'md5ac4bbe016b808c3c0b816981f240dcae' }
+      let(:private_data_upcase) { private_data.upcase }
+      let(:credential_data) {{
+        workspace_id: workspace.id,
+        user_id: user.id,
+        origin_type: :manual,
+        username: 'admin',
+        private_data: private_data,
+        private_type: :postgres_md5
+      }}
+      it 'creates a private cred' do
+        expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::PostgresMD5.count }.by(1)
+      end
+      let(:credential_data_upcase) {{
+        workspace_id: workspace.id,
+        user_id: user.id,
+        origin_type: :manual,
+        username: 'admin',
+        private_data: private_data_upcase,
+        private_type: :postgres_md5
+      }}
+      it 'allows for the recreation of core with case insensitive private credentials set to different case' do
+        expect{ test_object.create_credential(credential_data) }.to change{ Metasploit::Credential::PostgresMD5.count }.by(1)
+        expect{ Metasploit::Credential::Core.first.destroy }.to change{ Metasploit::Credential::Core.count }.by(-1)
+        expect( Metasploit::Credential::PostgresMD5.count ).to eq(1)
+        expect( Metasploit::Credential::Core.count ).to eq(0)
+        expect{ test_object.create_credential(credential_data_upcase) }.to change{ Metasploit::Credential::Core.count }.by(1)
+        expect( Metasploit::Credential::PostgresMD5.count ).to eq(1)
+      end
+    end
   end
 
   context '#create_credential_and_login' do

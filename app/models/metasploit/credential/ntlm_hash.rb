@@ -55,15 +55,18 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   #   @return [String] `'<LAN Manager hex digest>:<NT LAN Manager hex digest>'`
 
   #
-  # Callbacks
+  # Serializers
   #
 
-  before_validation :normalize_data
+  # Hash results are always downcased when stored in the database
+  # This serializer allows for ORM to search in a case-insensitive
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
 
   #
   # Validations
   #
 
+  validates_uniqueness_of :data, :case_sensitive => false
   validate :data_format
 
   #
@@ -129,15 +132,6 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
   end
 
   private
-
-  # Normalizes {#data} by making it all lowercase so that the unique validation and index on
-  # ({Metasploit::Credential::Private#type}, {#data}) catches collision in a case-insensitive manner without the need
-  # to use case-insensitive comparisons.
-  def normalize_data
-    if data
-      self.data = data.downcase
-    end
-  end
 
   # Validates that {#data} is in the NTLM data format of <LAN Manager hex digest>:<NT LAN Manager hex digest>. Both hex
   # digests are 32 lowercase hexadecimal characters.

@@ -13,7 +13,8 @@ class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHa
   # Callbacks
   #
 
-  before_validation :normalize_data
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
+  validates_uniqueness_of :data, :case_sensitive => false
 
   #
   # Validations
@@ -22,15 +23,6 @@ class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHa
   validate :data_format
 
   private
-
-  # Normalizes {#data} by making it all lowercase so that the unique validation and index on
-  # ({Metasploit::Credential::Private#type}, {#data}) catches collision in a case-insensitive manner without the need
-  # to use case-insensitive comparisons.
-  def normalize_data
-    if data
-      self.data = data.downcase
-    end
-  end
 
   def data_format
     unless DATA_REGEXP.match(data)

@@ -116,7 +116,6 @@ class Metasploit::Credential::Importer::Core
         private_class = row['private_type'].present? ? row['private_type'].constantize : ''
         private_data  = row['private_data'].present? ? row['private_data'] : ''
 
-
         if realms[realm_value].nil?
           realms[realm_value]  = Metasploit::Credential::Realm.where(key: realm_key, value: realm_value).first_or_create
         end
@@ -210,7 +209,7 @@ class Metasploit::Credential::Importer::Core
         if private_data.strip == BLANK_TOKEN
           private_object_for_row = Metasploit::Credential::BlankPassword.first_or_create
         else
-          private_object_for_row = @private_credential_type.constantize.where(data: row['private_data']).first_or_create
+          private_object_for_row = @private_credential_type.constantize.where(data: private_data).first_or_create
         end
 
         # need to check private_object_for_row.valid? to raise a user facing message if any cred had invalid private

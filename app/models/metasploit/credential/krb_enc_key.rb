@@ -73,7 +73,8 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   # Callbacks
   #
 
-  before_validation :normalize_data
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
+  validates_uniqueness_of :data, :case_sensitive => false
 
   #
   # Validations
@@ -160,15 +161,6 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
       key: self.class.as_bytes(match[:key]),
       salt: match[:salt].empty? ? nil : self.class.as_bytes(match[:salt])
     }
-  end
-
-  # Normalizes {#data} by making it all lowercase so that the unique validation and index on
-  # ({Metasploit::Credential::Private#type}, {#data}) catches collision in a case-insensitive manner without the need
-  # to use case-insensitive comparisons.
-  def normalize_data
-    if data
-      self.data = data.downcase
-    end
   end
 
   # Validates that {#data} is in the expected data format
