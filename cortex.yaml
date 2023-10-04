@@ -1,0 +1,16 @@
+---
+info:
+  title: Metasploit Credential
+  description: Code for modeling and managing credentials in Metasploit, implemented
+    as a Rails Engine
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/metasploit-credential
+  x-cortex-tag: metasploit-credential
+  x-cortex-type: service
+  x-cortex-domain-parents:
+  - tag: metasploit
+openapi: 3.0.1
+servers:
+- url: "/"
