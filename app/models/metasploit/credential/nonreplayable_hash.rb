@@ -8,19 +8,56 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
   #
 
   # The names of John the Ripper supported formats, from the "jumbo" edition.
-  # Listed in the format section of the output of +john --help+ on the CLI
-  # Current as of 2014-06-12
+  # Listed in the format section of the output of +john --list=formats+ on the CLI
+  # Current as of 2022-04-11
   VALID_JTR_FORMATS = %w(
+    7z
+    adxcrypt
     afs
-    bf
-    bf-opencl
+    agilekeychain
+    aix-ssha1
+    aix-ssha256
+    aix-ssha512
+    andotp
+    androidbackup
+    ansible
+    argon2
+    as400-des
+    as400-ssha1
+    asa-md5
+    axcrypt
+    azuread
+    bcrypt
+    bestcrypt
+    bestcryptve4
     bfegg
-    bsdi
+    bitcoin
+    bitlocker
+    bitshares
+    bitwarden
+    bks
+    blackberry-es10
+    blockchain
+    bsdicrypt
+    chap
+    citrix_ns10
+    clipperz
+    cloudkeychain
+    cq
     crc32
-    des
+    crypt
+    cryptosafe
+    dahua
+    dashlane
+    descrypt
+    diskcryptor
     django
+    django-scrypt
     dmd5
+    dmg
     dominosec
+    dominosec8
+    dpapimk
     dragonfly3-32
     dragonfly3-64
     dragonfly4-32
@@ -28,9 +65,25 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
     drupal7
     dummy
     dynamic_n
+    ecryptfs
+    eigrp
+    electrum
+    encfs
+    enpass
     epi
     episerver
+    ethereum
+    fde
+    formspring
+    fortigate
+    fortigate256
+    fvde
+    geli
     gost
+    gpg
+    has-160
+    haval-128-4
+    haval-256-3
     hdaa
     hmac-md5
     hmac-sha1
@@ -39,88 +92,193 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
     hmac-sha384
     hmac-sha512
     hmailserver
+    hsrp
+    ike
     ipb2
+    itunes-backup
+    iwork
     keepass
     keychain
+    keyring
+    keystore
+    known_hosts
     krb4
     krb5
+    krb5-17
+    krb5-18
+    krb5-3
+    krb5asrep
+    krb5pa-md5
+    krb5pa-sha1
+    krb5tgs
+    kwallet
+    lastpass
+    leet
     lm
     lotus5
-    md4-gen
-    md5
-    md5crypt-opencl
+    lotus85
+    lp
+    lpcli
+    luks
+    md2
+    md5crypt
+    md5crypt-long
     md5ns
+    mdc2
     mediawiki
+    monero
+    money
+    mongodb
+    mozilla
     mscash
     mscash2
-    mscash2-opencl
     mschapv2
-    mskrb5
+    mschapv2-naive
     mssql
     mssql05
+    mssql12
+    multibit
     mysql
     mysql-sha1
-    mysql-sha1-opencl
+    mysqlna
+    net-ah
+    net-md5
+    net-sha1
     nethalflm
     netlm
     netlmv2
     netntlm
+    netntlm-naive
     netntlmv2
-    nsldap
+    nk
+    notes
+    nsec3
     nt
-    nt-opencl
-    nt2
+    o10glogon
+    o3logon
+    o5logon
     odf
     office
+    oldoffice
+    openbsd-softraid
+    openssl-enc
+    openvms
     oracle
     oracle11
+    oracle12c
     osc
+    ospf
+    padlock
+    palshop
+    panama
+    pbkdf2-hmac-md4
+    pbkdf2-hmac-md5
+    pbkdf2-hmac-sha1
+    pbkdf2-hmac-sha256
+    pbkdf2-hmac-sha512
     pdf
+    pem
+    pfx
+    pgpdisk
+    pgpsda
+    pgpwde
     phpass
-    phpass-opencl
     phps
+    phps2
     pix-md5
     pkzip
+    plaintext
     po
+    postgres
+    pst
+    putty
     pwsafe
-    pwsafe-opencl
+    qnx
     racf
+    racf-kdfaes
+    radius
+    radmin
+    rakp
     rar
+    rar5
+    raw-blake2
+    raw-keccak
+    raw-keccak-256
     raw-md4
-    raw-md4-opencl
     raw-md5
-    raw-md5-opencl
     raw-md5u
-    raw-sha
     raw-sha1
+    raw-sha1-axcrypt
     raw-sha1-linkedin
-    raw-sha1-ng
-    raw-sha1-opencl
     raw-sha224
     raw-sha256
+    raw-sha3
     raw-sha384
     raw-sha512
-    raw-sha512-opencl
+    restic
+    ripemd-128
+    ripemd-160
+    rsvp
+    rvary
     salted-sha1
     sapb
     sapg
-    sha1-gen
+    saph
+    sappse
+    scram
+    scrypt
+    securezip
+    sha1crypt
     sha256crypt
     sha512crypt
-    sha512crypt-opencl
+    siemens-s7
+    signal
     sip
+    skein-256
+    skein-512
+    skey
+    sl3
+    snefru-128
+    snefru-256
+    snmp
+    solarwinds
     ssh
-    ssha-opencl
+    ssha512
+    sspr
+    stribog-256
+    stribog-512
+    strip
+    sunmd5
+    sybase-prop
     sybasease
-    trip
+    tacacs-plus
+    tc_aes_xts
+    tc_ripemd160
+    tc_ripemd160boot
+    tc_sha512
+    tc_whirlpool
+    tcp-md5
+    telegram
+    tezos
+    tiger
+    tripcode
+    vdi
+    vmx
     vnc
+    vtp
     wbb3
+    whirlpool
+    whirlpool0
+    whirlpool1
+    wowsrp
     wpapsk
-    wpapsk-opencl
+    wpapsk-pmk
+    xmpp-scram
     xsha
     xsha512
-    xsha512-opencl
+    zed
     zip
+    zipmonster
   )
 
   #
