@@ -34,7 +34,7 @@ group :development, :test do
   # code coverage of tests
   gem 'simplecov', :require => false
   # dummy app
-  gem 'rails'
+  gem 'rails', '7.0.8'
   # running documentation generation tasks and rspec tasks
   gem 'rake'
   # unit testing framework with rails integration

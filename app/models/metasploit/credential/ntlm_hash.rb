@@ -60,7 +60,7 @@ class Metasploit::Credential::NTLMHash < Metasploit::Credential::ReplayableHash
 
   # Hash results are always downcased when stored in the database
   # This serializer allows for ORM to search in a case-insensitive
-  serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
 
   #
   # Validations
