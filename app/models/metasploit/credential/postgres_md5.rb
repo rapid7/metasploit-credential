@@ -13,7 +13,7 @@ class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHa
   # Callbacks
   #
 
-  serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
   validates_uniqueness_of :data, :case_sensitive => false
 
   #

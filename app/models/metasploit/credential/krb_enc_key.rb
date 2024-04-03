@@ -73,7 +73,7 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   # Callbacks
   #
 
-  serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
+  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
   validates_uniqueness_of :data, :case_sensitive => false
 
   #
