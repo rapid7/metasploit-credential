@@ -73,7 +73,12 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   # Callbacks
   #
 
-  serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
+  if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+    serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
+  else
+    serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
+  end
+
   validates_uniqueness_of :data, :case_sensitive => false
 
   #
