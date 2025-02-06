@@ -166,9 +166,9 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
 
     context 'with the CA' do
       it 'returns the CA in the metadata' do
-        ca = 'myca'
-        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca })
-        expect(pkcs12.metadata).to eq( { 'ca' => ca } )
+        adcs_ca = 'myca'
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_ca: adcs_ca })
+        expect(pkcs12.metadata).to eq( { 'adcs_ca' => adcs_ca } )
       end
     end
 
@@ -182,31 +182,31 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
 
     context 'with both the CA and the Certififate Template' do
       it 'returns the CA and the certificate template in the metadata' do
-        ca = 'myca'
+        adcs_ca = 'myca'
         adcs_template = 'mytemplate'
-        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca, adcs_template: adcs_template })
-        expect(pkcs12.metadata).to eq( { 'ca' => ca, 'adcs_template' => adcs_template } )
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_ca: adcs_ca, adcs_template: adcs_template })
+        expect(pkcs12.metadata).to eq( { 'adcs_ca' => adcs_ca, 'adcs_template' => adcs_template } )
       end
     end
 
     context 'with both the CA, the Certififate Template and the cert password' do
       it 'returns the CA and the certificate template in the metadata' do
-        ca = 'myca'
+        adcs_ca = 'myca'
         adcs_template = 'mytemplate'
         pkcs12_password = 'mypassword'
-        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password })
-        expect(pkcs12.metadata).to eq( { 'ca' => ca, 'adcs_template' => adcs_template, 'pkcs12_password' => pkcs12_password } )
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_ca: adcs_ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password })
+        expect(pkcs12.metadata).to eq( { 'adcs_ca' => adcs_ca, 'adcs_template' => adcs_template, 'pkcs12_password' => pkcs12_password } )
       end
     end
   end
 
-  context '#ca' do
+  context '#adcs_ca' do
     it 'returns the CA' do
       cert = 'mycert'
       data = Base64.strict_encode64(cert)
-      ca = 'myca'
-      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca })
-      expect(pkcs12.ca).to eq(ca)
+      adcs_ca = 'myca'
+      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_ca: adcs_ca })
+      expect(pkcs12.adcs_ca).to eq(adcs_ca)
     end
   end
 
@@ -260,7 +260,7 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
   context '#to_s' do
     let(:subject) { '/C=FR/O=Yeah/OU=Yeah/CN=Yeah' }
     let(:issuer) { '/C=FR/O=Issuer1/OU=Issuer1/CN=Issuer1' }
-    let(:ca) { 'myca' }
+    let(:adcs_ca) { 'myca' }
     let(:adcs_template) { 'mytemplate' }
     let(:pkcs12_password) { 'mypassword' }
 
@@ -281,9 +281,9 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           :metasploit_credential_pkcs12_with_ca,
           subject: subject,
           issuer: issuer,
-          metadata: { ca: ca }
+          metadata: { adcs_ca: adcs_ca }
         )
-        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca}")
+        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS CA:#{adcs_ca}")
       end
     end
 
@@ -295,7 +295,7 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           issuer: issuer,
           metadata: { adcs_template: adcs_template }
         )
-        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS_template:#{adcs_template}")
+        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS template:#{adcs_template}")
       end
     end
 
@@ -307,9 +307,9 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           :metasploit_credential_pkcs12_with_ca_and_adcs_template,
           subject: subject,
           issuer: issuer,
-          metadata: { ca: ca, adcs_template: adcs_template }
+          metadata: { adcs_ca: adcs_ca, adcs_template: adcs_template }
         )
-        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca},ADCS_template:#{adcs_template}")
+        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS CA:#{adcs_ca},ADCS template:#{adcs_template}")
       end
     end
 
@@ -323,10 +323,10 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           subject: subject,
           issuer: issuer,
           pkcs12_password: pkcs12_password,
-          metadata: { ca: ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password }
+          metadata: { adcs_ca: adcs_ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password }
         )
         # The Pkcs12 password is voluntarily not included
-        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca},ADCS_template:#{adcs_template}")
+        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS CA:#{adcs_ca},ADCS template:#{adcs_template}")
       end
     end
 
