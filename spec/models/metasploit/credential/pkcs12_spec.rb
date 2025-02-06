@@ -28,9 +28,25 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
       it { is_expected.to be_valid }
     end
 
+    context 'metasploit_credential_pkcs12_with_pkcs12_password' do
+      subject(:metasploit_credential_pkcs12_with_pkcs12_password) do
+        FactoryBot.build(:metasploit_credential_pkcs12_with_pkcs12_password)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
     context 'metasploit_credential_pkcs12_with_ca_and_adcs_template' do
       subject(:metasploit_credential_pkcs12_with_ca_and_adcs_template) do
         FactoryBot.build(:metasploit_credential_pkcs12_with_ca_and_adcs_template)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'metasploit_credential_pkcs12_with_ca_and_adcs_template_and_pkcs12_password' do
+      subject(:metasploit_credential_pkcs12_with_ca_and_adcs_template_and_pkcs12_password) do
+        FactoryBot.build(:metasploit_credential_pkcs12_with_ca_and_adcs_template_and_pkcs12_password)
       end
 
       it { is_expected.to be_valid }
@@ -132,132 +148,85 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
         end
       end
 
-      context '#data_format' do
-        subject(:errors) { pkcs12.errors }
-
-        before(:example) do
-          allow(pkcs12).to receive(:data).and_return(data)
-          pkcs12.valid?
-        end
-
-        # Wrong data
-        context 'with empty data' do
-          let(:data) { '' }
-          it { is_expected.to be_added(:data, :format) }
-        end
-
-        context 'with an empty pkcs12 cert' do
-          let(:data) { 'msf_pkcs12::ca:template' }
-          it { is_expected.to be_added(:data, :format) }
-        end
-
-        context 'with missing fields separated by :' do
-          let(:data) { 'msf_pkcs12:pkcs12_cert:ca' }
-          it { is_expected.to be_added(:data, :format) }
-        end
-
-        context 'with a wrong header' do
-          let(:data) { 'msf_krbenckey:pkcs12_cert:ca' }
-          it { is_expected.to be_added(:data, :format) }
-        end
-
-        # Good data
-        context 'with a correct pkcs12 cert' do
-          let(:data) { 'msf_pkcs12:pkcs12_cert::' }
-          it { is_expected.to_not be_added(:data, :format) }
-        end
-
-        context 'with a CA' do
-          let(:data) { 'msf_pkcs12:pkcs12_cert:ca:' }
-          it { is_expected.to_not be_added(:data, :format) }
-        end
-
-        context 'with an ADCS template' do
-          let(:data) { 'msf_pkcs12:pkcs12_cert::adcs_template' }
-          it { is_expected.to_not be_added(:data, :format) }
-        end
-
-        context 'with both a CA and an ADCS template' do
-          let(:data) { 'msf_pkcs12:pkcs12_cert:ca:adcs_template' }
-          it { is_expected.to_not be_added(:data, :format) }
-        end
-      end
     end
   end
 
-  context 'self.build_data' do
-    let(:pkcs12_cert) { 'mycert' }
-    let(:ca) { 'myca' }
-    let(:adcs_template) { 'mytemplate' }
-
-    subject(:serialized_data) { described_class.build_data(**args) }
-
-    context 'with only pkcs12 cert' do
-      let(:args) { { pkcs12: pkcs12_cert } }
-      it { is_expected.to eq("msf_pkcs12:#{pkcs12_cert}::") }
-    end
-
-    context 'with pkcs12 cert and CA' do
-      let(:args) { { pkcs12: pkcs12_cert, ca: ca } }
-      it { is_expected.to eq("msf_pkcs12:#{pkcs12_cert}:#{ca}:") }
-    end
-
-    context 'with pkcs12 cert and ADCS template' do
-      let(:args) { { pkcs12: pkcs12_cert, adcs_template: adcs_template } }
-      it { is_expected.to eq("msf_pkcs12:#{pkcs12_cert}::#{adcs_template}") }
-    end
-
-    context 'with pkcs12 cert, CA and ADCS template' do
-      let(:args) { { pkcs12: pkcs12_cert, ca: ca, adcs_template: adcs_template } }
-      it { is_expected.to eq("msf_pkcs12:#{pkcs12_cert}:#{ca}:#{adcs_template}") }
-    end
-
-    context 'without pkcs12 cert' do
-      let(:args) { { ca: ca, adcs_template: adcs_template } }
-      it 'raises the expected exception' do
-        expect { serialized_data }.to raise_error(ArgumentError)
-      end
-    end
-
-    context 'with an empty CA' do
-      let(:args) { { pkcs12: pkcs12_cert, ca: '' } }
-      it 'raises the expected exception' do
-        expect { serialized_data }.to raise_error(ArgumentError)
-      end
-    end
-
-    context 'with an empty ADCS template' do
-      let(:args) { { pkcs12: pkcs12_cert, ca: '', adcs_template: '' } }
-      it 'raises the expected exception' do
-        expect { serialized_data }.to raise_error(ArgumentError)
-      end
-    end
-  end
-
-  context '#pkcs12' do
+  context '#data' do
     it 'returns the base64 encoded pkcs12' do
       cert = 'mycert'
-      data = "msf_pkcs12:#{cert}:myca:mytemplate"
+      data = Base64.strict_encode64(cert)
       pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data)
-      expect(pkcs12.pkcs12).to eq(cert)
+      expect(pkcs12.data).to eq(data)
+    end
+  end
+
+  context '#metadata' do
+    let(:cert) { 'mycert' }
+    let(:data) { Base64.strict_encode64(cert) }
+
+    context 'with the CA' do
+      it 'returns the CA in the metadata' do
+        ca = 'myca'
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca })
+        expect(pkcs12.metadata).to eq( { 'ca' => ca } )
+      end
+    end
+
+    context 'with the Certififate Template' do
+      it 'returns the certificate template in the metadata' do
+        adcs_template = 'mytemplate'
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_template: adcs_template })
+        expect(pkcs12.metadata).to eq( { 'adcs_template' => adcs_template } )
+      end
+    end
+
+    context 'with both the CA and the Certififate Template' do
+      it 'returns the CA and the certificate template in the metadata' do
+        ca = 'myca'
+        adcs_template = 'mytemplate'
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca, adcs_template: adcs_template })
+        expect(pkcs12.metadata).to eq( { 'ca' => ca, 'adcs_template' => adcs_template } )
+      end
+    end
+
+    context 'with both the CA, the Certififate Template and the cert password' do
+      it 'returns the CA and the certificate template in the metadata' do
+        ca = 'myca'
+        adcs_template = 'mytemplate'
+        pkcs12_password = 'mypassword'
+        pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password })
+        expect(pkcs12.metadata).to eq( { 'ca' => ca, 'adcs_template' => adcs_template, 'pkcs12_password' => pkcs12_password } )
+      end
     end
   end
 
   context '#ca' do
     it 'returns the CA' do
+      cert = 'mycert'
+      data = Base64.strict_encode64(cert)
       ca = 'myca'
-      data = "msf_pkcs12:mycert:#{ca}:mytemplate"
-      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data)
+      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { ca: ca })
       expect(pkcs12.ca).to eq(ca)
     end
   end
 
-  context '#ca' do
-    it 'returns the CA' do
+  context '#adcs_template' do
+    it 'returns the certificate template' do
+      cert = 'mycert'
+      data = Base64.strict_encode64(cert)
       adcs_template = 'mytemplate'
-      data = "msf_pkcs12:mycert:ca:#{adcs_template}"
-      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data)
+      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { adcs_template: adcs_template })
       expect(pkcs12.adcs_template).to eq(adcs_template)
+    end
+  end
+
+  context '#pkcs12_password' do
+    it 'returns the Pkcs12 password' do
+      cert = 'mycert'
+      data = Base64.strict_encode64(cert)
+      pkcs12_password = 'mypassword'
+      pkcs12 = FactoryBot.build(:metasploit_credential_pkcs12, data: data, metadata: { pkcs12_password: pkcs12_password })
+      expect(pkcs12.pkcs12_password).to eq(pkcs12_password)
     end
   end
 
@@ -268,7 +237,7 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
 
     it 'raises an exception if data is not a base64-encoded certificate' do
       expect {
-        FactoryBot.build(:metasploit_credential_pkcs12, data: 'msf_pkcs12:wrong_cert::').openssl_pkcs12
+        FactoryBot.build(:metasploit_credential_pkcs12, data: 'wrong_cert').openssl_pkcs12
       }.to raise_error(ArgumentError)
     end
 
@@ -293,11 +262,10 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
     let(:issuer) { '/C=FR/O=Issuer1/OU=Issuer1/CN=Issuer1' }
     let(:ca) { 'myca' }
     let(:adcs_template) { 'mytemplate' }
+    let(:pkcs12_password) { 'mypassword' }
 
     context 'with the pkcs21 only' do
       it 'returns the expected string' do
-        ca = 'myca'
-        adcs_template = 'mytemplate'
         pkcs12 = FactoryBot.build(
           :metasploit_credential_pkcs12,
           subject: subject,
@@ -307,13 +275,13 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
       end
     end
 
-    context 'with the pkcs21 and the ca' do
+    context 'with the pkcs21 and the CA' do
       it 'returns the expected string' do
         pkcs12 = FactoryBot.build(
           :metasploit_credential_pkcs12_with_ca,
           subject: subject,
           issuer: issuer,
-          ca: ca
+          metadata: { ca: ca }
         )
         expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca}")
       end
@@ -325,7 +293,7 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           :metasploit_credential_pkcs12_with_adcs_template,
           subject: subject,
           issuer: issuer,
-          adcs_template: adcs_template
+          metadata: { adcs_template: adcs_template }
         )
         expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},ADCS_template:#{adcs_template}")
       end
@@ -339,9 +307,25 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
           :metasploit_credential_pkcs12_with_ca_and_adcs_template,
           subject: subject,
           issuer: issuer,
-          ca: ca,
-          adcs_template: adcs_template
+          metadata: { ca: ca, adcs_template: adcs_template }
         )
+        expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca},ADCS_template:#{adcs_template}")
+      end
+    end
+
+    context 'with the pkcs21, the CA, the ADCS template and the pkcs12 password' do
+      it 'returns the expected string' do
+        subject = '/C=FR/O=Yeah/OU=Yeah/CN=Yeah'
+        issuer = '/C=FR/O=Issuer1/OU=Issuer1/CN=Issuer1'
+        pkcs12_password = 'mypassword'
+        pkcs12 = FactoryBot.build(
+          :metasploit_credential_pkcs12_with_ca_and_adcs_template_and_pkcs12_password,
+          subject: subject,
+          issuer: issuer,
+          pkcs12_password: pkcs12_password,
+          metadata: { ca: ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password }
+        )
+        # The Pkcs12 password is voluntarily not included
         expect(pkcs12.to_s).to eq("subject:#{subject},issuer:#{issuer},CA:#{ca},ADCS_template:#{adcs_template}")
       end
     end
