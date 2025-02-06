@@ -5,14 +5,6 @@ require 'base64'
 class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
 
   #
-  # Constants
-  #
-
-  # Valid format for {#data} composed of `'msf_pkcs12:<base64 cert>:<ca>:<ADCS template>'`.
-  DATA_REGEXP = /\Amsf_pkcs12:(?<pkcs12>[^:]+):(?<ca>[^:]*):(?<adcs_template>.*)\z/
-  private_constant :DATA_REGEXP
-
-  #
   # Attributes
   #
 
@@ -20,6 +12,14 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   #   A private pkcs12 file, base64 encoded - i.e. starting with 'MIIMhgIBAzCCDFAGCSqGSIb3DQEHAaCC....'
   #
   #   @return [String]
+
+  # @!attribute metadata
+  #   Metadata for this Pkcs12:
+  #     ca: The Certificate Authority that issued the certificate
+  #     adcs_template: The certificate template used to issue the certificate
+  #     pkcs12_password: The password to decrypt the Pkcs12
+  #
+  #   @return [JSONB]
 
   #
   #
@@ -33,11 +33,10 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
 
   validates :data,
             presence: true
+
   #
   # Method Validations
   #
-
-  validate :data_format
 
   validate :readable
 
@@ -45,43 +44,30 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   # Class methods
   #
 
-  # @param [Integer] pkcs12 The Base64-encoded  Pkcs12 certificate
-  # @param [String,nil] ca The CA that issued the certificate
-  # @param [String,nil] adcs_template The certificate template used to issue the certificate
-  # @return [String]
-  # @raise [ArgumentError] if an option is invalid
-  def self.build_data(pkcs12:, ca: nil, adcs_template: nil)
-    raise ArgumentError.new('pkcs12 must be set') if pkcs12.nil?
-    raise ArgumentError.new('ca must be a non-empty string') if ca && (!ca.is_a?(String) || ca.empty?)
-    raise ArgumentError.new('adcs_template must be a non-empty string') if adcs_template && (!adcs_template.is_a?(String) || adcs_template.empty?)
-
-    "msf_pkcs12:#{pkcs12}:#{ca}:#{adcs_template}"
-  end
-
   #
   # Instance Methods
   #
   #
 
-  # The Base64-encoded Pkcs12 certificate
-  #
-  # @return [String]
-  def pkcs12
-    parsed_data[:pkcs12]
-  end
-
   # The CA that issued the certificate
   #
   # @return [String]
   def ca
-    parsed_data[:ca]
+    metadata['ca']
   end
 
   # The certificate template used to issue the certificate
   #
   # @return [String]
   def adcs_template
-    parsed_data[:adcs_template]
+    metadata['adcs_template']
+  end
+
+  # The password to decrypt the Pkcs12
+  #
+  # @return [String]
+  def pkcs12_password
+    metadata['pkcs12_password']
   end
 
   # Converts the private pkcs12 data in {#data} to an `OpenSSL::PKCS12` instance.
@@ -91,8 +77,8 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   def openssl_pkcs12
     if data
       begin
-        password = ''
-        OpenSSL::PKCS12.new(Base64.strict_decode64(pkcs12), password)
+        password = metadata.fetch('pkcs12_password', '')
+        OpenSSL::PKCS12.new(Base64.strict_decode64(data), password)
       rescue OpenSSL::PKCS12::PKCS12Error => error
         raise ArgumentError.new(error)
       end
@@ -100,7 +86,7 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   end
 
   # The {#data key data}'s fingerprint, suitable for displaying to the
-  # user.
+  # user. The Pkcs12 password is voluntarily not included.
   #
   # @return [String]
   def to_s
@@ -110,10 +96,11 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
     result = []
     result << "subject:#{cert.subject.to_s}"
     result << "issuer:#{cert.issuer.to_s}"
-    result << "CA:#{ca}" if ca
-    result << "ADCS_template:#{adcs_template}" if adcs_template
+    result << "CA:#{metadata['ca']}" if metadata['ca']
+    result << "ADCS_template:#{metadata['adcs_template']}" if metadata['adcs_template']
     result.join(',')
   end
+
 
   private
 
@@ -132,24 +119,6 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
     end
   end
 
-  # @return [Hash] The parsed data with enctype, key, salt keys
-  def parsed_data
-    match = data.match(DATA_REGEXP)
-    return {} unless match
-
-    {
-      pkcs12: match[:pkcs12],
-      ca: match[:ca].empty? ? nil : match[:ca],
-      adcs_template: match[:adcs_template].empty? ? nil : match[:adcs_template]
-    }
-  end
-
-  # Validates that {#data} is in the expected data format
-  def data_format
-    unless DATA_REGEXP.match(data)
-      errors.add(:data, :format)
-    end
-  end
 
   public
 

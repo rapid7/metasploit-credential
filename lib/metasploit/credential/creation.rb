@@ -480,7 +480,7 @@ module Metasploit::Credential::Creation
         when :ssh_key
           private_object = Metasploit::Credential::SSHKey.where(data: private_data).first_or_create
         when :pkcs12
-          private_object = Metasploit::Credential::Pkcs12.where(data: private_data).first_or_create
+          private_object = Metasploit::Credential::Pkcs12.where(data: private_data, metadata: opts.fetch(:private_metadata, {})).first_or_create
         when :krb_enc_key
           private_object = Metasploit::Credential::KrbEncKey.where(data: private_data).first_or_create
         when :ntlm_hash
