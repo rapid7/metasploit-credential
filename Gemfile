@@ -16,6 +16,10 @@ group :development do
 end
 
 group :development, :test do
+  # Temporary, remove once the Rails 7.1 update is complete
+  # see: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
+  gem 'concurrent-ruby', '1.3.4'
+
   # Hash password for Metasploit::Credential::PasswordHash factories
   gem 'bcrypt'
   # supplies factories for producing model instance for specs
