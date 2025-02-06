@@ -876,11 +876,11 @@ RSpec.describe Metasploit::Credential::Creation do
 
       context 'with metadata' do
         it 'creates a Metasploit::Credential::Pkcs12 with the expected metadata' do
-          ca = 'test_ca'
+          adcs_ca = 'test_ca'
           adcs_template = 'test_template'
-          opts[:private_metadata] = { ca: ca, adcs_template: adcs_template }
+          opts[:private_metadata] = { adcs_ca: adcs_ca, adcs_template: adcs_template }
           pkcs12 = test_object.create_credential_private(opts)
-          expect(pkcs12.ca).to eq(ca)
+          expect(pkcs12.adcs_ca).to eq(adcs_ca)
           expect(pkcs12.adcs_template).to eq(adcs_template)
         end
       end

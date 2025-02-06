@@ -38,10 +38,10 @@ FactoryBot.define do
   factory :metasploit_credential_pkcs12_with_ca, parent: :metasploit_credential_pkcs12 do
     transient do
       # The CA that issued the certificate
-      ca { 'test-ca' }
+      adcs_ca { 'test-ca' }
     end
 
-    metadata { { ca: ca } }
+    metadata { { adcs_ca: adcs_ca } }
   end
 
   factory :metasploit_credential_pkcs12_with_adcs_template, parent: :metasploit_credential_pkcs12 do
@@ -64,21 +64,21 @@ FactoryBot.define do
 
   factory :metasploit_credential_pkcs12_with_ca_and_adcs_template, parent: :metasploit_credential_pkcs12 do
     transient do
-      ca { 'test-ca' }
+      adcs_ca { 'test-ca' }
       adcs_template { 'User' }
     end
 
-    metadata { { ca: ca, adcs_template: adcs_template } }
+    metadata { { adcs_ca: adcs_ca, adcs_template: adcs_template } }
   end
 
   factory :metasploit_credential_pkcs12_with_ca_and_adcs_template_and_pkcs12_password, parent: :metasploit_credential_pkcs12 do
     transient do
-      ca { 'test-ca' }
+      adcs_ca { 'test-ca' }
       adcs_template { 'User' }
       pkcs12_password { 'Password!' }
     end
 
-    metadata { { ca: ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password } }
+    metadata { { adcs_ca: adcs_ca, adcs_template: adcs_template, pkcs12_password: pkcs12_password } }
   end
 
 end

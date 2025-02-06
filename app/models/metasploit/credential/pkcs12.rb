@@ -15,7 +15,7 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
 
   # @!attribute metadata
   #   Metadata for this Pkcs12:
-  #     ca: The Certificate Authority that issued the certificate
+  #     adcs_ca: The Certificate Authority that issued the certificate
   #     adcs_template: The certificate template used to issue the certificate
   #     pkcs12_password: The password to decrypt the Pkcs12
   #
@@ -52,8 +52,8 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   # The CA that issued the certificate
   #
   # @return [String]
-  def ca
-    metadata['ca']
+  def adcs_ca
+    metadata['adcs_ca']
   end
 
   # The certificate template used to issue the certificate
@@ -96,8 +96,8 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
     result = []
     result << "subject:#{cert.subject.to_s}"
     result << "issuer:#{cert.issuer.to_s}"
-    result << "CA:#{metadata['ca']}" if metadata['ca']
-    result << "ADCS_template:#{metadata['adcs_template']}" if metadata['adcs_template']
+    result << "ADCS CA:#{metadata['adcs_ca']}" if metadata['adcs_ca']
+    result << "ADCS template:#{metadata['adcs_template']}" if metadata['adcs_template']
     result.join(',')
   end
 
