@@ -12,6 +12,10 @@ FactoryBot.define do
       issuer { '/C=BE/O=Test/OU=Test/CN=Test' }
       # the pkcs12 password
       pkcs12_password { '' }
+      # the cert not_before date
+      not_before { Time.now }
+      # the cert not_after date
+      not_after { Time.now + 365 * 24 * 60 * 60 }
     end
 
     data {
@@ -23,8 +27,8 @@ FactoryBot.define do
       cert = OpenSSL::X509::Certificate.new
       cert.subject = OpenSSL::X509::Name.parse(subject)
       cert.issuer = OpenSSL::X509::Name.parse(issuer)
-      cert.not_before = Time.now
-      cert.not_after = Time.now + 365 * 24 * 60 * 60
+      cert.not_before = not_before
+      cert.not_after = not_after
       cert.public_key = public_key
       cert.serial = 0x0
       cert.version = 2
@@ -60,6 +64,15 @@ FactoryBot.define do
     end
 
     metadata { { pkcs12_password: pkcs12_password } }
+  end
+
+  factory :metasploit_credential_pkcs12_with_status, parent: :metasploit_credential_pkcs12 do
+    transient do
+      # The CA that issued the certificate
+      status { 'active' }
+    end
+
+    metadata { { status: status } }
   end
 
   factory :metasploit_credential_pkcs12_with_ca_and_adcs_template, parent: :metasploit_credential_pkcs12 do
