@@ -36,6 +36,14 @@ RSpec.describe Metasploit::Credential::Pkcs12, type: :model do
       it { is_expected.to be_valid }
     end
 
+    context 'metasploit_credential_pkcs12_with_status' do
+      subject(:metasploit_credential_pkcs12_with_status) do
+        FactoryBot.build(:metasploit_credential_pkcs12_with_status)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
     context 'metasploit_credential_pkcs12_with_ca_and_adcs_template' do
       subject(:metasploit_credential_pkcs12_with_ca_and_adcs_template) do
         FactoryBot.build(:metasploit_credential_pkcs12_with_ca_and_adcs_template)

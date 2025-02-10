@@ -70,6 +70,13 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
     metadata['pkcs12_password']
   end
 
+  # The status if the certificate (active or inactive)
+  #
+  # @return [String]
+  def status
+    metadata['status']
+  end
+
   # Converts the private pkcs12 data in {#data} to an `OpenSSL::PKCS12` instance.
   #
   # @return [OpenSSL::PKCS12]
