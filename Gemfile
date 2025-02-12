@@ -5,6 +5,8 @@ source "https://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'metasploit-model', git: 'https://github.com/cdelafuente-r7/metasploit-model', branch: 'feat/model/search/operation/jsonb'
+
 group :development do
   # Entity-Relationship diagrams for developers that need to access database using SQL directly.
   gem 'rails-erd'
