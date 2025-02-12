@@ -68,6 +68,9 @@ class Metasploit::Credential::Private < ApplicationRecord
   search_attribute :data,
                    type: :string
 
+  search_attribute :metadata,
+                   type: :jsonb
+
   #
   # Search Withs
   #

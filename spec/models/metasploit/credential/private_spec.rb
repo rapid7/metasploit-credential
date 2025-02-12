@@ -126,6 +126,15 @@ RSpec.describe Metasploit::Credential::Private, type: :model do
                             :type,
                             type: :string
 
+      it_should_behave_like 'search_attribute',
+                            :data,
+                            type: :string
+
+      it_should_behave_like 'search_attribute',
+                            :metadata,
+                            type: :jsonb
+
+
       it_should_behave_like 'search_with',
                             Metasploit::Credential::Search::Operator::Type,
                             name: :type,
