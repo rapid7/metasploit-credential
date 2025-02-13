@@ -3,6 +3,7 @@ require 'base64'
 
 # A private Pkcs12 file.
 class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
+
   #
   # Attributes
   #
@@ -11,6 +12,14 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   #   A private pkcs12 file, base64 encoded - i.e. starting with 'MIIMhgIBAzCCDFAGCSqGSIb3DQEHAaCC....'
   #
   #   @return [String]
+
+  # @!attribute metadata
+  #   Metadata for this Pkcs12:
+  #     adcs_ca: The Certificate Authority that issued the certificate
+  #     adcs_template: The certificate template used to issue the certificate
+  #     pkcs12_password: The password to decrypt the Pkcs12
+  #
+  #   @return [JSONB]
 
   #
   #
@@ -24,6 +33,7 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
 
   validates :data,
             presence: true
+
   #
   # Method Validations
   #
@@ -31,8 +41,41 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   validate :readable
 
   #
+  # Class methods
+  #
+
+  #
   # Instance Methods
   #
+  #
+
+  # The CA that issued the certificate
+  #
+  # @return [String]
+  def adcs_ca
+    metadata['adcs_ca']
+  end
+
+  # The certificate template used to issue the certificate
+  #
+  # @return [String]
+  def adcs_template
+    metadata['adcs_template']
+  end
+
+  # The password to decrypt the Pkcs12
+  #
+  # @return [String]
+  def pkcs12_password
+    metadata['pkcs12_password']
+  end
+
+  # The status if the certificate (active or inactive)
+  #
+  # @return [String]
+  def status
+    metadata['status']
+  end
 
   # Converts the private pkcs12 data in {#data} to an `OpenSSL::PKCS12` instance.
   #
@@ -41,7 +84,7 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   def openssl_pkcs12
     if data
       begin
-        password = ''
+        password = metadata.fetch('pkcs12_password', '')
         OpenSSL::PKCS12.new(Base64.strict_decode64(data), password)
       rescue OpenSSL::PKCS12::PKCS12Error => error
         raise ArgumentError.new(error)
@@ -50,7 +93,7 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
   end
 
   # The {#data key data}'s fingerprint, suitable for displaying to the
-  # user.
+  # user. The Pkcs12 password is voluntarily not included.
   #
   # @return [String]
   def to_s
@@ -60,8 +103,11 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
     result = []
     result << "subject:#{cert.subject.to_s}"
     result << "issuer:#{cert.issuer.to_s}"
+    result << "ADCS CA:#{metadata['adcs_ca']}" if metadata['adcs_ca']
+    result << "ADCS template:#{metadata['adcs_template']}" if metadata['adcs_template']
     result.join(',')
   end
+
 
   private
 
@@ -79,6 +125,9 @@ class Metasploit::Credential::Pkcs12 < Metasploit::Credential::Private
       end
     end
   end
+
+
+  public
 
   Metasploit::Concern.run(self)
 end

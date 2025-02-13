@@ -87,7 +87,7 @@ en:
         metasploit/credential/pkcs12:
           attributes:
             data:
-              format: "is not a Base64 encoded pkcs12 file without a password"
+              format: "is not a serialized data containing Base64 encoded pkcs12 file without a password and metadata"
         metasploit/credential/ssh_key:
           attributes:
             data:

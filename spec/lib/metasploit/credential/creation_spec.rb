@@ -864,12 +864,35 @@ RSpec.describe Metasploit::Credential::Creation do
     end
 
     context 'when :private_type is pkcs12' do
-      it 'creates a Metasploit::Credential::Pkcs12' do
-        opts = {
+      let(:opts) {
+        {
           private_data: FactoryBot.build(:metasploit_credential_pkcs12).data,
           private_type: :pkcs12
         }
+      }
+      it 'creates a Metasploit::Credential::Pkcs12' do
         expect{ test_object.create_credential_private(opts) }.to change{ Metasploit::Credential::Pkcs12.count }.by(1)
+      end
+
+      context 'with metadata' do
+        it 'creates a Metasploit::Credential::Pkcs12 with the expected metadata' do
+          adcs_ca = 'test_ca'
+          adcs_template = 'test_template'
+          opts[:private_metadata] = { adcs_ca: adcs_ca, adcs_template: adcs_template }
+          pkcs12 = test_object.create_credential_private(opts)
+          expect(pkcs12.adcs_ca).to eq(adcs_ca)
+          expect(pkcs12.adcs_template).to eq(adcs_template)
+        end
+      end
+
+      context 'and the Pkcs12 has a password' do
+        it 'creates a valid Metasploit::Credential::Pkcs12' do
+          pkcs12_password = 'test_password'
+          opts[:private_data] = FactoryBot.build(:metasploit_credential_pkcs12, pkcs12_password: pkcs12_password ).data
+          opts[:private_metadata] = { pkcs12_password: pkcs12_password }
+          pkcs12 = test_object.create_credential_private(opts)
+          expect(pkcs12).to be_valid
+        end
       end
     end
   end
