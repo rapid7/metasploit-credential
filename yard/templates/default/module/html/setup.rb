@@ -91,8 +91,8 @@ def namespace_domain_models
   Metasploit::Credential::Engine.instance.eager_load!
 
   ApplicationRecord.descendants.select { |klass|
-    klass.parents.any? { |parent|
-      parent.name == object.title
+    klass.ancestors.any? { |ancestor|
+      ancestor.name == object.title
     }
   }
 end
