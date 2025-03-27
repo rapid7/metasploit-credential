@@ -38,5 +38,16 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'net-ssh'
 
   s.add_runtime_dependency 'pg'
+
+  # mutex_m and bigdecimal are not part of the default gems starting from Ruby 3.4.0: https://www.ruby-lang.org/en/news/2023/12/25/ruby-3-3-0-released/
+  %w[
+    bigdecimal
+    csv
+    drb
+    mutex_m
+  ].each do |library|
+    s.add_runtime_dependency library
+  end
+
   s.platform = Gem::Platform::RUBY
 end
