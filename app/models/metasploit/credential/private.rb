@@ -50,6 +50,11 @@ class Metasploit::Credential::Private < ApplicationRecord
   #
   #   @return [DateTime]
 
+  # @!attribute metadata
+  #   Metadata related to the private data. The data contained in this JSONB structure varies based on the subclass.
+  #
+  #   @return [JSONB]
+
   #
   #
   # Search
@@ -62,6 +67,9 @@ class Metasploit::Credential::Private < ApplicationRecord
 
   search_attribute :data,
                    type: :string
+
+  search_attribute :metadata,
+                   type: :jsonb
 
   #
   # Search Withs
