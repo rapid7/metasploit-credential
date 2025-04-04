@@ -19,7 +19,7 @@ end
 #
 # Generates a file to the output with the specified contents.
 #
-# @example saving a custom html file to the documenation root
+# @example saving a custom html file to the documentation root
 #
 #   asset('my_custom.html','<html><body>Custom File</body></html>')
 #
@@ -91,7 +91,7 @@ def namespace_domain_models
   Metasploit::Credential::Engine.instance.eager_load!
 
   ApplicationRecord.descendants.select { |klass|
-    klass.parents.any? { |parent|
+    klass.respond_to?(:parents) && klass.parents.any? { |parent|
       parent.name == object.title
     }
   }
