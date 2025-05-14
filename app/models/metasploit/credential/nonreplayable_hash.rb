@@ -44,6 +44,10 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
     keychain
     krb4
     krb5
+    krb5asrep-rc4
+    krb5tgs-aes128
+    krb5tgs-aes256
+    krb5tgs-rc4
     lm
     lotus5
     md4-gen
@@ -112,6 +116,7 @@ class Metasploit::Credential::NonreplayableHash < Metasploit::Credential::Passwo
     ssh
     ssha-opencl
     sybasease
+    timeroast
     trip
     vnc
     wbb3
