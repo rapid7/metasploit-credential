@@ -69,7 +69,7 @@ class Metasploit::Credential::SSHKey < Metasploit::Credential::Private
   #
   # @return [String]
   def to_s
-    data ? openssl_pkey_pkey.fingerprint : ''
+    data ? openssl_pkey_pkey.public_key.fingerprint : 'No fingerprint available'
   end
 
   private
