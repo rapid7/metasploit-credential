@@ -57,7 +57,7 @@ class Metasploit::Credential::Importer::Zip
   def import!
     ::Zip::File.open(input.path) do |zip_file|
       zip_file.each do |entry|
-        entry.extract(File.join(extracted_zip_directory, entry.name))
+        entry.extract(destination_directory: File.join(extracted_zip_directory))
       end
     end
 
@@ -80,7 +80,7 @@ class Metasploit::Credential::Importer::Zip
   # @return [void]
   def input_is_well_formed
     begin
-      Zip::File.open input.path do |archive|
+      Zip::File.open(input.path) do |archive|
         glob_check  = archive.glob("**#{File::SEPARATOR}#{MANIFEST_FILE_NAME}")
         if glob_check.present?
           true
