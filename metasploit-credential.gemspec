@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   # Metasploit::Credential::NTLMHash helper methods
   s.add_runtime_dependency 'rubyntlm'
   # Required for supporting the en masse importation of SSH Keys
-  s.add_runtime_dependency 'rubyzip', '<3.0.0'
+  s.add_runtime_dependency 'rubyzip'
 
   s.add_runtime_dependency 'rex-socket'
 
