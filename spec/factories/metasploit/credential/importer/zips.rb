@@ -57,7 +57,7 @@ FactoryBot.define do
 
     # Write out zip file
     zip_location = "#{path}.zip"
-    ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open(zip_location, create: true) do |zipfile|
       Dir[File.join(path, '**', '**')].each do |file|
         zipfile.add(file.sub(path + '/', ''), file)
       end
@@ -140,7 +140,7 @@ FactoryBot.define do
 
     # Write out zip file
     zip_location = "#{path}.zip"
-    ::Zip::File.open(zip_location, ::Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open(zip_location, create: true) do |zipfile|
       Dir[File.join(path, '**', '**')].each do |file|
         zipfile.add(file.sub(path + '/', ''), file)
       end
