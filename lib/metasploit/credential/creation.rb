@@ -413,6 +413,8 @@ module Metasploit::Credential::Creation
   # If there is not a matching `Mdm::Host` it will create it. If there is not a matching
   # `Mdm::Service` it will create that too.
   #
+  # @option opts [Mdm::Service] :service The service to use instead of creating one
+  # @option opts [Fixnum] :service_id The ID of the `Mdm::Service` to link this Origin to
   # @option opts [String] :address The address of the `Mdm::Host` to link this Origin to
   # @option opts [Fixnum] :port The port number of the `Mdm::Service` to link this Origin to
   # @option opts [String] :service_name The service name to use for the `Mdm::Service`
@@ -423,8 +425,13 @@ module Metasploit::Credential::Creation
   # @return [Metasploit::Credential::Origin::Service] The created {Metasploit::Credential::Origin::Service} object
   def create_credential_origin_service(opts={})
     return nil unless active_db?
+
     module_fullname  = opts.fetch(:module_fullname)
-    service_object = create_credential_service(opts)
+    if (service_id = opts[:service_id] || opts[:service].try(:id))
+      service_object = Mdm::Service.where(id: service_id).first
+    else
+      service_object = create_credential_service(opts)
+    end
     return nil if service_object.nil?
 
     retry_transaction do
