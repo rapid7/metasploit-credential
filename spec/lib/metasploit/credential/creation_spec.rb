@@ -652,6 +652,49 @@ RSpec.describe Metasploit::Credential::Creation do
         expect{ test_object.create_credential_origin_service(opts)}.to raise_error KeyError
       end
     end
+
+    context 'when :service is provided' do
+      it 'uses the given service object and does not create a new Mdm::Service' do
+        host = FactoryBot.create(:mdm_host, workspace: workspace)
+        existing_service = FactoryBot.create(:mdm_service, host: host)
+        opts = {
+          service: existing_service,
+          module_fullname: 'auxiliary/scanner/smb/smb_login',
+          origin_type: :service
+        }
+        expect { test_object.create_credential_origin_service(opts) }.to_not change { Mdm::Service.count }
+        origin = test_object.create_credential_origin_service(opts)
+        expect(origin.service_id).to eq(existing_service.id)
+      end
+    end
+
+    context 'when :service_id is provided' do
+      context 'and the ID corresponds to an existing Mdm::Service' do
+        it 'uses that service and does not create a new Mdm::Service' do
+          host = FactoryBot.create(:mdm_host, workspace: workspace)
+          existing_service = FactoryBot.create(:mdm_service, host: host)
+          opts = {
+            service_id: existing_service.id,
+            module_fullname: 'auxiliary/scanner/smb/smb_login',
+            origin_type: :service
+          }
+          expect { test_object.create_credential_origin_service(opts) }.to_not change { Mdm::Service.count }
+          origin = test_object.create_credential_origin_service(opts)
+          expect(origin.service_id).to eq(existing_service.id)
+        end
+      end
+
+      context 'and the ID does not correspond to an existing Mdm::Service' do
+        it 'returns nil' do
+          opts = {
+            service_id: 0,
+            module_fullname: 'auxiliary/scanner/smb/smb_login',
+            origin_type: :service
+          }
+          expect(test_object.create_credential_origin_service(opts)).to be_nil
+        end
+      end
+    end
   end
 
   context '#create_credential_origin_session' do
