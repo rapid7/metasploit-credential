@@ -13,7 +13,7 @@ class Metasploit::Credential::PostgresMD5 < Metasploit::Credential::ReplayableHa
   # Callbacks
   #
 
-  if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+  if ActiveRecord::VERSION::MAJOR > 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR >= 1)
     serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
   else
     serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
