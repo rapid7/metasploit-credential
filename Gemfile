@@ -38,7 +38,8 @@ group :development, :test do
   # code coverage of tests
   gem 'simplecov', :require => false
   # dummy app
-  gem 'rails', '7.0.8'
+  # Allow Rails 7.0 through 8.0 for upgrade compatibility
+  gem 'rails', '>= 7.0', '< 8.1'
   # running documentation generation tasks and rspec tasks
   gem 'rake'
   # unit testing framework with rails integration

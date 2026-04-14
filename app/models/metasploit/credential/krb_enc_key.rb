@@ -73,7 +73,7 @@ class Metasploit::Credential::KrbEncKey < Metasploit::Credential::PasswordHash
   # Callbacks
   #
 
-  if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+  if ActiveRecord::VERSION::MAJOR > 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR >= 1)
     serialize :data, coder: Metasploit::Credential::CaseInsensitiveSerializer
   else
     serialize :data, Metasploit::Credential::CaseInsensitiveSerializer
