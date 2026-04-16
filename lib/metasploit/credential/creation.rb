@@ -37,20 +37,43 @@ module Metasploit::Credential::Creation
     old_realm_id = nil
 
     retry_transaction do
-      private  = Metasploit::Credential::Password.where(data: password).first_or_create!
-      public   = Metasploit::Credential::Public.where(username: username).first_or_create!
       old_core = Metasploit::Credential::Core.find(core_id)
       old_realm_id = old_core.realm.id if old_core.realm
+      if username.blank? && old_core.public
+        username = old_core.public.username
+      end
+      private  = Metasploit::Credential::Password.where(data: password).first_or_create!
+      public   = Metasploit::Credential::Public.where(username: username).first_or_create!
     end
 
     core = nil
 
     retry_transaction do
-      core = Metasploit::Credential::Core.where(public_id: public.id, private_id: private.id, realm_id: old_realm_id, workspace_id: old_core.workspace_id).first_or_initialize
-      if core.origin_id.nil?
-        origin      = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
-        core.origin = origin
+      # Create the CrackedPassword origin for this specific originating
+      # core first, then look up a Core that is already tied to it.
+      # This prevents two different hashes that crack to the same
+      # password from collapsing into a single Core where only the
+      # first origin link is recorded.
+      origin = Metasploit::Credential::Origin::CrackedPassword.where(metasploit_credential_core_id: core_id).first_or_create!
+
+      core = Metasploit::Credential::Core.find_by(
+        origin_type: 'Metasploit::Credential::Origin::CrackedPassword',
+        origin_id: origin.id
+      )
+
+      unless core
+        core = Metasploit::Credential::Core.where(
+          public_id: public.id,
+          private_id: private.id,
+          realm_id: old_realm_id,
+          workspace_id: old_core.workspace_id
+        ).first_or_initialize
+
+        if core.origin_id.nil?
+          core.origin = origin
+        end
       end
+
       if opts[:task_id]
         core.tasks << Mdm::Task.find(opts[:task_id])
       end
@@ -134,6 +157,17 @@ module Metasploit::Credential::Creation
     end
 
     if opts.has_key?(:username)
+      # When cracking a hash, the caller may not know the username
+      # (e.g. krb5tgs / krb5asrep).  Fall back to the originating
+      # core's public so each cracked hash gets a distinct Core
+      # instead of all of them collapsing into a single BlankUsername
+      # Core where only the first origin link is recorded.
+      if opts[:username].blank? && opts[:origin_type] == :cracked_password && opts[:originating_core_id]
+        originating_core = Metasploit::Credential::Core.find_by(id: opts[:originating_core_id])
+        if originating_core&.public
+          opts = opts.merge(username: originating_core.public.username)
+        end
+      end
       core_opts[:public] = create_credential_public(opts)
     end
 
@@ -254,7 +288,20 @@ module Metasploit::Credential::Creation
 
     core = nil
     retry_transaction do
-      core = Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
+      # When the origin is a CrackedPassword, look up by origin first
+      # so that each originating hash gets its own cracked Core.
+      # Without this, two different hashes that crack to the same
+      # password (and share public/realm/workspace) resolve to a
+      # single Core and only the first origin link is recorded.
+      if origin.is_a?(Metasploit::Credential::Origin::CrackedPassword)
+        core = Metasploit::Credential::Core.find_by(
+          origin_type: origin.class.to_s,
+          origin_id: origin.id
+        )
+      end
+
+      core ||= Metasploit::Credential::Core.where(private_id: private_id, public_id: public_id, realm_id: realm_id, workspace_id: workspace_id).first_or_initialize
+
       if core.origin_id.nil?
         core.origin = origin
       end
