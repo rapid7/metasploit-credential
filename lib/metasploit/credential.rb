@@ -10,7 +10,8 @@
 require 'metasploit/concern'
 require 'metasploit_data_models'
 require 'metasploit/model'
-require 'zip'
+
+autoload :Zip, 'zip'
 
 #
 # Project
