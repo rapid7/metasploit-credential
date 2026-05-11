@@ -209,6 +209,48 @@ RSpec.describe Metasploit::Credential::Creation do
         expect( Metasploit::Credential::PostgresMD5.count ).to eq(1)
       end
     end
+
+    context 'when origin is cracked_password and username is blank' do
+      let(:named_public) { FactoryBot.create(:metasploit_credential_username) }
+      let(:hash_private) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:manual_origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
+
+      let!(:originating_core) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: named_public, private: hash_private,
+                          workspace: workspace, origin: manual_origin)
+      end
+
+      let(:credential_data) {{
+        workspace_id: workspace.id,
+        origin_type: :cracked_password,
+        originating_core_id: originating_core.id,
+        username: '',
+        private_data: 'cracked_pw',
+        private_type: :password
+      }}
+
+      it 'falls back to the originating core public username instead of creating a BlankUsername' do
+        core = test_object.create_credential(credential_data)
+        expect(core.public.username).to eq(named_public.username)
+        expect(core.public).not_to be_a(Metasploit::Credential::BlankUsername)
+      end
+
+      it 'creates distinct Cores when two different hashes crack to the same password with blank usernames' do
+        hash_private2 = FactoryBot.create(:metasploit_credential_nonreplayable_hash)
+        named_public2 = FactoryBot.create(:metasploit_credential_username)
+        originating_core2 = FactoryBot.create(:metasploit_credential_core,
+                                              public: named_public2, private: hash_private2,
+                                              workspace: workspace, origin: manual_origin)
+
+        core1 = test_object.create_credential(credential_data)
+        core2 = test_object.create_credential(credential_data.merge(originating_core_id: originating_core2.id))
+
+        expect(core1.id).not_to eq(core2.id)
+        expect(core1.public.username).to eq(named_public.username)
+        expect(core2.public.username).to eq(named_public2.username)
+      end
+    end
   end
 
   context '#create_credential_and_login' do
@@ -461,6 +503,223 @@ RSpec.describe Metasploit::Credential::Creation do
         }.by(1)
       end
 
+    end
+
+    context 'when two different hashes crack to the same password' do
+      let(:public_user1) { FactoryBot.create(:metasploit_credential_username) }
+      let(:public_user2) { FactoryBot.create(:metasploit_credential_username) }
+      let(:hash1) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:hash2) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:manual_origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
+      let(:cracked_password) { 'cracked_same_password' }
+
+      let!(:hash_core1) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: public_user1, private: hash1,
+                          realm: realm, workspace: workspace, origin: manual_origin)
+      end
+
+      let!(:hash_core2) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: public_user2, private: hash2,
+                          realm: realm, workspace: workspace, origin: manual_origin)
+      end
+
+      it 'creates separate Cores for each originating hash' do
+        core1 = test_object.create_cracked_credential(
+          core_id: hash_core1.id,
+          username: public_user1.username,
+          password: cracked_password
+        )
+        core2 = test_object.create_cracked_credential(
+          core_id: hash_core2.id,
+          username: public_user2.username,
+          password: cracked_password
+        )
+
+        expect(core1.id).not_to eq(core2.id)
+      end
+
+      it 'records distinct CrackedPassword origins pointing to each originating core' do
+        core1 = test_object.create_cracked_credential(
+          core_id: hash_core1.id,
+          username: public_user1.username,
+          password: cracked_password
+        )
+        core2 = test_object.create_cracked_credential(
+          core_id: hash_core2.id,
+          username: public_user2.username,
+          password: cracked_password
+        )
+
+        expect(core1.origin).to be_a(Metasploit::Credential::Origin::CrackedPassword)
+        expect(core2.origin).to be_a(Metasploit::Credential::Origin::CrackedPassword)
+        expect(core1.origin.metasploit_credential_core_id).to eq(hash_core1.id)
+        expect(core2.origin.metasploit_credential_core_id).to eq(hash_core2.id)
+      end
+
+      context 'when both hashes share the same username and realm' do
+        let(:shared_public) { FactoryBot.create(:metasploit_credential_username) }
+
+        let!(:hash_core_a) do
+          FactoryBot.create(:metasploit_credential_core,
+                            public: shared_public, private: hash1,
+                            realm: realm, workspace: workspace, origin: manual_origin)
+        end
+
+        let!(:hash_core_b) do
+          FactoryBot.create(:metasploit_credential_core,
+                            public: shared_public, private: hash2,
+                            realm: realm, workspace: workspace, origin: manual_origin)
+        end
+
+        it 'reuses the existing Core but creates distinct CrackedPassword origins for each hash' do
+          core_a = test_object.create_cracked_credential(
+            core_id: hash_core_a.id,
+            username: shared_public.username,
+            password: cracked_password
+          )
+          core_b = test_object.create_cracked_credential(
+            core_id: hash_core_b.id,
+            username: shared_public.username,
+            password: cracked_password
+          )
+
+          # Both resolve to the same Core because public/private/realm/workspace match
+          expect(core_a.id).to eq(core_b.id)
+
+          # But distinct CrackedPassword origins are still recorded for each originating hash
+          origins = Metasploit::Credential::Origin::CrackedPassword.where(
+            metasploit_credential_core_id: [hash_core_a.id, hash_core_b.id]
+          )
+          expect(origins.count).to eq(2)
+        end
+      end
+    end
+
+    context 'when username is blank' do
+      let(:named_public) { FactoryBot.create(:metasploit_credential_username) }
+      let(:hash_private) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:manual_origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
+
+      let!(:originating_core) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: named_public, private: hash_private,
+                          realm: realm, workspace: workspace, origin: manual_origin)
+      end
+
+      it 'falls back to the originating core public username' do
+        core = test_object.create_cracked_credential(
+          core_id: originating_core.id,
+          username: '',
+          password: password
+        )
+
+        expect(core.public.username).to eq(named_public.username)
+      end
+
+      it 'does not create a BlankUsername record for the cracked credential' do
+        blank_count_before = Metasploit::Credential::BlankUsername.count
+        test_object.create_cracked_credential(
+          core_id: originating_core.id,
+          username: '',
+          password: password
+        )
+
+        # The cracked Core should use the originating core's named username,
+        # not create a new BlankUsername
+        cracked_core = Metasploit::Credential::Core.last
+        expect(cracked_core.public).not_to be_a(Metasploit::Credential::BlankUsername)
+        expect(Metasploit::Credential::BlankUsername.count).to eq(blank_count_before)
+      end
+
+      context 'with two different hashes that both have named publics' do
+        let(:named_public2) { FactoryBot.create(:metasploit_credential_username) }
+        let(:hash_private2) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+
+        let!(:originating_core2) do
+          FactoryBot.create(:metasploit_credential_core,
+                            public: named_public2, private: hash_private2,
+                            realm: realm, workspace: workspace, origin: manual_origin)
+        end
+
+        it 'creates separate Cores each with the correct username from their originating core' do
+          core1 = test_object.create_cracked_credential(
+            core_id: originating_core.id,
+            username: '',
+            password: password
+          )
+          core2 = test_object.create_cracked_credential(
+            core_id: originating_core2.id,
+            username: '',
+            password: password
+          )
+
+          expect(core1.id).not_to eq(core2.id)
+          expect(core1.public.username).to eq(named_public.username)
+          expect(core2.public.username).to eq(named_public2.username)
+        end
+      end
+    end
+
+    context 'end-to-end: two different hash types (e.g. krb5tgs and krb5asrep) cracked to the same password' do
+      let(:krb5tgs_public) { Metasploit::Credential::Username.create!(username: 'krb5tgs') }
+      let(:krb5asrep_public) { Metasploit::Credential::Username.create!(username: 'krb5asrep') }
+      let(:krb5tgs_hash) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:krb5asrep_hash) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:manual_origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
+      let(:cracked_pw) { 'hashcat' }
+
+      let!(:krb5tgs_core) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: krb5tgs_public, private: krb5tgs_hash,
+                          workspace: workspace, origin: manual_origin)
+      end
+
+      let!(:krb5asrep_core) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: krb5asrep_public, private: krb5asrep_hash,
+                          workspace: workspace, origin: manual_origin)
+      end
+
+      it 'creates 2 new cracked Cores in addition to the 2 originals' do
+        expect {
+          test_object.create_cracked_credential(core_id: krb5tgs_core.id, username: '', password: cracked_pw)
+          test_object.create_cracked_credential(core_id: krb5asrep_core.id, username: '', password: cracked_pw)
+        }.to change { Metasploit::Credential::Core.count }.by(2)
+      end
+
+      it 'links each cracked Core back to its originating hash via CrackedPassword origin' do
+        cracked1 = test_object.create_cracked_credential(core_id: krb5tgs_core.id, username: '', password: cracked_pw)
+        cracked2 = test_object.create_cracked_credential(core_id: krb5asrep_core.id, username: '', password: cracked_pw)
+
+        expect(cracked1.origin).to be_a(Metasploit::Credential::Origin::CrackedPassword)
+        expect(cracked2.origin).to be_a(Metasploit::Credential::Origin::CrackedPassword)
+        expect(cracked1.origin.metasploit_credential_core_id).to eq(krb5tgs_core.id)
+        expect(cracked2.origin.metasploit_credential_core_id).to eq(krb5asrep_core.id)
+      end
+
+      it 'uses the originating core username for each cracked Core instead of BlankUsername' do
+        cracked1 = test_object.create_cracked_credential(core_id: krb5tgs_core.id, username: '', password: cracked_pw)
+        cracked2 = test_object.create_cracked_credential(core_id: krb5asrep_core.id, username: '', password: cracked_pw)
+
+        expect(cracked1.public.username).to eq('krb5tgs')
+        expect(cracked2.public.username).to eq('krb5asrep')
+      end
+
+      it 'allows looking up the cracked password from each originating hash core' do
+        test_object.create_cracked_credential(core_id: krb5tgs_core.id, username: '', password: cracked_pw)
+        test_object.create_cracked_credential(core_id: krb5asrep_core.id, username: '', password: cracked_pw)
+
+        # Simulate the lookup that creds display does: find cracked Cores by their CrackedPassword origin
+        cracked_cores = Metasploit::Credential::Core.where(origin_type: 'Metasploit::Credential::Origin::CrackedPassword')
+        cracked_by_originating_id = cracked_cores.each_with_object({}) do |core, map|
+          map[core.origin.metasploit_credential_core_id] = core
+        end
+
+        expect(cracked_by_originating_id[krb5tgs_core.id].private.data).to eq(cracked_pw)
+        expect(cracked_by_originating_id[krb5asrep_core.id].private.data).to eq(cracked_pw)
+      end
     end
 
   end
@@ -979,6 +1238,100 @@ RSpec.describe Metasploit::Credential::Creation do
       }
       core = test_object.create_credential_core(opts)
       expect(core.tasks).to include(task)
+    end
+
+    context 'when origin is a CrackedPassword' do
+      let(:manual_origin) { FactoryBot.create(:metasploit_credential_origin_manual) }
+      let(:hash1) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:hash2) { FactoryBot.create(:metasploit_credential_nonreplayable_hash) }
+      let(:cracked_pw) { FactoryBot.create(:metasploit_credential_password) }
+      let(:pub1) { FactoryBot.create(:metasploit_credential_username) }
+      let(:pub2) { FactoryBot.create(:metasploit_credential_username) }
+      let(:rlm) { FactoryBot.create(:metasploit_credential_realm) }
+      let(:ws) { FactoryBot.create(:mdm_workspace) }
+
+      let!(:hash_core1) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: pub1, private: hash1,
+                          realm: rlm, workspace: ws, origin: manual_origin)
+      end
+
+      let!(:hash_core2) do
+        FactoryBot.create(:metasploit_credential_core,
+                          public: pub2, private: hash2,
+                          realm: rlm, workspace: ws, origin: manual_origin)
+      end
+
+      it 'creates separate Cores when CrackedPassword origins have different publics' do
+        origin1 = Metasploit::Credential::Origin::CrackedPassword.create!(metasploit_credential_core_id: hash_core1.id)
+        origin2 = Metasploit::Credential::Origin::CrackedPassword.create!(metasploit_credential_core_id: hash_core2.id)
+
+        core1 = test_object.create_credential_core(
+          origin: origin1,
+          public: pub1,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+        core2 = test_object.create_credential_core(
+          origin: origin2,
+          public: pub2,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+
+        expect(core1.id).not_to eq(core2.id)
+        expect(core1.origin_id).to eq(origin1.id)
+        expect(core2.origin_id).to eq(origin2.id)
+      end
+
+      it 'returns the existing Core when called again with the same CrackedPassword origin' do
+        origin1 = Metasploit::Credential::Origin::CrackedPassword.create!(metasploit_credential_core_id: hash_core1.id)
+
+        core_first = test_object.create_credential_core(
+          origin: origin1,
+          public: pub1,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+        core_second = test_object.create_credential_core(
+          origin: origin1,
+          public: pub1,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+
+        expect(core_first.id).to eq(core_second.id)
+      end
+
+      it 'looks up by origin before falling back to public/private/realm/workspace' do
+        origin1 = Metasploit::Credential::Origin::CrackedPassword.create!(metasploit_credential_core_id: hash_core1.id)
+
+        core = test_object.create_credential_core(
+          origin: origin1,
+          public: pub1,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+
+        # Calling again with the same origin returns the same core
+        # even though the lookup by origin happens first
+        core_again = test_object.create_credential_core(
+          origin: origin1,
+          public: pub1,
+          private: cracked_pw,
+          realm: rlm,
+          workspace_id: ws.id
+        )
+
+        expect(core.id).to eq(core_again.id)
+        expect(core.origin).to be_a(Metasploit::Credential::Origin::CrackedPassword)
+        expect(core.origin.metasploit_credential_core_id).to eq(hash_core1.id)
+      end
     end
 
   end
