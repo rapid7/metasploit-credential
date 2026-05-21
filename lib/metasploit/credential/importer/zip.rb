@@ -80,7 +80,7 @@ class Metasploit::Credential::Importer::Zip
   # @return [void]
   def input_is_well_formed
     begin
-      Zip::File.open(input.path) do |archive|
+      ::Zip::File.open(input.path) do |archive|
         glob_check  = archive.glob("**#{File::SEPARATOR}#{MANIFEST_FILE_NAME}")
         if glob_check.present?
           true
