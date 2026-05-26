@@ -99,12 +99,14 @@ RSpec.describe Metasploit::Credential::Migrator do
 
         context "when Cred#pass points to a file system path" do
 
-          let(:path_to_ssh_key) do
+          let(:ssh_key_tempfile) do
             t = Tempfile.new('ssh')
             t.write(ssh_key_content)
             t.close
-            t.path
+            t
           end
+
+          let(:path_to_ssh_key) { ssh_key_tempfile.path }
 
           let(:cred) do
             FactoryBot.create(:mdm_cred,
@@ -112,6 +114,10 @@ RSpec.describe Metasploit::Credential::Migrator do
                              ptype: 'ssh_key',
                              pass: path_to_ssh_key
             )
+          end
+
+          after(:example) do
+            ssh_key_tempfile.unlink
           end
 
           before(:example) do
