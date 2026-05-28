@@ -669,7 +669,7 @@ module Metasploit::Credential::Creation
           # elog("Failed to create service #{service_info.inspect} for host #{host.name} (#{host.address})")
           return
         end
-        service_obj.state ||= Msf::ServiceState::Open
+        service_obj.state ||= 'open'
         service_obj.info = service[:info] ? service[:info] : ''
 
         if parents
