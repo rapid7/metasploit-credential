@@ -617,14 +617,72 @@ module Metasploit::Credential::Creation
     service_name     = opts.fetch(:service_name)
     protocol         = opts.fetch(:protocol)
     workspace_id     = opts.fetch(:workspace_id)
+    resource         = opts[:resource] || {}
 
     host_object    = Mdm::Host.where(address: address, workspace_id: workspace_id).first_or_create
     service_object = Mdm::Service.where(host_id: host_object.id, port: port, proto: protocol, name: service_name).first_or_initialize
 
+    parents = process_service_chain(host_object, opts.delete(:parents)) if opts[:parents]
+    if parents
+      parents.each do |parent|
+        service_object.parents << parent if parent && !service_object.parents.include?(parent)
+      end
+    end
+
+    service_object.resource = resource
     service_object.state = "open"
     service_object.save!
 
     service_object
+  end
+
+  # This is copy-pasted from Metasploit Framework (with small tweaks right now to lalow for :name and :service_name, and :proto/:protocol):
+  # https://github.com/rapid7/metasploit-framework/blob/2dcfb985ea68ba2384f5309afdc9ec1a17cb80b9/lib/msf/core/db_manager/service.rb#L193
+  # In the future, we can potentially migrate this AND the Metasploit Framework code to metasploit_data_models, so that
+  # both Framework and Credential have access to the shared code.
+  def process_service_chain(host, services)
+    return unless host.is_a?(Mdm::Host)
+
+    return if services.nil?
+
+    services = [services] unless services.is_a?(Array)
+    services.map do |service|
+      case service
+      when ::Mdm::Service
+        service_obj = service
+      when ::Hash
+        next if service[:port].nil? || service[:proto].nil?
+
+        parents = nil
+        if service[:parents]&.any?
+          parents = process_service_chain(host, service[:parents])
+        end
+
+        service_info = {
+          port: service[:port].to_i,
+          proto: service[:proto].to_s.downcase,
+        }
+        service_info[:name] = service[:name].downcase if service[:name]
+        service_info[:resource] = service[:resource] if service[:resource]
+        service_obj = host.services.find_or_create_by(service_info)
+        if service_obj.id.nil?
+          # elog("Failed to create service #{service_info.inspect} for host #{host.name} (#{host.address})")
+          return
+        end
+        service_obj.state ||= 'open'
+        service_obj.info = service[:info] ? service[:info] : ''
+
+        if parents
+          parents.each do |parent|
+            service_obj.parents << parent if parent && !service_obj.parents.include?(parent)
+          end
+        end
+      else
+        next
+      end
+
+      service_obj
+    end.compact
   end
 
   # This method checks to see if a {Metasploit::Credential::Login} exists for a given
